@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------- 密钥（最重要）
+# config.json 含 API key，永远不要提交。仓库里只保留 config.example.json。
+config.json
+
+# ---------------------------------------------------------------- Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---------------------------------------------------------------- 构建产物
+dist/
+build/
+bin/
+obj/
+*.pdb
+*.dll
+*.exe
+!MOD_Jgmg5L.dll
+
+# ---------------------------------------------------------------- 运行时数据
+logs/
+*.log
+_unity_probe.log
+
+# ---------------------------------------------------------------- 本地专用（不进版本库）
+# 反编译参考、代码备份、AI 记忆、生成图片 —— 都不该出现在公开仓库
+reference/
+backup/
+.mine_0913/
+.workbuddy/
+generated-images/
+tmp_decomp_tool.txt
+tmp_tools_schema_dump.md
+_diag_initiative_force.txt.disabled
+
+# ---------------------------------------------------------------- 导出脚本标记
+.export_public_target
+
+# ---------------------------------------------------------------- 编辑器 / 系统
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+Thumbs.db
+.DS_Store
