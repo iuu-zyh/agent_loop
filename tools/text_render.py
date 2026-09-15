@@ -9,7 +9,7 @@
   所有"取多少/留几条"的决策都归 C#（如 query_world 的 `count`/`top`、search_units 的前 10、
   经历分页每页 5 条）。Python 只做忠实翻译，不替 C# 做取舍。
   防回退哨兵：`tests/test_text_render.py::test_no_truncation_anywhere`。
-  仅纯机器字段（内部 id / 坐标等）可省略，且须登记在 docs/tool-result-contract.md 的例外清单。
+  仅纯机器字段（内部 id / 坐标等）可省略。
 - C# 的 conf 查表中文字段（personality / beauty_label / relation 中文等）属**数据本地化**，留在 C#；
 - 渲染器缺失 / data 形态不认识 / 抛异常 → 返回 None，调用方回退 json.dumps(全量)
   （错误帧、未来新工具、渐进改造期的兜底，行为与旧版一致）。
