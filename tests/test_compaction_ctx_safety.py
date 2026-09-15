@@ -1,6 +1,6 @@
 """压缩 × L1 运行时上下文：两条安全护栏（2026-09-14）
 
-背景（`docs/context-projection.md` §7）：压缩的 `replace` 区间是在 `session.surface.nodes`
+背景：压缩的 `replace` 区间是在 `session.surface.nodes`
 上**连续**取的 —— `start_seq, end_seq = nodes[0], nodes[cut_idx - 1]` —— 而 L1 段（伪装成
 user 的 plugin 消息）也是 surface 节点、且夹在对话中间。于是压缩会：
 

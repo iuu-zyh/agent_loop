@@ -43,7 +43,7 @@ namespace AgentLoopBridge
         /// 此时 Process.Start 返回的就是直接创建的那个进程的句柄，HasExited 对它可靠。
         /// 真正的限制只有一条：onefile 形态下句柄是 **bootloader**，跑 Python 的是它的子进程——
         /// 但 bootloader 会 waitpid 子进程再退出，故「bootloader 退出 ⟺ 整个应用结束」依然成立。
-        /// 模型梳理见 docs/brain-liveness-design.md §3.2。</summary>
+        /// </summary>
         public static bool IsOwned => _proc != null;
 
         /// <summary>本 mod 是否**尝试过**拉起（= 我们是这套进程的负责人）。

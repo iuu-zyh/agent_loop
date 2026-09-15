@@ -13,7 +13,7 @@
 /// `initiative.format_game_drama_message` 同口径）。早期文案写死「你主动找上玩家」，
 /// 玩家点闲聊时会喂给模型一个反的事实。
 ///
-/// 边界（= ui-interception-spec §10.2 规划的「旁路选项版」，非 Prefix 接管版）：只捕获 + 加按钮，
+/// 边界（「旁路选项版」，非 Prefix 接管版）：只捕获 + 加按钮，
 /// 不抑制原 UI、不碰 onDramaEndCall/onOptionsClickCall 结算回调——原生选项（寻仇→战斗等）
 /// 的机制效果完整保留，本按钮是表演层加法。设计文档：`docs/APPENDIX.md` §G.1。
 ///

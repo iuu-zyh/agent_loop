@@ -188,7 +188,7 @@ namespace AgentLoopBridge
                 // 4) 拉起 Python 平台（server.py，其内 WsServer 监听 8766）
                 Launcher.LaunchPythonOnce();
 
-                // 4.1) 存活监测：进程层判据 + 退避重生（模型见 docs/brain-liveness-design.md）
+                // 4.1) 存活监测：进程层判据 + 退避重生
                 //      **必须排在拉起之后** —— 启动宽限期从"刚拉起"那一刻算起，
                 //      排在前面会把上一轮遗留的时间差算进来。
                 //      用 g.timer.Frame 驱动 = 主线程，故 BrainLink 可直接碰 UI（横幅）。

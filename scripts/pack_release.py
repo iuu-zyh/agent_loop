@@ -422,7 +422,7 @@ def build_exe(clean: bool = True) -> Path:
       exe 里装什么完全取决于打包环境装了什么——用开发环境打，赌的是"我这儿碰巧没装多余东西"。
       专用 venv 只装 `requirements.txt` + `pyinstaller`，产物可复现，也不会把开发机的包漏进去。
 
-    前置（只需做一次，见 docs/PACKAGING.md）：
+    前置（只需做一次）：
         py -3.12 -m venv <构建目录>\\pybuild\\venv
         <venv>\\python.exe -m pip install -U pip pyinstaller
         <venv>\\python.exe -m pip install -r requirements.txt
@@ -949,7 +949,7 @@ def scan_leaks(root: Path, allow_dev_paths: bool = False) -> None:
     # 自包含 exe 的额外提示：它**不是一个"更安全的 .pyc"**。
     # PyInstaller onefile 把我们的 .py 编译成 .pyc 后压进 PKG 归档，任何人都能用
     # pyinstxtractor 解出来、再用 decompyle 之类还原个七七八八。这里明说一句，
-    # 免得"打成了一个文件"被误读成"源码保护好了"——真要保护得走 Nuitka（见 docs/PACKAGING.md）。
+    # 免得"打成了一个文件"被误读成"源码保护好了"——真要保护得走 Nuitka。
     if (root / "ModAssets" / EXE_NAME).is_file() or (root / EXE_NAME).is_file():
         log(f"⚠ {EXE_NAME} 是 PyInstaller 产物：**能防小白、不防有心人**"
             f"（pyinstxtractor 可解出 .pyc）。需要真源码保护请改用 Nuitka。")
