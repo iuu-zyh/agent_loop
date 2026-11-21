@@ -1,0 +1,187 @@
+//==================== TYPE <Module> ====================
+
+
+//==================== TYPE GGBH_MOD.Patch_EventsMgr_Init ====================
+using System;
+using HarmonyLib;
+using Il2CppSystem;
+
+namespace GGBH_MOD;
+
+[HarmonyPatch(typeof(EventsMgr), "Init")]
+public class Patch_EventsMgr_Init
+{
+	private static Action<ETypeData> onGameCMDMelonLoaderCall = Action<ETypeData>.op_Implicit((Action<ETypeData>)OnGameCMDMelonLoader);
+
+	private static int lastEventHashCode;
+
+	[HarmonyPostfix]
+	private static void Postfix()
+	{
+		if (lastEventHashCode != ((Object)g.events).GetHashCode())
+		{
+			lastEventHashCode = ((Object)g.events).GetHashCode();
+			g.events.Off("GameCMDMelonLoader", onGameCMDMelonLoaderCall);
+			g.events.On("GameCMDMelonLoader", onGameCMDMelonLoaderCall, 0, false);
+		}
+	}
+
+	private static void OnGameCMDMelonLoader(ETypeData e)
+	{
+		ModMain.OnGameCMDMelonLoader(e);
+	}
+}
+
+
+//==================== TYPE GGBH_MOD.ModMain ====================
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using EGameTypeData;
+using Il2CppSystem;
+using MelonLoader;
+using UnhollowerBaseLib;
+
+namespace GGBH_MOD;
+
+public class ModMain : MelonMod
+{
+	private class ModItem
+	{
+		public string modNamespace;
+
+		public List<Assembly> assembly = new List<Assembly>();
+
+		public object modMainBase;
+
+		public bool isLoad;
+	}
+
+	private static Dictionary<string, ModItem> allMod = new Dictionary<string, ModItem>();
+
+	private static int initModMgrHashCode;
+
+	public override void OnApplicationStart()
+	{
+		((MelonBase)this).OnApplicationStart();
+		File.WriteAllText(Environment.CurrentDirectory + "/MelonLoader/GGBH_MOD_LOAD_COMPLETE.txt", "");
+	}
+
+	public static void OnGameCMDMelonLoader(ETypeData e)
+	{
+		CMDMelonLoader val = ((Il2CppObjectBase)e).Cast<CMDMelonLoader>();
+		if (val.cmd == "LoadDll")
+		{
+			string text = ((Il2CppArrayBase<Object>)(object)val.values)[0].ToString();
+			string text2 = ((Il2CppArrayBase<Object>)(object)val.values)[1].ToString();
+			try
+			{
+				MelonHandler.LoadFromFile(text, text2);
+				if (!allMod.ContainsKey(text2))
+				{
+					ModItem modItem = new ModItem();
+					modItem.modNamespace = text2;
+					allMod[text2] = modItem;
+				}
+				Assembly item = Assembly.LoadFrom(text);
+				allMod[text2].assembly.Add(item);
+				return;
+			}
+			catch (Exception)
+			{
+				return;
+			}
+		}
+		if (val.cmd == "InitModMain")
+		{
+			if (initModMgrHashCode == ((Object)g.mod).GetHashCode())
+			{
+				return;
+			}
+			initModMgrHashCode = ((Object)g.mod).GetHashCode();
+			foreach (KeyValuePair<string, ModItem> item2 in allMod)
+			{
+				if (item2.Value.modMainBase != null && item2.Value.isLoad)
+				{
+					try
+					{
+						item2.Value.isLoad = false;
+						Console.WriteLine("DestroyModMain：" + item2.Key);
+						item2.Value.modMainBase.GetType().GetMethod("Destroy").Invoke(item2.Value.modMainBase, new object[0]);
+						item2.Value.modMainBase = null;
+					}
+					catch (Exception ex2)
+					{
+						Console.WriteLine(ex2.ToString());
+					}
+				}
+			}
+			List<string> list = new List<string>();
+			list.Add(((Il2CppArrayBase<Object>)(object)val.values).Count.ToString());
+			for (int i = 0; i < ((Il2CppArrayBase<Object>)(object)val.values).Count; i++)
+			{
+				if (((Il2CppArrayBase<Object>)(object)val.values)[i] != null)
+				{
+					list.Add(((Il2CppArrayBase<Object>)(object)val.values)[i].ToString());
+				}
+			}
+			{
+				foreach (KeyValuePair<string, ModItem> item3 in allMod)
+				{
+					if (!list.Contains(item3.Value.modNamespace))
+					{
+						continue;
+					}
+					if (item3.Value.modMainBase == null && !item3.Value.isLoad)
+					{
+						item3.Value.isLoad = true;
+						for (int j = 0; j < item3.Value.assembly.Count; j++)
+						{
+							if (item3.Value.assembly[j].GetType(item3.Key + ".ModMain") != null)
+							{
+								object obj = item3.Value.assembly[j].CreateInstance(item3.Key + ".ModMain");
+								if (obj == null)
+								{
+									Console.WriteLine("初始化类“" + item3.Key + ".ModMain”失败");
+								}
+								else if (obj == null)
+								{
+									Console.WriteLine("类“" + item3.Key + ".ModMain”没有继承ModMainBase");
+								}
+								else if (obj != null)
+								{
+									item3.Value.modMainBase = obj;
+									break;
+								}
+							}
+						}
+						if (item3.Value.modMainBase == null)
+						{
+							Console.WriteLine("找不到Type“" + item3.Key + ".ModMain”");
+						}
+					}
+					if (item3.Value.modMainBase != null)
+					{
+						try
+						{
+							Console.WriteLine("InitModMain：" + item3.Key);
+							item3.Value.modMainBase.GetType().GetMethod("Init").Invoke(item3.Value.modMainBase, new object[0]);
+						}
+						catch (Exception ex3)
+						{
+							Console.WriteLine(ex3.ToString());
+						}
+					}
+				}
+				return;
+			}
+		}
+		_ = val.cmd == "DestroyModMain";
+	}
+}
+
+
+//==================== TYPE GGBH_MOD.ModMain.ModItem ====================
+// decompile failed: Could not find type definition GGBH_MOD.ModMain.ModItem in type system.
+

@@ -1,0 +1,55 @@
+﻿
+
+一、功能简介
+首次点击模组编辑器的“编写代码”按钮时，会自动创建“VS项目”与“主类”，主类名必须是ModMain，命名空间默认为MOD_XXXXXX（模组ID）。
+
+当你修改了代码命名空间时，程序集名称和UI上的代码命名空间时需要手动一起修改。
+
+
+
+VS版本：2022（其他版本应该也能打开自行测试）
+.NET框架：Net Framework 4.7.2（必须是这个版本）
+
+
+
+
+
+
+
+编写代码教程
+1：参考鬼谷八荒API文档，在ModMain.cs入口开始编写你的代码。
+
+2：默认的DLL引用“复制到本地”都是false，需要引用其他DLL可在游戏目录下的MelonLoader文件夹找，当你新增DLL引用时，一定要把复制到本地设置成False，否则重新生成后会复制多余的DLL到Release目录，会导致MOD失效。
+
+
+2：编写完成后，重新生成DLL，确保bin/Release目录下成功生成了MOD_XXXXXX.dll，不要有多余的DLL，除非是你需要的插件DLL。
+
+
+3：回到游戏模组编辑器主界面，点击右下角“进入游戏调试”（模组编辑器会自动复制Release下的所有DLL到游戏中并加载），调试完成即可上传到创意工坊。
+
+
+
+
+
+
+
+
+
+其他说明
+1：游戏中已内置了MelonLoader，可前往Github查看相关教程。
+Github地址： HYPERLINK "https://github.com/LavaGang/MelonLoader。" https://github.com/LavaGang/MelonLoader。
+官网： HYPERLINK "https://melonwiki.xyz/#/modders/il2cppdifferences" https://melonwiki.xyz/#/modders/il2cppdifferences
+推荐看一遍IL2CPP和普通C#的差异
+
+
+2：使用了Harmony补丁功能的，需要手动启用补丁。
+    var item = new HarmonyLib.Harmony("MOD_hK0uXK");
+item.PatchAll(Assembly.GetExecutingAssembly());
+
+
+
+3：更多游戏内教程可以查看此例子。
+
+
+4：MelonLoader的控制台默认是关闭的，通过以下选项可以打开控制台，右击游戏属性，高级选项输入“--melonloader.showconsole”
+

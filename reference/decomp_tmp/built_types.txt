@@ -1,0 +1,4032 @@
+//==================== TYPE <Module> ====================
+
+
+//==================== TYPE Microsoft.CodeAnalysis.EmbeddedAttribute ====================
+using System;
+using System.Runtime.CompilerServices;
+
+namespace Microsoft.CodeAnalysis;
+
+[CompilerGenerated]
+[Embedded]
+internal sealed class EmbeddedAttribute : Attribute
+{
+}
+
+
+//==================== TYPE System.Runtime.CompilerServices.RefSafetyRulesAttribute ====================
+using Microsoft.CodeAnalysis;
+
+namespace System.Runtime.CompilerServices;
+
+[CompilerGenerated]
+[Embedded]
+[AttributeUsage(AttributeTargets.Module, AllowMultiple = false, Inherited = false)]
+internal sealed class RefSafetyRulesAttribute : Attribute
+{
+	public readonly int Version;
+
+	public RefSafetyRulesAttribute(int P_0)
+	{
+		Version = P_0;
+	}
+}
+
+
+//==================== TYPE AgentLoopBridge.ToolExecutor ====================
+using System;
+using System.Collections.Generic;
+using Il2CppSystem;
+using Il2CppSystem.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopBridge;
+
+public class ToolExecutor
+{
+	public JObject Execute(string name, JObject args)
+	{
+		try
+		{
+			return (JObject)(name switch
+			{
+				"inspect_unit" => InspectUnit(args), 
+				"search_units" => SearchUnits(args), 
+				"query_world" => QueryWorld(args), 
+				"social_relation" => SocialRelation(args), 
+				"movement" => Movement(args), 
+				"world_ai_action" => WorldAiAction(args), 
+				"quest_faction" => QuestFaction(args), 
+				"economy_item" => EconomyItem(args), 
+				_ => Fail("unknown tool: " + name), 
+			});
+		}
+		catch (Exception ex)
+		{
+			return Fail(ex.Message);
+		}
+	}
+
+	private JObject InspectUnit(JObject args)
+	{
+		//IL_0088: Unknown result type (might be due to invalid IL or missing references)
+		//IL_008d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0071: Unknown result type (might be due to invalid IL or missing references)
+		//IL_007b: Expected O, but got Unknown
+		//IL_00b4: Expected O, but got Unknown
+		string text = ((string)args["target"]) ?? "";
+		WorldUnitBase unit = g.world.unit.GetUnit(text, true);
+		if (unit == null)
+		{
+			return Fail("未找到 " + text);
+		}
+		JToken obj = args["classes"];
+		JArray classes = (JArray)(object)((obj is JArray) ? obj : null);
+		if (classes == null)
+		{
+			classes = new JArray((object)"brief");
+		}
+		JObject val = UnitSnapshot.Build(unit, classes);
+		JObject val2 = new JObject { ["name"] = JToken.op_Implicit(((string)val["name"]) ?? text) };
+		if (Has("brief"))
+		{
+			val2["sex"] = val["sex"];
+			val2["realm"] = val["realm"];
+			val2["sect"] = val["sect"];
+			val2["sect_id"] = val["sect_id"];
+			val2["race"] = val["race"];
+			val2["beauty"] = val["beauty"];
+			val2["hobby"] = val["hobby"];
+			val2["reputation"] = val["reputation"];
+			val2["title"] = val["title"];
+			val2["relation"] = val["relation"];
+			val2["intim"] = val["intim"];
+			val2["same_grid"] = val["same_grid"];
+			val2["point"] = val["point"];
+		}
+		if (Has("stats"))
+		{
+			val2["stats"] = val["stats"];
+		}
+		if (Has("abilities"))
+		{
+			val2["abilities"] = val["abilities"];
+		}
+		if (Has("inventory"))
+		{
+			val2["inventory"] = val["inventory"];
+		}
+		if (Has("relationships"))
+		{
+			val2["relationships"] = val["relationships"];
+		}
+		if (Has("tasks"))
+		{
+			val2["tasks"] = val["tasks"];
+		}
+		if (Has("logs"))
+		{
+			string filter = ((string)args["log_filter"]) ?? "important";
+			int num = SafeInt(args["log_page"], 1);
+			if (num < 1)
+			{
+				num = 1;
+			}
+			val2["logs"] = (JToken)(object)PageLogs(val, filter, num);
+		}
+		return Ok(val2);
+		bool Has(string c)
+		{
+			foreach (JToken item in classes)
+			{
+				if ((string)item == c)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	private static JObject PageLogs(JObject snap, string filter, int page)
+	{
+		//IL_0019: Unknown result type (might be due to invalid IL or missing references)
+		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0034: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0046: Expected O, but got Unknown
+		//IL_0046: Unknown result type (might be due to invalid IL or missing references)
+		//IL_004c: Expected O, but got Unknown
+		//IL_0054: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0103: Unknown result type (might be due to invalid IL or missing references)
+		//IL_010a: Expected O, but got Unknown
+		JToken obj = snap["logs"];
+		JObject val = (JObject)(object)((obj is JObject) ? obj : null);
+		JObject val2 = new JObject
+		{
+			["filter"] = JToken.op_Implicit(filter),
+			["page"] = JToken.op_Implicit(page)
+		};
+		JArray val3 = new JArray();
+		JObject raw = (JObject)((val != null) ? ((object)val) : ((object)new JObject()));
+		if (filterHit("vital"))
+		{
+			foreach (JToken item in GetArr("vital"))
+			{
+				val3.Add(item);
+			}
+		}
+		if (filterHit("regular"))
+		{
+			foreach (JToken item2 in GetArr("regular"))
+			{
+				val3.Add(item2);
+			}
+		}
+		int count = ((JContainer)val3).Count;
+		int num = (page - 1) * 5;
+		JArray val4 = new JArray();
+		for (int i = num; i < count && i < num + 5; i++)
+		{
+			val4.Add(val3[i]);
+		}
+		val2["items"] = (JToken)(object)val4;
+		val2["total"] = JToken.op_Implicit(count);
+		val2["has_more"] = JToken.op_Implicit(num + 5 < count);
+		return val2;
+		bool filterHit(string f)
+		{
+			if (f == "all")
+			{
+				return true;
+			}
+			if (filter == "important" && f == "vital")
+			{
+				return true;
+			}
+			if (filter == "regular" && f == "regular")
+			{
+				return true;
+			}
+			return false;
+		}
+		JArray GetArr(string key)
+		{
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			JToken obj2 = raw[key];
+			return (JArray)(((object)((obj2 is JArray) ? obj2 : null)) ?? ((object)new JArray()));
+		}
+	}
+
+	private JObject SearchUnits(JObject args)
+	{
+		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0ed3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0eda: Expected O, but got Unknown
+		//IL_0f06: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0f0b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0f1c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0f29: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0f45: Expected O, but got Unknown
+		//IL_0bb2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0bb7: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0bc9: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0bdb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0bef: Expected O, but got Unknown
+		JToken obj = args["filters"];
+		JObject filters = (JObject)(((object)((obj is JObject) ? obj : null)) ?? ((object)new JObject()));
+		string value = F("keyword");
+		string text = F("relation");
+		string value2 = F("realm");
+		string value3 = F("sect");
+		string value4 = F("region");
+		string text2 = F("race");
+		string text3 = F("sex");
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		List<JObject> list = new List<JObject>();
+		try
+		{
+			dynamic units = g.world.unit.GetUnits(true);
+			int num = (int)units.Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val = units[i];
+				if (val == null)
+				{
+					continue;
+				}
+				dynamic val2 = val.data.unitData;
+				dynamic val3 = val2.propertyData;
+				string text4 = "";
+				try
+				{
+					text4 = val3.GetName();
+				}
+				catch
+				{
+				}
+				if (string.IsNullOrEmpty(text4))
+				{
+					continue;
+				}
+				if (playerUnit != null)
+				{
+					string text5 = "";
+					try
+					{
+						text5 = playerUnit.data.unitData.propertyData.GetName();
+					}
+					catch
+					{
+					}
+					if (text4 == text5)
+					{
+						continue;
+					}
+				}
+				if (!string.IsNullOrEmpty(value) && text4.IndexOf(value, StringComparison.Ordinal) < 0)
+				{
+					continue;
+				}
+				string en = "";
+				int num2 = 0;
+				try
+				{
+					num2 = val2.relationData.GetIntim(playerUnit);
+				}
+				catch
+				{
+				}
+				try
+				{
+					en = val2.relationData.GetRelation(playerUnit).ToString();
+				}
+				catch
+				{
+				}
+				string text6 = UnitSnapshot.RelationCn(en);
+				if (!string.IsNullOrEmpty(text) && !RelationMatch(text6, text))
+				{
+					continue;
+				}
+				if (!string.IsNullOrEmpty(value2))
+				{
+					string text7 = "";
+					try
+					{
+						text7 = g.conf.roleGrade.GetGradeName(val3.gradeID);
+					}
+					catch
+					{
+					}
+					if (text7.IndexOf(value2, StringComparison.Ordinal) < 0)
+					{
+						continue;
+					}
+				}
+				if ((string.IsNullOrEmpty(value3) || ((string)UnitSnapshot.SectName(val2.schoolID)).IndexOf(value3, StringComparison.Ordinal) >= 0) && (string.IsNullOrEmpty(value4) || ((string)AreaName(val)).IndexOf(value4, StringComparison.Ordinal) >= 0) && (string.IsNullOrEmpty(text2) || !(UnitSnapshot.RaceCn(val3.race.ToString()) != text2)) && (string.IsNullOrEmpty(text3) || !(UnitSnapshot.SexCn(val3.sex.ToString()) != text3)))
+				{
+					JObject val4 = new JObject
+					{
+						["name"] = JToken.op_Implicit(text4),
+						["relation"] = JToken.op_Implicit(text6),
+						["intim"] = JToken.op_Implicit(num2)
+					};
+					try
+					{
+						val4["realm"] = (JToken)g.conf.roleGrade.GetGradeName(val3.gradeID);
+					}
+					catch
+					{
+					}
+					try
+					{
+						val4["sect"] = (JToken)UnitSnapshot.SectName(val2.schoolID);
+					}
+					catch
+					{
+					}
+					try
+					{
+						val4["region"] = (JToken)AreaName(val);
+					}
+					catch
+					{
+					}
+					list.Add(val4);
+				}
+			}
+		}
+		catch
+		{
+		}
+		list.Sort((JObject a, JObject b) => IntOf(b["intim"]).CompareTo(IntOf(a["intim"])));
+		JArray val5 = new JArray();
+		for (int num3 = 0; num3 < list.Count && num3 < 10; num3++)
+		{
+			val5.Add((JToken)(object)list[num3]);
+		}
+		return Ok((object)new JObject
+		{
+			["filters"] = (JToken)(object)filters,
+			["items"] = (JToken)(object)val5,
+			["total"] = JToken.op_Implicit(list.Count)
+		});
+		string F(string k)
+		{
+			JToken val6 = filters[k];
+			if (val6 != null)
+			{
+				return ((object)val6).ToString();
+			}
+			return "";
+		}
+	}
+
+	private static string AreaName(WorldUnitBase u)
+	{
+		try
+		{
+			GridData pointGridData = u.data.unitData.pointGridData;
+			if (pointGridData != null)
+			{
+				ConfWorldAreaBaseItem item = ((ConfWorldAreaBaseBase)g.conf.worldAreaBase).GetItem(pointGridData.areaBaseID);
+				if (item != null)
+				{
+					return item.name;
+				}
+			}
+		}
+		catch
+		{
+		}
+		return "";
+	}
+
+	private static bool RelationMatch(string relCn, string relation)
+	{
+		switch (relation)
+		{
+		case "亲族":
+			switch (relCn)
+			{
+			default:
+				return relCn == "私生子女";
+			case "父母":
+			case "子女":
+			case "兄弟姐妹":
+			case "义父母":
+			case "义子女":
+				return true;
+			}
+		case "道侣":
+			if (!(relCn == "道侣"))
+			{
+				return relCn == "情人";
+			}
+			return true;
+		case "师徒":
+			if (!(relCn == "师傅"))
+			{
+				return relCn == "徒弟";
+			}
+			return true;
+		case "结义":
+			return relCn == "结义";
+		case "好感":
+		case "好友":
+			return true;
+		case "陌生":
+			if (!(relCn == "None"))
+			{
+				return relCn == "";
+			}
+			return true;
+		default:
+			return true;
+		}
+	}
+
+	private static int IntOf(JToken t)
+	{
+		try
+		{
+			return (t != null) ? ((int)t) : 0;
+		}
+		catch
+		{
+			return 0;
+		}
+	}
+
+	private JObject QueryWorld(JObject args)
+	{
+		//IL_0045: Unknown result type (might be due to invalid IL or missing references)
+		//IL_004a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_005b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0075: Expected O, but got Unknown
+		string text = ((string)args["topic"]) ?? "sects";
+		if (!(text == "events"))
+		{
+			if (text == "rankings")
+			{
+				return QueryWorldRankings(args);
+			}
+			return Ok((object)new JObject
+			{
+				["topic"] = JToken.op_Implicit(text),
+				["note"] = JToken.op_Implicit("当前仅实装 events / rankings，sects/region 信息量不足暂不返回")
+			});
+		}
+		return QueryWorldEvents();
+	}
+
+	private JObject QueryWorldEvents()
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		//IL_0019: Unknown result type (might be due to invalid IL or missing references)
+		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_003b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0055: Expected O, but got Unknown
+		//IL_045c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0461: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0473: Unknown result type (might be due to invalid IL or missing references)
+		//IL_048a: Expected O, but got Unknown
+		//IL_04e3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04e8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04f4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_050a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0524: Expected O, but got Unknown
+		JArray val = new JArray();
+		try
+		{
+			List<LogItemData> monthLog = g.data.world.monthLog;
+			if (monthLog == null)
+			{
+				return Ok((object)new JObject
+				{
+					["events"] = (JToken)(object)val,
+					["count"] = JToken.op_Implicit(0),
+					["note"] = JToken.op_Implicit("世界月志为空")
+				});
+			}
+			dynamic val2 = monthLog;
+			int num = (int)val2.Count - 1;
+			while (num >= 0 && ((JContainer)val).Count < 24)
+			{
+				dynamic val3 = val2[num];
+				if (!((val3 == null) ? true : false))
+				{
+					int num2 = 0;
+					try
+					{
+						num2 = (int)val3.month;
+					}
+					catch
+					{
+					}
+					dynamic val4 = val3.logs;
+					int num3 = 0;
+					try
+					{
+						num3 = (int)val4.Count;
+					}
+					catch
+					{
+					}
+					for (int i = 0; i < num3; i++)
+					{
+						if (((JContainer)val).Count >= 24)
+						{
+							break;
+						}
+						string text = "";
+						try
+						{
+							text = val4[i].DataToString();
+						}
+						catch
+						{
+						}
+						if (!string.IsNullOrEmpty(text))
+						{
+							val.Add((JToken)new JObject
+							{
+								["month"] = JToken.op_Implicit(num2),
+								["text"] = JToken.op_Implicit(text)
+							});
+						}
+					}
+				}
+				num--;
+			}
+		}
+		catch (Exception ex)
+		{
+			return Fail("读取世界月志失败: " + ex.Message);
+		}
+		return Ok((object)new JObject
+		{
+			["events"] = (JToken)(object)val,
+			["count"] = JToken.op_Implicit(((JContainer)val).Count),
+			["note"] = JToken.op_Implicit("来自 g.data.world.monthLog（UIMonthLog 同源）；month 为游戏内月份序号")
+		});
+	}
+
+	private JObject QueryWorldRankings(JObject args)
+	{
+		//IL_02a6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ab: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02bd: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02d1: Expected O, but got Unknown
+		//IL_0388: Unknown result type (might be due to invalid IL or missing references)
+		//IL_038f: Expected O, but got Unknown
+		//IL_03b8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03bd: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03ce: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03db: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03f6: Expected O, but got Unknown
+		string text = ((string)args["board"]) ?? "power";
+		int num = SafeInt(args["top"], 10);
+		if (num < 1)
+		{
+			num = 1;
+		}
+		if (num > 20)
+		{
+			num = 20;
+		}
+		if (text != "power" && text != "reputation" && text != "beauty" && text != "money")
+		{
+			return Fail("未知榜单 " + text + "，可选 power/reputation/beauty/money");
+		}
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		List<JObject> list = new List<JObject>();
+		try
+		{
+			dynamic units = g.world.unit.GetUnits(true);
+			int num2 = (int)units.Count;
+			for (int i = 0; i < num2; i++)
+			{
+				dynamic obj = units[i];
+				WorldUnitBase val = (WorldUnitBase)(object)((obj is WorldUnitBase) ? obj : null);
+				if (val == null)
+				{
+					continue;
+				}
+				UnitInfoData unitData = val.data.unitData;
+				PropertyData propertyData = unitData.propertyData;
+				string text2 = "";
+				try
+				{
+					text2 = propertyData.GetName();
+				}
+				catch
+				{
+				}
+				if (string.IsNullOrEmpty(text2))
+				{
+					continue;
+				}
+				if (playerUnit != null)
+				{
+					string text3 = "";
+					try
+					{
+						text3 = playerUnit.data.unitData.propertyData.GetName();
+					}
+					catch
+					{
+					}
+					if (text2 == text3)
+					{
+						continue;
+					}
+				}
+				long num3 = 0L;
+				switch (text)
+				{
+				case "power":
+					try
+					{
+						num3 = UnitPower.TotalPower(val.data);
+					}
+					catch
+					{
+						continue;
+					}
+					break;
+				case "reputation":
+					try
+					{
+						num3 = propertyData.reputation;
+					}
+					catch
+					{
+						continue;
+					}
+					break;
+				case "beauty":
+					try
+					{
+						num3 = propertyData.beauty;
+					}
+					catch
+					{
+						continue;
+					}
+					break;
+				case "money":
+					try
+					{
+						num3 = unitData.propData.totalSchoolMoney;
+					}
+					catch
+					{
+						continue;
+					}
+					break;
+				}
+				JObject val2 = new JObject
+				{
+					["name"] = JToken.op_Implicit(text2),
+					["score"] = JToken.op_Implicit(num3)
+				};
+				try
+				{
+					val2["realm"] = JToken.op_Implicit(g.conf.roleGrade.GetGradeName(propertyData.gradeID));
+				}
+				catch
+				{
+				}
+				try
+				{
+					val2["sect"] = JToken.op_Implicit(UnitSnapshot.SectName(unitData.schoolID));
+				}
+				catch
+				{
+				}
+				list.Add(val2);
+			}
+		}
+		catch (Exception ex)
+		{
+			return Fail("排行榜扫描失败: " + ex.Message);
+		}
+		list.Sort((JObject a, JObject b) => LongOf(b["score"]).CompareTo(LongOf(a["score"])));
+		JArray val3 = new JArray();
+		for (int num4 = 0; num4 < list.Count && num4 < num; num4++)
+		{
+			val3.Add((JToken)(object)list[num4]);
+		}
+		return Ok((object)new JObject
+		{
+			["board"] = JToken.op_Implicit(text),
+			["items"] = (JToken)(object)val3,
+			["total"] = JToken.op_Implicit(list.Count)
+		});
+	}
+
+	private static long LongOf(JToken t)
+	{
+		try
+		{
+			return (t == null) ? 0 : ((long)t);
+		}
+		catch
+		{
+			return 0L;
+		}
+	}
+
+	private JObject SocialRelation(JObject args)
+	{
+		//IL_048a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_048f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_049a: Expected O, but got Unknown
+		//IL_049b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04a0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04b1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04c2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04dc: Expected O, but got Unknown
+		//IL_02a9: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ae: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02bf: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02d0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02e2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02fd: Expected O, but got Unknown
+		//IL_0344: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0349: Unknown result type (might be due to invalid IL or missing references)
+		//IL_035a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_036b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_037d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0398: Expected O, but got Unknown
+		string text = ((string)args["op"]) ?? "";
+		string text2 = ((string)args["target"]) ?? "";
+		WorldUnitBase unit = g.world.unit.GetUnit(text2, true);
+		if (unit == null)
+		{
+			return Fail("未找到 " + text2);
+		}
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		if (playerUnit == null)
+		{
+			return Fail("玩家单位为空");
+		}
+		int intimWith = GetIntimWith(text2);
+		RelationData relationData = unit.data.unitData.relationData;
+		switch (text)
+		{
+		case "add_intim":
+		{
+			int num = SafeInt(args["value"], 5);
+			if (num < 1)
+			{
+				num = 1;
+			}
+			if (num > 10)
+			{
+				num = 10;
+			}
+			relationData.AddIntim(playerUnit.data.unitData.unitID, (float)num, 0, "", true);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["delta"] = JToken.op_Implicit(num),
+				["current_intim"] = JToken.op_Implicit(GetIntimWith(text2))
+			});
+		}
+		case "reduce_intim":
+		{
+			int num2 = SafeInt(args["value"], 5);
+			if (num2 < 1)
+			{
+				num2 = 1;
+			}
+			if (num2 > 10)
+			{
+				num2 = 10;
+			}
+			relationData.AddHate(playerUnit.data.unitData.unitID, (float)num2, 0, "", true);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["delta"] = JToken.op_Implicit(num2),
+				["current_intim"] = JToken.op_Implicit(GetIntimWith(text2))
+			});
+		}
+		case "jie_yuan":
+			if (intimWith < 180)
+			{
+				return Fail($"好感不足，需≥180，当前{intimWith}", null, intimWith);
+			}
+			if (relationData.IsRelation(playerUnit, (UnitRelationType)9))
+			{
+				return Fail("你与" + text2 + "已是道侣");
+			}
+			return StartRelationAction(unit, playerUnit, (UnitRelationType)9, text);
+		case "jie_chu_jie_yuan":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)9))
+			{
+				return Fail("你与" + text2 + "并非道侣");
+			}
+			return StartBreakWith(unit, text);
+		case "marry":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)9))
+			{
+				return Fail("需先与" + text2 + "结缘（道侣）后才能求婚");
+			}
+			if (!SameGrid(unit, playerUnit))
+			{
+				return Fail("求婚需同处一地，当前异地");
+			}
+			unit.CreateAction((UnitActionBase)new UnitActionRoleMarry(playerUnit, false, unit.data.unitData.GetPoint()), true);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起求婚(UnitActionRoleMarry)，等待原版确认")
+			});
+		case "divorce":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)8))
+			{
+				return Fail("你与" + text2 + "并非夫妻");
+			}
+			return StartBreakWith(unit, text);
+		case "bai_shi":
+			if (relationData.IsRelation(playerUnit, (UnitRelationType)10))
+			{
+				return Fail("你已是" + text2 + "的师傅");
+			}
+			return StartRelationAction(unit, playerUnit, (UnitRelationType)10, text);
+		case "jie_chu_bai_shi":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)10))
+			{
+				return Fail("你并非" + text2 + "的师傅");
+			}
+			return StartBreakWith(unit, text);
+		case "shou_tu":
+			if (relationData.IsRelation(playerUnit, (UnitRelationType)11))
+			{
+				return Fail(text2 + "已是你的徒弟");
+			}
+			return StartRelationAction(unit, playerUnit, (UnitRelationType)11, text);
+		case "jie_chu_shou_tu":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)11))
+			{
+				return Fail(text2 + "并非你的徒弟");
+			}
+			return StartBreakWith(unit, text);
+		case "ren_yi_fu_mu":
+			if (relationData.IsRelation(playerUnit, (UnitRelationType)5))
+			{
+				return Fail("你已是" + text2 + "的义父母");
+			}
+			return StartRelationAction(unit, playerUnit, (UnitRelationType)5, text);
+		case "jie_yi":
+			if (relationData.IsRelation(playerUnit, (UnitRelationType)7))
+			{
+				return Fail("你与" + text2 + "已是结义");
+			}
+			return StartRelationAction(unit, playerUnit, (UnitRelationType)7, text);
+		case "jie_chu_jie_yi":
+			if (!relationData.IsRelation(playerUnit, (UnitRelationType)7))
+			{
+				return Fail("你与" + text2 + "并非结义");
+			}
+			return StartBreakWith(unit, text);
+		default:
+			return Fail("unsupported social_relation op: " + text);
+		}
+	}
+
+	private JObject StartRelationAction(WorldUnitBase npc, WorldUnitBase player, UnitRelationType type, string op)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+		//IL_003b: Expected O, but got Unknown
+		//IL_003c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0041: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0053: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0078: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0083: Unknown result type (might be due to invalid IL or missing references)
+		//IL_009d: Expected O, but got Unknown
+		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0017: Expected I4, but got Unknown
+		ConfRoleRelationItem val = RoleRelationItemOfType(type);
+		if (val == null)
+		{
+			return Fail($"[{op}] 未找到关系配置(relationType={(int)type})，需真机核对 g.conf.roleRelation");
+		}
+		npc.CreateAction((UnitActionBase)new UnitActionRoleRelation(player, type, val), true);
+		return Ok((object)new JObject
+		{
+			["op"] = JToken.op_Implicit(op),
+			["target"] = JToken.op_Implicit(npc.data.unitData.propertyData.GetName()),
+			["note"] = JToken.op_Implicit($"已发起关系动作(UnitActionRoleRelation/{type})，等待原版剧情确认")
+		});
+	}
+
+	private JObject StartBreakWith(WorldUnitBase npc, string op)
+	{
+		//IL_0001: Unknown result type (might be due to invalid IL or missing references)
+		//IL_000c: Expected O, but got Unknown
+		//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0012: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0023: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0048: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0062: Expected O, but got Unknown
+		npc.CreateAction((UnitActionBase)new UnitActionRoleBreakWith(), true);
+		return Ok((object)new JObject
+		{
+			["op"] = JToken.op_Implicit(op),
+			["target"] = JToken.op_Implicit(npc.data.unitData.propertyData.GetName()),
+			["note"] = JToken.op_Implicit("已发起解除关系动作(UnitActionRoleBreakWith)，等待原版确认")
+		});
+	}
+
+	private static ConfRoleRelationItem RoleRelationItemOfType(UnitRelationType type)
+	{
+		//IL_02c3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02c4: Invalid comparison between I4 and Unknown
+		try
+		{
+			ConfRoleRelation roleRelation = g.conf.roleRelation;
+			if (roleRelation == null)
+			{
+				return null;
+			}
+			dynamic allConfList = ((ConfRoleRelationBase)roleRelation).allConfList;
+			int num = (int)allConfList.Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val = allConfList[i];
+				if (val != null && (int)val.type == (int)type)
+				{
+					return (ConfRoleRelationItem)(object)((val is ConfRoleRelationItem) ? val : null);
+				}
+			}
+		}
+		catch
+		{
+		}
+		return null;
+	}
+
+	private JObject Movement(JObject args)
+	{
+		//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+		//IL_004a: Expected O, but got Unknown
+		string text = ((string)args["target"]) ?? "";
+		return Ok((object)new JObject
+		{
+			["target"] = JToken.op_Implicit(text),
+			["note"] = JToken.op_Implicit("[movement API 待补]")
+		});
+	}
+
+	private JObject WorldAiAction(JObject args)
+	{
+		//IL_01ba: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01c5: Expected O, but got Unknown
+		//IL_01c6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01cb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01dc: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01ed: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0207: Expected O, but got Unknown
+		//IL_0229: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0234: Expected O, but got Unknown
+		//IL_0235: Unknown result type (might be due to invalid IL or missing references)
+		//IL_023a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_024b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_025c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0276: Expected O, but got Unknown
+		//IL_031a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_031f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_032c: Expected O, but got Unknown
+		//IL_032c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0331: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0342: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0353: Unknown result type (might be due to invalid IL or missing references)
+		//IL_036d: Expected O, but got Unknown
+		//IL_043f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_044a: Expected O, but got Unknown
+		//IL_044a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_044f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0460: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0471: Unknown result type (might be due to invalid IL or missing references)
+		//IL_048b: Expected O, but got Unknown
+		//IL_04ab: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04b0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04c1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04d2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04ec: Expected O, but got Unknown
+		//IL_03f2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03fd: Expected O, but got Unknown
+		//IL_03fd: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0402: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0413: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0424: Unknown result type (might be due to invalid IL or missing references)
+		//IL_043e: Expected O, but got Unknown
+		//IL_039e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03a3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03b0: Expected O, but got Unknown
+		//IL_03b0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03b5: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03c6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03d7: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03f1: Expected O, but got Unknown
+		//IL_02c6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02cb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02d8: Expected O, but got Unknown
+		//IL_02d8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02dd: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ee: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ff: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0319: Expected O, but got Unknown
+		string text = ((string)args["op"]) ?? "";
+		string text2 = ((string)args["target"]) ?? "";
+		WorldUnitBase unit = g.world.unit.GetUnit(text2, true);
+		if (unit == null)
+		{
+			return Fail("未找到 " + text2);
+		}
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		switch (text)
+		{
+		case "spar":
+			if (!SameGrid(unit, playerUnit))
+			{
+				return Fail("切磋需同格，当前异地");
+			}
+			unit.CreateAction((UnitActionBase)new UnitActionRoleTrains(playerUnit), true);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起切磋(UnitActionRoleTrains)")
+			});
+		case "attack":
+			if (!SameGrid(unit, playerUnit))
+			{
+				return Fail("攻击需同格，当前异地");
+			}
+			unit.CreateAction((UnitActionBase)new UnitActionRoleAttack(playerUnit), true);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起攻击(UnitActionRoleAttack)，将触发战斗")
+			});
+		case "shuang_xiu":
+			if (!SameGrid(unit, playerUnit))
+			{
+				return Fail("双修需同格，当前异地");
+			}
+			if (GetIntimWith(text2) < 120)
+			{
+				return Fail($"双修需好感≥120，当前{GetIntimWith(text2)}");
+			}
+			StartToUnitAiAction((WorldUnitAIActionBase)new WorldUnitAIAction1031
+			{
+				toUnit = playerUnit
+			}, unit);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起双修(WorldUnitAIAction1031)")
+			});
+		case "lun_dao":
+			StartToUnitAiAction((WorldUnitAIActionBase)new WorldUnitAIAction1037
+			{
+				toUnit = playerUnit
+			}, unit);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起论道(WorldUnitAIAction1037)")
+			});
+		case "yao_yue":
+			if (GetIntimWith(text2) < 120)
+			{
+				return Fail($"邀约需好感≥120，当前{GetIntimWith(text2)}");
+			}
+			StartToUnitAiAction((WorldUnitAIActionBase)new WorldUnitAIAction1044
+			{
+				toUnit = playerUnit
+			}, unit);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起邀约(WorldUnitAIAction1044)")
+			});
+		case "liao_shang":
+			StartSelfAiAction((WorldUnitAIActionBase)new WorldUnitAIAction1034(), unit);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起疗伤(WorldUnitAIAction1034)")
+			});
+		case "ti_sheng_xin_qing":
+			StartSelfAiAction((WorldUnitAIActionBase)new WorldUnitAIAction1041(), unit);
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("已发起提升心情(WorldUnitAIAction1041)")
+			});
+		case "chuan_gong":
+			if (!SameGrid(unit, playerUnit))
+			{
+				return Fail("传功需同格，当前异地");
+			}
+			return Ok((object)new JObject
+			{
+				["op"] = JToken.op_Implicit(text),
+				["target"] = JToken.op_Implicit(text2),
+				["note"] = JToken.op_Implicit("[chuan_gong] 落点 UnitActionRoleTeachSkill 待真机核验（TeachType/skill 参数）")
+			});
+		default:
+			return Fail("unsupported world_ai_action op: " + text);
+		}
+	}
+
+	private JObject QuestFaction(JObject args)
+	{
+		//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+		//IL_004a: Expected O, but got Unknown
+		string text = ((string)args["op"]) ?? "";
+		return Ok((object)new JObject
+		{
+			["op"] = JToken.op_Implicit(text),
+			["note"] = JToken.op_Implicit("[quest_faction OptionsFunction key 待补]")
+		});
+	}
+
+	private JObject EconomyItem(JObject args)
+	{
+		//IL_028a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_028f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02a1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02b3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02c4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ea: Expected O, but got Unknown
+		//IL_04e8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04f3: Expected O, but got Unknown
+		//IL_01fe: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0203: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0215: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0227: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0238: Unknown result type (might be due to invalid IL or missing references)
+		//IL_025e: Expected O, but got Unknown
+		//IL_043d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0442: Unknown result type (might be due to invalid IL or missing references)
+		//IL_045e: Expected O, but got Unknown
+		//IL_054c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0551: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0562: Unknown result type (might be due to invalid IL or missing references)
+		//IL_056f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0580: Unknown result type (might be due to invalid IL or missing references)
+		//IL_05a1: Expected O, but got Unknown
+		//IL_02fb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0300: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0312: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0324: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0336: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0350: Expected O, but got Unknown
+		//IL_0120: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0127: Expected O, but got Unknown
+		//IL_00be: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00c3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00d5: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00fb: Expected O, but got Unknown
+		//IL_00f6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00fd: Expected O, but got Unknown
+		//IL_03c5: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03ca: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03dc: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03ee: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0400: Unknown result type (might be due to invalid IL or missing references)
+		//IL_041a: Expected O, but got Unknown
+		//IL_036a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_036f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0381: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0393: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03a4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03be: Expected O, but got Unknown
+		string text = ((string)args["target"]) ?? "";
+		string text2 = ((string)args["via"]) ?? "direct";
+		WorldUnitBase unit = g.world.unit.GetUnit(text, true);
+		if (unit == null)
+		{
+			return Fail("未找到 " + text);
+		}
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		JToken obj = args["items"];
+		JArray val = (JArray)(object)((obj is JArray) ? obj : null);
+		if (val == null)
+		{
+			string text3 = ((string)args["item_name"]) ?? ((string)args["item"]) ?? "";
+			if (!string.IsNullOrEmpty(text3))
+			{
+				val = new JArray((object)new JObject
+				{
+					["item_name"] = JToken.op_Implicit(text3),
+					["count"] = JToken.op_Implicit(SafeInt(args["count"], 1))
+				});
+			}
+		}
+		if (val == null || ((JContainer)val).Count == 0)
+		{
+			return Fail("缺少 items（[{item_name, count}, ...]），可先 inspect_unit(classes=inventory) 查看背包");
+		}
+		JArray val2 = new JArray();
+		List<PropsData> val3 = new List<PropsData>();
+		int num = 0;
+		bool flag = false;
+		foreach (JToken item2 in val)
+		{
+			JObject val4 = (JObject)(object)((item2 is JObject) ? item2 : null);
+			if (val4 == null)
+			{
+				continue;
+			}
+			string text4 = ((string)val4["item_name"]) ?? "";
+			if (string.IsNullOrEmpty(text4))
+			{
+				continue;
+			}
+			int num2 = SafeInt(val4["count"], 1);
+			if (num2 < 1)
+			{
+				num2 = 1;
+			}
+			if (text4.Contains("灵石"))
+			{
+				int num3 = 0;
+				try
+				{
+					num3 = ((DataProps)unit.data.unitData.propData).GetPropsNum(10001);
+				}
+				catch
+				{
+					try
+					{
+						num3 = unit.data.unitData.propData.totalSchoolMoney;
+					}
+					catch
+					{
+					}
+				}
+				int num4 = Math.Min(num2, num3);
+				if (num4 <= 0)
+				{
+					val2.Add((JToken)new JObject
+					{
+						["item"] = JToken.op_Implicit(text4),
+						["requested"] = JToken.op_Implicit(num2),
+						["actual"] = JToken.op_Implicit(0),
+						["error"] = JToken.op_Implicit($"灵石不足（持有 {num3}）")
+					});
+					continue;
+				}
+				try
+				{
+					unit.data.CostPropItem(10001, num4, false);
+					playerUnit.data.RewardPropMoney(num4);
+				}
+				catch (Exception ex)
+				{
+					val2.Add((JToken)new JObject
+					{
+						["item"] = JToken.op_Implicit(text4),
+						["requested"] = JToken.op_Implicit(num2),
+						["actual"] = JToken.op_Implicit(0),
+						["error"] = JToken.op_Implicit("灵石转账失败: " + ex.Message)
+					});
+					continue;
+				}
+				num += num4;
+				flag = true;
+				val2.Add((JToken)new JObject
+				{
+					["item"] = JToken.op_Implicit(text4),
+					["requested"] = JToken.op_Implicit(num2),
+					["actual"] = JToken.op_Implicit(num4),
+					["mode"] = JToken.op_Implicit("money")
+				});
+			}
+			else
+			{
+				int num5 = TakePropsFromBag(unit, text4, num2, val3);
+				if (num5 <= 0)
+				{
+					val2.Add((JToken)new JObject
+					{
+						["item"] = JToken.op_Implicit(text4),
+						["requested"] = JToken.op_Implicit(num2),
+						["actual"] = JToken.op_Implicit(0),
+						["error"] = JToken.op_Implicit("背包中没有，可先 inspect_unit(classes=inventory)")
+					});
+				}
+				else
+				{
+					flag = true;
+					val2.Add((JToken)new JObject
+					{
+						["item"] = JToken.op_Implicit(text4),
+						["requested"] = JToken.op_Implicit(num2),
+						["actual"] = JToken.op_Implicit(num5),
+						["mode"] = JToken.op_Implicit("props")
+					});
+				}
+			}
+		}
+		if (!flag)
+		{
+			return Fail("所有赠送项均未达成（详见 items.error）", (object)new JObject { ["items"] = (JToken)(object)val2 });
+		}
+		string item = ((text2 == "letter") ? "以信件方式赠达" : (SameGrid(unit, playerUnit) ? "当面赠达" : "异地以传讯方式赠达"));
+		List<string> list = new List<string>();
+		if (val3.Count > 0)
+		{
+			try
+			{
+				Enumerator<PropsData> enumerator2 = val3.GetEnumerator();
+				while (enumerator2.MoveNext())
+				{
+					PropsData current2 = enumerator2.Current;
+					if (!UnitActionRoleGive.PropsItemCanGive(unit, playerUnit, current2))
+					{
+						return Fail("存在不可赠送的道具，本次道具赠送已取消");
+					}
+				}
+			}
+			catch
+			{
+			}
+			unit.CreateAction((UnitActionBase)new UnitActionRoleGive(playerUnit, val3), true);
+			list.Add($"{val3.Count} 种道具已发起赠送（UnitActionRoleGive，等待原版确认）");
+		}
+		if (num > 0)
+		{
+			list.Add($"灵石 ×{num} 已转账（RewardPropMoney/CostPropItem(10001) 游戏原生 API）");
+		}
+		if (list.Count == 0)
+		{
+			list.Add("无实际赠送项");
+		}
+		list.Add(item);
+		return Ok((object)new JObject
+		{
+			["target"] = JToken.op_Implicit(text),
+			["items"] = (JToken)(object)val2,
+			["via"] = JToken.op_Implicit(text2),
+			["note"] = JToken.op_Implicit(string.Join("；", list))
+		});
+	}
+
+	private static int TakePropsFromBag(WorldUnitBase wub, string itemName, int count, List<PropsData> giveList)
+	{
+		int num = 0;
+		try
+		{
+			dynamic equipProps = wub.data.unitData.propData.GetEquipProps(true, false);
+			int num2 = (int)equipProps.Count;
+			for (int i = 0; i < num2; i++)
+			{
+				if (num >= count)
+				{
+					break;
+				}
+				dynamic val = equipProps[i];
+				string text = "";
+				try
+				{
+					text = val.propsItem.name;
+				}
+				catch
+				{
+				}
+				if (text != itemName)
+				{
+					continue;
+				}
+				int val2 = 1;
+				try
+				{
+					val2 = (int)val.propsCount;
+				}
+				catch
+				{
+				}
+				int num3 = Math.Min(count - num, val2);
+				if (num3 > 0)
+				{
+					try
+					{
+						val.propsCount = num3;
+					}
+					catch
+					{
+					}
+					giveList.Add(val);
+					num += num3;
+				}
+			}
+		}
+		catch
+		{
+		}
+		return num;
+	}
+
+	private static void StartToUnitAiAction(WorldUnitAIActionBase action, WorldUnitBase npc)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		WorldUnitAIBase val = new WorldUnitAIBase();
+		val.Init(npc);
+		action.Init(val, 1, (List<WorldUnitAIActionDataBase>)null);
+		action.ActionStart((Action<bool>)null);
+	}
+
+	private static void StartSelfAiAction(WorldUnitAIActionBase action, WorldUnitBase npc)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		WorldUnitAIBase val = new WorldUnitAIBase();
+		val.Init(npc);
+		action.Init(val, 1, (List<WorldUnitAIActionDataBase>)null);
+		action.ActionStart((Action<bool>)null);
+	}
+
+	private static bool SameGrid(WorldUnitBase a, WorldUnitBase b)
+	{
+		if (a == null || b == null)
+		{
+			return false;
+		}
+		UnitInfoData unitData = a.data.unitData;
+		UnitInfoData unitData2 = b.data.unitData;
+		if (unitData.pointX == unitData2.pointX)
+		{
+			return unitData.pointY == unitData2.pointY;
+		}
+		return false;
+	}
+
+	private static int GetIntimWith(string target)
+	{
+		WorldUnitBase unit = g.world.unit.GetUnit(target, true);
+		if (unit == null)
+		{
+			return 0;
+		}
+		return SafeInt(JToken.op_Implicit(unit.data.unitData.relationData.GetIntim(g.world.playerUnit)), 0);
+	}
+
+	private static int SafeInt(JToken tok, int def)
+	{
+		try
+		{
+			return (tok == null) ? def : ((int)tok);
+		}
+		catch
+		{
+			return def;
+		}
+	}
+
+	private static JObject Ok(object data)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0028: Expected O, but got Unknown
+		return new JObject
+		{
+			["success"] = JToken.op_Implicit(true),
+			["data"] = JToken.FromObject(data)
+		};
+	}
+
+	private static JObject Fail(string error, object data = null, int? current_intim = null)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
+		//IL_003e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0050: Expected O, but got Unknown
+		return new JObject
+		{
+			["success"] = JToken.op_Implicit(false),
+			["error"] = JToken.op_Implicit(error),
+			["data"] = ((data == null) ? null : JToken.FromObject(data)),
+			["current_intim"] = JToken.op_Implicit(current_intim)
+		};
+	}
+}
+
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot ====================
+using System.Collections.Generic;
+using Il2CppSystem.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using UnhollowerBaseLib;
+
+namespace AgentLoopBridge;
+
+public static class UnitSnapshot
+{
+	public static bool IsSameGrid(WorldUnitBase a, WorldUnitBase b)
+	{
+		if (a == null || b == null)
+		{
+			return false;
+		}
+		try
+		{
+			UnitInfoData unitData = a.data.unitData;
+			UnitInfoData unitData2 = b.data.unitData;
+			return unitData.pointX == unitData2.pointX && unitData.pointY == unitData2.pointY;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	public static string RelationCn(string en)
+	{
+		return en switch
+		{
+			"Parent" => "父母", 
+			"Children" => "子女", 
+			"ChildrenPrivate" => "私生子女", 
+			"Brother" => "兄弟姐妹", 
+			"ParentBack" => "义父母", 
+			"ChildrenBack" => "义子女", 
+			"BrotherBack" => "结义", 
+			"Married" => "道侣", 
+			"Lover" => "情人", 
+			"Master" => "师傅", 
+			"Student" => "徒弟", 
+			_ => en, 
+		};
+	}
+
+	public static string SexCn(string en)
+	{
+		if (!(en == "Man"))
+		{
+			if (en == "Woman")
+			{
+				return "女";
+			}
+			return en;
+		}
+		return "男";
+	}
+
+	public static string RaceCn(string en)
+	{
+		if (!(en == "Human"))
+		{
+			if (en == "Demon")
+			{
+				return "魔族";
+			}
+			return en;
+		}
+		return "人族";
+	}
+
+	private static string[] Arr(Il2CppStringArray a)
+	{
+		if (a == null || ((Il2CppArrayBase<string>)(object)a).Length == 0)
+		{
+			return new string[0];
+		}
+		List<string> list = new List<string>();
+		for (int i = 0; i < ((Il2CppArrayBase<string>)(object)a).Length; i++)
+		{
+			try
+			{
+				list.Add(((Il2CppArrayBase<string>)(object)a)[i] ?? "");
+			}
+			catch
+			{
+			}
+		}
+		return list.ToArray();
+	}
+
+	private static JArray JArr(string[] a)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		foreach (string text in a)
+		{
+			val.Add(JToken.op_Implicit(text));
+		}
+		return val;
+	}
+
+	private static JArray JArrObjects(object list)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (list == null)
+		{
+			return val;
+		}
+		try
+		{
+			int num = (int)((dynamic)list).Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val2 = ((dynamic)list)[i];
+				val.Add((val2 == null) ? "" : val2.ToString());
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	public static JObject Build(WorldUnitBase wub, JArray classes)
+	{
+		//IL_0008: Unknown result type (might be due to invalid IL or missing references)
+		//IL_000e: Expected O, but got Unknown
+		//IL_032c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0331: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0347: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0362: Expected O, but got Unknown
+		//IL_007e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0083: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00af: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00b4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_037f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0384: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03eb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03f2: Expected O, but got Unknown
+		//IL_0466: Unknown result type (might be due to invalid IL or missing references)
+		//IL_046d: Expected O, but got Unknown
+		//IL_04d9: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04e0: Expected O, but got Unknown
+		//IL_06bf: Unknown result type (might be due to invalid IL or missing references)
+		//IL_06c6: Expected O, but got Unknown
+		//IL_0738: Unknown result type (might be due to invalid IL or missing references)
+		//IL_073f: Expected O, but got Unknown
+		//IL_058f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0596: Expected O, but got Unknown
+		JObject val = new JObject();
+		if (wub == null)
+		{
+			val["error"] = JToken.op_Implicit("unit is null");
+			return val;
+		}
+		WorldUnitBase playerUnit = g.world.playerUnit;
+		UnitInfoData unitData = wub.data.unitData;
+		PropertyData propertyData = unitData.propertyData;
+		RelationData relationData = unitData.relationData;
+		string text = "";
+		try
+		{
+			text = propertyData.GetName();
+		}
+		catch
+		{
+		}
+		val["name"] = JToken.op_Implicit(text);
+		try
+		{
+			val["sex"] = JToken.op_Implicit(SexCn(((object)propertyData.sex/*cast due to constrained. prefix*/).ToString()));
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["race"] = JToken.op_Implicit(RaceCn(((object)propertyData.race/*cast due to constrained. prefix*/).ToString()));
+		}
+		catch
+		{
+		}
+		try
+		{
+			int gradeID = propertyData.gradeID;
+			val["grade_id"] = JToken.op_Implicit(gradeID);
+			string text2 = "";
+			try
+			{
+				text2 = g.conf.roleGrade.GetGradeName(gradeID);
+			}
+			catch
+			{
+			}
+			val["realm"] = JToken.op_Implicit(text2);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["sect_id"] = JToken.op_Implicit(unitData.schoolID);
+		}
+		catch
+		{
+		}
+		val["sect"] = JToken.op_Implicit(SectName((string)val["sect_id"]));
+		try
+		{
+			val["beauty"] = JToken.op_Implicit(propertyData.beauty);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["reputation"] = JToken.op_Implicit(propertyData.reputation);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["talent"] = JToken.op_Implicit(propertyData.talent);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["age"] = JToken.op_Implicit(propertyData.age);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["life"] = JToken.op_Implicit(propertyData.life);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["mood"] = JToken.op_Implicit(propertyData.mood);
+		}
+		catch
+		{
+		}
+		try
+		{
+			val["power"] = JToken.op_Implicit(UnitPower.TotalPower(wub.data));
+		}
+		catch
+		{
+			try
+			{
+				val["power"] = JToken.op_Implicit(propertyData.attack);
+			}
+			catch
+			{
+			}
+		}
+		val["hobby"] = (JToken)(object)HobbyNames(propertyData.hobby);
+		try
+		{
+			AppellationTitle appellationTitle = unitData.appellationTitle;
+			if (appellationTitle != null)
+			{
+				List<int> appellationID = appellationTitle.GetAppellationID();
+				if (appellationID != null && appellationID.Count > 0)
+				{
+					string text3 = appellationID[0].ToString();
+					val["title_id"] = JToken.op_Implicit(text3);
+					string text4 = "";
+					try
+					{
+						if (int.TryParse(text3, out var result))
+						{
+							ConfAppellationTitleItem item = ((ConfAppellationTitleBase)g.conf.appellationTitle).GetItem(result);
+							if (item != null)
+							{
+								text4 = item.name;
+							}
+						}
+					}
+					catch
+					{
+					}
+					val["title"] = JToken.op_Implicit(string.IsNullOrEmpty(text4) ? ("[待真机]道号名(id=" + text3 + ")") : text4);
+				}
+			}
+		}
+		catch
+		{
+		}
+		val["point"] = (JToken)new JObject
+		{
+			["x"] = JToken.op_Implicit(unitData.pointX),
+			["y"] = JToken.op_Implicit(unitData.pointY)
+		};
+		string en = "";
+		int num = 0;
+		try
+		{
+			num = relationData.GetIntim(playerUnit);
+		}
+		catch
+		{
+		}
+		try
+		{
+			en = ((object)relationData.GetRelation(playerUnit)/*cast due to constrained. prefix*/).ToString();
+		}
+		catch
+		{
+		}
+		val["relation"] = JToken.op_Implicit(RelationCn(en));
+		val["intim"] = JToken.op_Implicit(num);
+		val["same_grid"] = JToken.op_Implicit(IsSameGrid(wub, playerUnit));
+		if (Has("abilities"))
+		{
+			JObject val2 = new JObject();
+			val2["skill_left"] = (JToken)(object)MartialSlot(unitData, unitData.skillLeft, "灵技");
+			val2["skill_right"] = (JToken)(object)MartialSlot(unitData, unitData.skillRight, "绝技");
+			val2["step"] = (JToken)(object)MartialSlot(unitData, unitData.step, "身法");
+			val2["ultimate"] = (JToken)(object)MartialSlot(unitData, unitData.ultimate, "神通");
+			JArray val3 = new JArray();
+			try
+			{
+				string[] array = Arr(unitData.abilitys);
+				foreach (string skillId in array)
+				{
+					val3.Add((JToken)(object)MartialSlot(unitData, skillId, "心法"));
+				}
+			}
+			catch
+			{
+			}
+			val2["abilitys"] = (JToken)(object)val3;
+			val["abilities"] = (JToken)(object)val2;
+		}
+		if (Has("inventory"))
+		{
+			JObject val4 = new JObject();
+			val4["props"] = (JToken)(object)PropsNames(unitData, getProps: true);
+			val4["equips"] = (JToken)(object)PropsNames(unitData, getProps: false);
+			int num2 = -1;
+			try
+			{
+				num2 = ((DataProps)unitData.propData).GetPropsNum(10001);
+			}
+			catch
+			{
+			}
+			if (num2 < 0)
+			{
+				try
+				{
+					num2 = unitData.propData.totalSchoolMoney;
+				}
+				catch
+				{
+				}
+			}
+			val4["money"] = JToken.op_Implicit((num2 >= 0) ? num2 : 0);
+			val4["luck"] = (JToken)(object)LuckList(propertyData.bornLuck, propertyData.addLuck);
+			val["inventory"] = (JToken)(object)val4;
+		}
+		if (Has("relationships"))
+		{
+			JObject val5 = new JObject();
+			try
+			{
+				val5["parent"] = (JToken)(object)UnitNames(relationData.parent);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["children"] = (JToken)(object)UnitNames(relationData.children);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["brother"] = (JToken)(object)UnitNames(relationData.brother);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["lover"] = (JToken)(object)UnitNames(relationData.lover);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["master"] = (JToken)(object)UnitNames(relationData.master);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["student"] = (JToken)(object)UnitNames(relationData.student);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["married"] = JToken.op_Implicit(relationData.married);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["friend_units"] = (JToken)(object)FriendNames(relationData);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val5["human_value"] = JToken.op_Implicit(relationData.GetHumanValue(unitData.unitID));
+			}
+			catch
+			{
+			}
+			val["relationships"] = (JToken)(object)val5;
+		}
+		if (Has("tasks"))
+		{
+			JObject val6 = new JObject();
+			try
+			{
+				val6["count"] = JToken.op_Implicit((unitData.allTask != null) ? unitData.allTask.Count : 0);
+			}
+			catch
+			{
+				val6["count"] = JToken.op_Implicit(0);
+			}
+			val6["items"] = JToken.op_Implicit("[待真机]任务条目(allTask 结构待核)");
+			val["tasks"] = (JToken)(object)val6;
+		}
+		if (Has("stats"))
+		{
+			JObject val7 = new JObject();
+			try
+			{
+				val7["power"] = JToken.op_Implicit(propertyData.attack);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["defense"] = JToken.op_Implicit(propertyData.defense);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["hp"] = JToken.op_Implicit(propertyData.hp);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["hp_max"] = JToken.op_Implicit(propertyData.hpMax);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["energy"] = JToken.op_Implicit(propertyData.energy);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["mood"] = JToken.op_Implicit(propertyData.mood);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["beauty"] = JToken.op_Implicit(propertyData.beauty);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["reputation"] = JToken.op_Implicit(propertyData.reputation);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["talent"] = JToken.op_Implicit(propertyData.talent);
+			}
+			catch
+			{
+			}
+			try
+			{
+				val7["heart"] = JToken.op_Implicit("[待真机]道心(heart.confID 文案待核)");
+			}
+			catch
+			{
+			}
+			val["stats"] = (JToken)(object)val7;
+		}
+		if (Has("logs"))
+		{
+			val["logs"] = (JToken)(object)BuildLogs(unitData.unitID);
+		}
+		return val;
+		bool Has(string c)
+		{
+			if (classes == null)
+			{
+				return true;
+			}
+			foreach (JToken @class in classes)
+			{
+				if ((string)@class == c)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	private static JObject BuildLogs(string unitID)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JObject val = new JObject();
+		if (string.IsNullOrEmpty(unitID))
+		{
+			return val;
+		}
+		try
+		{
+			LogData logDataSync = g.world.unitLog.GetLogDataSync(unitID);
+			if (logDataSync == null)
+			{
+				return val;
+			}
+			val["vital"] = (JToken)(object)LogsArr(logDataSync.allVitalLogData);
+			val["regular"] = (JToken)(object)LogsArr(logDataSync.allLogData);
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JArray LogsArr(object list)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		//IL_0194: Unknown result type (might be due to invalid IL or missing references)
+		//IL_019b: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (list == null)
+		{
+			return val;
+		}
+		try
+		{
+			int num = (int)((dynamic)list).Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val2 = ((dynamic)list)[i];
+				if (!((val2 == null) ? true : false))
+				{
+					JObject val3 = new JObject();
+					try
+					{
+						val3["month"] = (JToken)val2.month;
+					}
+					catch
+					{
+					}
+					try
+					{
+						val3["text"] = (JToken)val2.DataToString();
+					}
+					catch
+					{
+					}
+					val.Add((JToken)(object)val3);
+				}
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JArray UnitNames(object list)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (list == null)
+		{
+			return val;
+		}
+		try
+		{
+			int num = 0;
+			try
+			{
+				num = (int)((dynamic)list).Length;
+			}
+			catch
+			{
+				try
+				{
+					num = (int)((dynamic)list).Count;
+				}
+				catch
+				{
+				}
+			}
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val2 = ((dynamic)list)[i];
+				if (val2 == null)
+				{
+					continue;
+				}
+				string text = val2.ToString();
+				string text2 = "";
+				try
+				{
+					WorldUnitBase unit = g.world.unit.GetUnit(text, true);
+					if (unit != null)
+					{
+						text2 = unit.data.unitData.propertyData.GetName();
+					}
+				}
+				catch
+				{
+				}
+				val.Add(JToken.op_Implicit(string.IsNullOrEmpty(text2) ? text : text2));
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JArray FriendNames(object relObj)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (relObj == null)
+		{
+			return val;
+		}
+		try
+		{
+			dynamic intimUnitData = ((dynamic)relObj).GetIntimUnitData(true, false);
+			if (intimUnitData == null)
+			{
+				return val;
+			}
+			dynamic val2 = intimUnitData.friendUnits;
+			if (val2 == null)
+			{
+				return val;
+			}
+			dynamic val3 = val2;
+			int num = (int)val3.Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val4 = val3[i];
+				if (!((val4 == null) ? true : false))
+				{
+					try
+					{
+						val.Add(val4.data.unitData.propertyData.GetName());
+					}
+					catch
+					{
+					}
+				}
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JObject LuckList(object born, object added)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0028: Expected O, but got Unknown
+		return new JObject
+		{
+			["born"] = (JToken)(object)LuckItems(born),
+			["added"] = (JToken)(object)LuckItems(added)
+		};
+	}
+
+	private static JArray LuckItems(object list)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		//IL_022f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0236: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (list == null)
+		{
+			return val;
+		}
+		try
+		{
+			int num = 0;
+			try
+			{
+				num = (int)((dynamic)list).Length;
+			}
+			catch
+			{
+				try
+				{
+					num = (int)((dynamic)list).Count;
+				}
+				catch
+				{
+				}
+			}
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val2 = ((dynamic)list)[i];
+				if (val2 == null)
+				{
+					continue;
+				}
+				JObject val3 = new JObject();
+				try
+				{
+					val3["id"] = (JToken)val2.id;
+				}
+				catch
+				{
+				}
+				try
+				{
+					int num2 = (int)val2.id;
+					ConfFateFeatureItem item = ((ConfFateFeatureBase)g.conf.fateFeature).GetItem(num2);
+					if (item != null)
+					{
+						try
+						{
+							val3["desc"] = JToken.op_Implicit(item.desc);
+						}
+						catch
+						{
+						}
+					}
+				}
+				catch
+				{
+				}
+				val.Add((JToken)(object)val3);
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JObject MartialSlot(object udObj, string skillId, string typeCn)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0031: Expected O, but got Unknown
+		JObject val = new JObject
+		{
+			["type"] = JToken.op_Implicit(typeCn),
+			["id"] = JToken.op_Implicit(skillId ?? "")
+		};
+		string text = "";
+		if (!string.IsNullOrEmpty(skillId))
+		{
+			try
+			{
+				dynamic actionMartial = ((dynamic)udObj).GetActionMartial(skillId);
+				if (actionMartial != null)
+				{
+					dynamic val2 = actionMartial.data;
+					if (val2 != null)
+					{
+						dynamic name = g.conf.battleSkillPrefixName.GetName(val2);
+						if ((!string.IsNullOrEmpty(name)))
+						{
+							text = name;
+						}
+					}
+				}
+			}
+			catch
+			{
+			}
+		}
+		val["name"] = JToken.op_Implicit(string.IsNullOrEmpty(text) ? ("[待真机]功法名(id=" + skillId + ")") : text);
+		return val;
+	}
+
+	public static string SectName(string schoolID)
+	{
+		if (string.IsNullOrEmpty(schoolID))
+		{
+			return "[待真机]宗门名";
+		}
+		try
+		{
+			MapBuildBase build = g.world.build.GetBuild(schoolID);
+			if (build == null)
+			{
+				return "[待真机]宗门名(id=" + schoolID + ")";
+			}
+			MapBuildSchool val = (MapBuildSchool)(object)((build is MapBuildSchool) ? build : null);
+			if (val != null && !string.IsNullOrEmpty(val.name))
+			{
+				return val.name;
+			}
+			return "[待真机]宗门名(id=" + schoolID + ")";
+		}
+		catch
+		{
+			return "[待真机]宗门名(id=" + schoolID + ")";
+		}
+	}
+
+	private static JArray HobbyNames(object hobbyArr)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (hobbyArr == null)
+		{
+			return val;
+		}
+		try
+		{
+			int num = 0;
+			try
+			{
+				num = (int)((dynamic)hobbyArr).Length;
+			}
+			catch
+			{
+				try
+				{
+					num = (int)((dynamic)hobbyArr).Count;
+				}
+				catch
+				{
+				}
+			}
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val2 = ((dynamic)hobbyArr)[i];
+				if (val2 == null)
+				{
+					continue;
+				}
+				try
+				{
+					dynamic val3 = val2.hobbyItem;
+					if (val3 != null && val3.name != null)
+					{
+						val.Add(val3.name);
+					}
+				}
+				catch
+				{
+				}
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+
+	private static JArray PropsNames(object udObj, bool getProps)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JArray val = new JArray();
+		if (udObj == null)
+		{
+			return val;
+		}
+		try
+		{
+			dynamic equipProps = ((dynamic)udObj).propData.GetEquipProps(getProps, !getProps);
+			if (equipProps == null)
+			{
+				return val;
+			}
+			dynamic val2 = equipProps;
+			int num = (int)val2.Count;
+			for (int i = 0; i < num; i++)
+			{
+				dynamic val3 = val2[i];
+				if (val3 == null)
+				{
+					continue;
+				}
+				try
+				{
+					val.Add(val3.propsItem.name);
+				}
+				catch
+				{
+					try
+					{
+						val.Add(val3.soleID);
+					}
+					catch
+					{
+					}
+				}
+			}
+		}
+		catch
+		{
+		}
+		return val;
+	}
+}
+
+
+//==================== TYPE AgentLoopBridge.GameContext ====================
+using System;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopBridge;
+
+public class GameContext
+{
+	public JObject GetL1(string npcId)
+	{
+		//IL_0517: Unknown result type (might be due to invalid IL or missing references)
+		//IL_051c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0534: Expected O, but got Unknown
+		//IL_007c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0086: Expected O, but got Unknown
+		//IL_0026: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_003c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0052: Expected O, but got Unknown
+		//IL_0052: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0057: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0076: Expected O, but got Unknown
+		//IL_0536: Unknown result type (might be due to invalid IL or missing references)
+		//IL_053b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_054c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0559: Expected O, but got Unknown
+		//IL_02b6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02bb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02cc: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02de: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02f4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0306: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0318: Unknown result type (might be due to invalid IL or missing references)
+		//IL_032a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0340: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0356: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0368: Unknown result type (might be due to invalid IL or missing references)
+		//IL_037e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0394: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03aa: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03bc: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03ce: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03e4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_03fa: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0410: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0416: Unknown result type (might be due to invalid IL or missing references)
+		//IL_041b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_042d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0444: Expected O, but got Unknown
+		//IL_0444: Unknown result type (might be due to invalid IL or missing references)
+		//IL_044a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_044f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0455: Unknown result type (might be due to invalid IL or missing references)
+		//IL_045a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_047a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0490: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0496: Unknown result type (might be due to invalid IL or missing references)
+		//IL_049b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04ad: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04c4: Expected O, but got Unknown
+		//IL_04c4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_04db: Expected O, but got Unknown
+		//IL_04e0: Expected O, but got Unknown
+		//IL_04e1: Expected O, but got Unknown
+		string text;
+		JObject val;
+		try
+		{
+			WorldUnitBase unit = g.world.unit.GetUnit(npcId, true);
+			if (unit == null)
+			{
+				text = "自身：" + npcId + "（单位不存在）";
+				val = new JObject
+				{
+					["npc_id"] = JToken.op_Implicit(npcId),
+					["error"] = JToken.op_Implicit("unit not found")
+				};
+				return new JObject
+				{
+					["text"] = JToken.op_Implicit(text),
+					["raw"] = (JToken)(object)val
+				};
+			}
+			JObject val2 = UnitSnapshot.Build(unit, new JArray());
+			string text2 = ((string)val2["name"]) ?? npcId;
+			_ = unit.data.unitData.propertyData;
+			UnitInfoData unitData = unit.data.unitData;
+			int pointX = unitData.pointX;
+			int pointY = unitData.pointY;
+			WorldUnitBase playerUnit = g.world.playerUnit;
+			int num = 0;
+			int num2 = 0;
+			bool flag = false;
+			try
+			{
+				UnitInfoData unitData2 = playerUnit.data.unitData;
+				num = unitData2.pointX;
+				num2 = unitData2.pointY;
+				flag = UnitSnapshot.IsSameGrid(unit, playerUnit);
+			}
+			catch
+			{
+			}
+			string text3 = "";
+			try
+			{
+				text3 = playerUnit.data.unitData.propertyData.GetName();
+			}
+			catch
+			{
+			}
+			string text4 = ((string)val2["realm"]) ?? "";
+			string text5 = ((string)val2["sect"]) ?? "";
+			string text6 = ((string)val2["race"]) ?? "";
+			string text7 = ((val2["mood"] == null) ? "" : ((object)val2["mood"]).ToString());
+			string text8 = ((val2["power"] == null) ? "" : ((object)val2["power"]).ToString());
+			string text9 = ((val2["beauty"] == null) ? "" : ((object)val2["beauty"]).ToString());
+			string text10 = ((val2["reputation"] == null) ? "" : ((object)val2["reputation"]).ToString());
+			text = $"自身：{text2} 位置({pointX},{pointY}) 境界{text4} 宗门{text5} 种族{text6} 魅力{text9} 声望{text10}\n" + string.Format("玩家：{0} 位置({1},{2}) 同格={3} 关系：{4} 好感{5}\n", text3, num, num2, flag, (string)val2["relation"], val2["intim"]) + "近况：待补充";
+			val = new JObject
+			{
+				["npc_id"] = JToken.op_Implicit(npcId),
+				["name"] = JToken.op_Implicit(text2),
+				["sex"] = val2["sex"],
+				["race"] = JToken.op_Implicit(text6),
+				["realm"] = JToken.op_Implicit(text4),
+				["sect"] = JToken.op_Implicit(text5),
+				["sect_id"] = val2["sect_id"],
+				["beauty"] = val2["beauty"],
+				["reputation"] = JToken.op_Implicit(text10),
+				["talent"] = val2["talent"],
+				["age"] = val2["age"],
+				["life"] = val2["life"],
+				["mood"] = JToken.op_Implicit(text7),
+				["power"] = JToken.op_Implicit(text8),
+				["health"] = val2["hp"],
+				["hobby"] = val2["hobby"],
+				["title"] = val2["title"],
+				["point"] = (JToken)new JObject
+				{
+					["x"] = JToken.op_Implicit(pointX),
+					["y"] = JToken.op_Implicit(pointY)
+				},
+				["relations"] = (JToken)new JObject { ["player"] = (JToken)new JObject
+				{
+					["relation"] = JToken.op_Implicit((string)val2["relation"]),
+					["intim"] = val2["intim"],
+					["point"] = (JToken)new JObject
+					{
+						["x"] = JToken.op_Implicit(num),
+						["y"] = JToken.op_Implicit(num2)
+					},
+					["same_grid"] = JToken.op_Implicit(flag)
+				} }
+			};
+		}
+		catch (Exception ex)
+		{
+			text = "自身：" + npcId + "（取快照失败：" + ex.Message + "）";
+			val = new JObject { ["error"] = JToken.op_Implicit(ex.Message) };
+		}
+		return new JObject
+		{
+			["text"] = JToken.op_Implicit(text),
+			["raw"] = (JToken)(object)val
+		};
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.Bootstrap ====================
+using System;
+using Il2CppSystem;
+using UnityEngine;
+
+namespace AgentLoopVerify;
+
+public static class Bootstrap
+{
+	private static TimerCoroutine _cor;
+
+	private static VerifyRunner _runner;
+
+	private static bool _announced;
+
+	public static void Start()
+	{
+		try
+		{
+			if (_cor != null)
+			{
+				try
+				{
+					g.timer.Stop(_cor);
+				}
+				catch
+				{
+				}
+				_cor = null;
+			}
+			_announced = false;
+			_runner = new VerifyRunner();
+			_cor = g.timer.Frame(Action.op_Implicit((Action)OnUpdate), 1, true);
+			Log("已启动：等待世界就绪，按 F8 逐项执行工具验证");
+		}
+		catch (Exception ex)
+		{
+			Log("Start 失败: " + ex);
+		}
+	}
+
+	private static void OnUpdate()
+	{
+		try
+		{
+			if (g.world != null && g.world.playerUnit != null)
+			{
+				if (!_announced)
+				{
+					_announced = true;
+					_runner.Announce();
+				}
+				_runner.OnUpdate();
+			}
+		}
+		catch (Exception ex)
+		{
+			Log("OnUpdate 异常: " + ex);
+		}
+	}
+
+	public static void Shutdown()
+	{
+		try
+		{
+			if (_cor != null)
+			{
+				g.timer.Stop(_cor);
+			}
+		}
+		catch
+		{
+		}
+		_cor = null;
+		if (_runner != null)
+		{
+			_runner.Close();
+			_runner = null;
+		}
+		_announced = false;
+	}
+
+	private static void Log(string msg)
+	{
+		Debug.Log(Object.op_Implicit("[AgentLoopVerify] " + msg));
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.VerifyConfig ====================
+using System.IO;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopVerify;
+
+internal static class VerifyConfig
+{
+	public const string ConfigPath = "F:\\agent_loop\\verify_csharp\\verify_config.json";
+
+	public const string DefaultResultDir = "F:\\agent_loop\\verify_csharp\\results";
+
+	public static string Npc = "林婉清";
+
+	public static string ResultDir = "F:\\agent_loop\\verify_csharp\\results";
+
+	public static bool Loaded;
+
+	public static void Load()
+	{
+		if (Loaded)
+		{
+			return;
+		}
+		Loaded = true;
+		try
+		{
+			if (File.Exists("F:\\agent_loop\\verify_csharp\\verify_config.json"))
+			{
+				JObject obj = JObject.Parse(File.ReadAllText("F:\\agent_loop\\verify_csharp\\verify_config.json"));
+				string text = ((JToken)obj).Value<string>((object)"npc");
+				if (!string.IsNullOrEmpty(text))
+				{
+					Npc = text;
+				}
+				string text2 = ((JToken)obj).Value<string>((object)"result_dir");
+				if (!string.IsNullOrEmpty(text2))
+				{
+					ResultDir = text2;
+				}
+			}
+		}
+		catch
+		{
+		}
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.ExpectKind ====================
+namespace AgentLoopVerify;
+
+public enum ExpectKind
+{
+	Ok,
+	Fail,
+	Any
+}
+
+
+//==================== TYPE AgentLoopVerify.TestItem ====================
+using System;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopVerify;
+
+public class TestItem
+{
+	public readonly string Id;
+
+	public readonly string Phase;
+
+	public readonly string Tool;
+
+	public readonly string Title;
+
+	public readonly string Note;
+
+	public readonly ExpectKind Expect;
+
+	public readonly Func<string, JObject> Args;
+
+	public readonly Func<string, JObject> CustomRun;
+
+	private TestItem(string id, string phase, string tool, string title, string note, ExpectKind expect, Func<string, JObject> args, Func<string, JObject> custom)
+	{
+		Id = id;
+		Phase = phase;
+		Tool = tool;
+		Title = title;
+		Note = note;
+		Expect = expect;
+		Args = args;
+		CustomRun = custom;
+	}
+
+	public static TestItem ToolCall(string id, string phase, string tool, string title, Func<string, JObject> args, string note = "", ExpectKind expect = ExpectKind.Ok)
+	{
+		return new TestItem(id, phase, tool, title, note, expect, args, null);
+	}
+
+	public static TestItem Custom(string id, string phase, string title, Func<string, JObject> run, string note = "", ExpectKind expect = ExpectKind.Ok)
+	{
+		return new TestItem(id, phase, null, title, note, expect, null, run);
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.NpcProbe ====================
+using System;
+using AgentLoopBridge;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopVerify;
+
+internal static class NpcProbe
+{
+	public static JObject Capture(string npc)
+	{
+		//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0006: Expected O, but got Unknown
+		JObject val = new JObject();
+		try
+		{
+			WorldUnitBase unit = g.world.unit.GetUnit(npc, true);
+			if (unit == null)
+			{
+				val["error"] = JToken.op_Implicit("unit not found");
+				return val;
+			}
+			WorldUnitBase playerUnit = g.world.playerUnit;
+			if (playerUnit == null)
+			{
+				val["error"] = JToken.op_Implicit("player not ready");
+				return val;
+			}
+			val["intim"] = JToken.op_Implicit(unit.data.unitData.relationData.GetIntim(playerUnit));
+			val["same_grid"] = JToken.op_Implicit(UnitSnapshot.IsSameGrid(unit, playerUnit));
+		}
+		catch (Exception ex)
+		{
+			val["error"] = JToken.op_Implicit(ex.Message);
+		}
+		return val;
+	}
+
+	public static int Intim(JObject ctx)
+	{
+		try
+		{
+			if (ctx != null && ctx["intim"] != null)
+			{
+				return (int)ctx["intim"];
+			}
+		}
+		catch
+		{
+		}
+		return int.MinValue;
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.TestCatalog ====================
+using System;
+using System.Collections.Generic;
+using AgentLoopBridge;
+using Newtonsoft.Json.Linq;
+
+namespace AgentLoopVerify;
+
+internal static class TestCatalog
+{
+	internal static int InitialIntim = int.MinValue;
+
+	public static List<TestItem> Build()
+	{
+		return new List<TestItem>
+		{
+			TestItem.Custom("A00", "A·查询", "get_context L1 快照（GameContext.GetL1，get_context 桥等价）", (string npc) => RunGetContext(npc)),
+			TestItem.ToolCall("A01", "A·查询", "search_units", "空过滤=好感Top10", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_000b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0015: Expected O, but got Unknown
+				//IL_0016: Expected O, but got Unknown
+				return new JObject { ["filters"] = (JToken)new JObject() };
+			}),
+			TestItem.ToolCall("A02", "A·查询", "search_units", "按名字搜索目标NPC", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_000b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0010: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0026: Expected O, but got Unknown
+				//IL_0027: Expected O, but got Unknown
+				return new JObject { ["filters"] = (JToken)new JObject { ["keyword"] = JToken.op_Implicit(npc) } };
+			}),
+			TestItem.ToolCall("A03", "A·查询", "inspect_unit", "brief 基础档案", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002b: Expected O, but got Unknown
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["target"] = JToken.op_Implicit(npc),
+					["classes"] = (JToken)new JArray((object)"brief")
+				};
+			}),
+			TestItem.ToolCall("A04", "A·查询", "inspect_unit", "stats+abilities 属性与功法", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0006: Expected O, but got Unknown
+				//IL_0033: Unknown result type (might be due to invalid IL or missing references)
+				//IL_003d: Expected O, but got Unknown
+				JObject val = new JObject();
+				val["target"] = JToken.op_Implicit(npc);
+				val["classes"] = (JToken)new JArray(new object[2] { "stats", "abilities" });
+				return val;
+			}),
+			TestItem.ToolCall("A05", "A·查询", "inspect_unit", "inventory+relationships+tasks", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0006: Expected O, but got Unknown
+				//IL_003b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0045: Expected O, but got Unknown
+				JObject val = new JObject();
+				val["target"] = JToken.op_Implicit(npc);
+				val["classes"] = (JToken)new JArray(new object[3] { "inventory", "relationships", "tasks" });
+				return val;
+			}),
+			TestItem.ToolCall("A06", "A·查询", "inspect_unit", "logs 经历（重要·第1页）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002b: Expected O, but got Unknown
+				//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0040: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0052: Expected O, but got Unknown
+				return new JObject
+				{
+					["target"] = JToken.op_Implicit(npc),
+					["classes"] = (JToken)new JArray((object)"logs"),
+					["log_filter"] = JToken.op_Implicit("important"),
+					["log_page"] = JToken.op_Implicit(1)
+				};
+			}),
+			TestItem.ToolCall("A07", "A·查询", "query_world", "events 世界月志", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001b: Expected O, but got Unknown
+				return new JObject { ["topic"] = JToken.op_Implicit("events") };
+			}),
+			TestItem.ToolCall("A08", "A·查询", "query_world", "rankings·power 战力榜 Top5", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002f: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0041: Expected O, but got Unknown
+				return new JObject
+				{
+					["topic"] = JToken.op_Implicit("rankings"),
+					["board"] = JToken.op_Implicit("power"),
+					["top"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("A09", "A·查询", "query_world", "rankings·reputation 声望榜 Top5", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002f: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0041: Expected O, but got Unknown
+				return new JObject
+				{
+					["topic"] = JToken.op_Implicit("rankings"),
+					["board"] = JToken.op_Implicit("reputation"),
+					["top"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("A10", "A·查询", "query_world", "rankings·beauty 魅力榜 Top5", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002f: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0041: Expected O, but got Unknown
+				return new JObject
+				{
+					["topic"] = JToken.op_Implicit("rankings"),
+					["board"] = JToken.op_Implicit("beauty"),
+					["top"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("A11", "A·查询", "query_world", "rankings·money 灵石榜 Top5", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002f: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0041: Expected O, but got Unknown
+				return new JObject
+				{
+					["topic"] = JToken.op_Implicit("rankings"),
+					["board"] = JToken.op_Implicit("money"),
+					["top"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("A12", "A·查询", "inspect_unit", "不存在NPC（预期失败）", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0025: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002f: Expected O, but got Unknown
+				//IL_0030: Expected O, but got Unknown
+				return new JObject
+				{
+					["target"] = JToken.op_Implicit("测试不存在的NPC_XYZ"),
+					["classes"] = (JToken)new JArray((object)"brief")
+				};
+			}, "", ExpectKind.Fail),
+			TestItem.ToolCall("A13", "A·查询", "movement", "stub 占位（API 待补）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0017: Expected O, but got Unknown
+				return new JObject { ["target"] = JToken.op_Implicit(npc) };
+			}),
+			TestItem.ToolCall("A14", "A·查询", "quest_faction", "stub 占位（API 待补）", delegate
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001b: Expected O, but got Unknown
+				return new JObject { ["op"] = JToken.op_Implicit("query") };
+			}),
+			TestItem.ToolCall("B01", "B·可逆写", "social_relation", "add_intim +5", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_003d: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("add_intim"),
+					["target"] = JToken.op_Implicit(npc),
+					["value"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("B02", "B·可逆写", "social_relation", "reduce_intim -5（与B01对冲）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+				//IL_003d: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("reduce_intim"),
+					["target"] = JToken.op_Implicit(npc),
+					["value"] = JToken.op_Implicit(5)
+				};
+			}),
+			TestItem.ToolCall("B03", "B·可逆写", "economy_item", "赠送灵石×1（CostPropItem/RewardPropMoney 原生转账）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001c: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0036: Unknown result type (might be due to invalid IL or missing references)
+				//IL_004c: Expected O, but got Unknown
+				//IL_0047: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0051: Expected O, but got Unknown
+				//IL_0052: Expected O, but got Unknown
+				return new JObject
+				{
+					["target"] = JToken.op_Implicit(npc),
+					["items"] = (JToken)new JArray((object)new JObject
+					{
+						["item_name"] = JToken.op_Implicit("灵石"),
+						["count"] = JToken.op_Implicit(1)
+					})
+				};
+			}),
+			TestItem.ToolCall("B04", "B·可逆写", "economy_item", "赠送不存在道具（预期失败）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001c: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0036: Unknown result type (might be due to invalid IL or missing references)
+				//IL_004c: Expected O, but got Unknown
+				//IL_0047: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0051: Expected O, but got Unknown
+				//IL_0052: Expected O, but got Unknown
+				return new JObject
+				{
+					["target"] = JToken.op_Implicit(npc),
+					["items"] = (JToken)new JArray((object)new JObject
+					{
+						["item_name"] = JToken.op_Implicit("测试不存在的物品XYZ"),
+						["count"] = JToken.op_Implicit(1)
+					})
+				};
+			}, "", ExpectKind.Fail),
+			TestItem.Custom("B05", "B·可逆写", "好感提升至 ≥200（循环 add_intim，为 C/D 阶段门槛铺路）", (string npc) => RunBoostIntim(npc), "每轮 +10；结束后好感恢复见 Z01"),
+			TestItem.ToolCall("C01", "C·AI行动", "world_ai_action", "lun_dao 论道（可远程）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("lun_dao"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("C02", "C·AI行动", "world_ai_action", "yao_yue 邀约（好感≥120）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("yao_yue"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("C03", "C·AI行动", "world_ai_action", "liao_shang 疗伤", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("liao_shang"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("C04", "C·AI行动", "world_ai_action", "ti_sheng_xin_qing 提升心情", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("ti_sheng_xin_qing"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("C05", "C·AI行动", "world_ai_action", "shuang_xiu 双修（同格+好感≥120，弹剧情）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("shuang_xiu"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "需与NPC同格；弹原版剧情，处理完再按F8"),
+			TestItem.ToolCall("C06", "C·AI行动", "world_ai_action", "spar 切磋（同格，弹战斗UI）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("spar"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "将进入战斗——打完或逃跑后再按F8"),
+			TestItem.ToolCall("C07", "C·AI行动", "world_ai_action", "attack 攻击（同格，弹战斗UI）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("attack"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "将进入战斗——打完或逃跑后再按F8"),
+			TestItem.ToolCall("C08", "C·AI行动", "world_ai_action", "chuan_gong 传功（同格，stub 返回）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("chuan_gong"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "当前为带校验的占位实现，预期返回待真机核验说明"),
+			TestItem.ToolCall("D01", "D·关系", "social_relation", "jie_yuan 结缘→道侣（好感≥180，弹剧情）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_yuan"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "弹原版剧情确认，请在游戏内点接受"),
+			TestItem.ToolCall("D02", "D·关系", "social_relation", "marry 求婚（需道侣+同格，弹剧情）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("marry"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "需先D01接受、且与NPC同格；弹原版确认"),
+			TestItem.ToolCall("D03", "D·关系", "social_relation", "divorce 离婚（需已婚）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("divorce"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("D04", "D·关系", "social_relation", "jie_chu_jie_yuan 解除结缘（需道侣）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_chu_jie_yuan"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "若D03后道侣关系已随离婚清除，此项预期返回并非道侣——同样是有效观测"),
+			TestItem.ToolCall("D05", "D·关系", "social_relation", "jie_yi 结义→义兄弟", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_yi"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "弹原版剧情确认"),
+			TestItem.ToolCall("D06", "D·关系", "social_relation", "jie_chu_jie_yi 解除结义", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_chu_jie_yi"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("D07", "D·关系", "social_relation", "bai_shi 拜师（NPC认玩家为师）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("bai_shi"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "弹原版剧情确认"),
+			TestItem.ToolCall("D08", "D·关系", "social_relation", "jie_chu_bai_shi 解除师徒", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_chu_bai_shi"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("D09", "D·关系", "social_relation", "shou_tu 收徒（NPC收玩家为徒）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("shou_tu"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "弹原版剧情确认"),
+			TestItem.ToolCall("D10", "D·关系", "social_relation", "jie_chu_shou_tu 解除收徒", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("jie_chu_shou_tu"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}),
+			TestItem.ToolCall("D11", "D·关系", "social_relation", "ren_yi_fu_mu 认义父母（⚠无解除op，永久）", delegate(string npc)
+			{
+				//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+				//IL_0005: Unknown result type (might be due to invalid IL or missing references)
+				//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+				//IL_002c: Expected O, but got Unknown
+				return new JObject
+				{
+					["op"] = JToken.op_Implicit("ren_yi_fu_mu"),
+					["target"] = JToken.op_Implicit(npc)
+				};
+			}, "注意：工具无对应解除操作，义父母关系将永久留在存档（可在游戏内关系界面手动解除）。不想留痕迹可直接跳过此项（不再按F8即可）"),
+			TestItem.Custom("Z01", "Z·收尾", "好感恢复至初始值（循环 reduce_intim，抹平 B05 提升）", (string npc) => RunRestoreIntim(npc), "初始值在进世界时记录；恢复到 ≤ 初始值即停")
+		};
+	}
+
+	private static JObject RunGetContext(string npc)
+	{
+		//IL_000c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002f: Expected O, but got Unknown
+		//IL_0032: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0037: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0048: Unknown result type (might be due to invalid IL or missing references)
+		//IL_005f: Expected O, but got Unknown
+		try
+		{
+			JObject l = new GameContext().GetL1(npc);
+			return new JObject
+			{
+				["success"] = JToken.op_Implicit(true),
+				["data"] = (JToken)(object)l
+			};
+		}
+		catch (Exception ex)
+		{
+			return new JObject
+			{
+				["success"] = JToken.op_Implicit(false),
+				["error"] = JToken.op_Implicit(ex.Message)
+			};
+		}
+	}
+
+	private static JObject RunBoostIntim(string npc)
+	{
+		//IL_0148: Unknown result type (might be due to invalid IL or missing references)
+		//IL_014d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_015e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0164: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0169: Unknown result type (might be due to invalid IL or missing references)
+		//IL_017a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0195: Expected O, but got Unknown
+		//IL_0196: Expected O, but got Unknown
+		//IL_0025: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_003b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0086: Unknown result type (might be due to invalid IL or missing references)
+		//IL_008b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00a0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00b1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00c8: Expected O, but got Unknown
+		//IL_0074: Expected O, but got Unknown
+		//IL_00ef: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00f4: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0105: Unknown result type (might be due to invalid IL or missing references)
+		//IL_012b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0139: Expected O, but got Unknown
+		ToolExecutor toolExecutor = new ToolExecutor();
+		int num = 0;
+		while (num < 30)
+		{
+			JObject val = NpcProbe.Capture(npc);
+			int num2 = NpcProbe.Intim(val);
+			if (num2 == int.MinValue)
+			{
+				return new JObject
+				{
+					["success"] = JToken.op_Implicit(false),
+					["error"] = JToken.op_Implicit("状态探针失败: " + ((object)(val["error"] ?? JToken.op_Implicit("?"))).ToString())
+				};
+			}
+			if (num2 >= 200)
+			{
+				break;
+			}
+			JObject val2 = toolExecutor.Execute("social_relation", new JObject
+			{
+				["op"] = JToken.op_Implicit("add_intim"),
+				["target"] = JToken.op_Implicit(npc),
+				["value"] = JToken.op_Implicit(10)
+			});
+			num++;
+			if (val2["success"] == null || !(bool)val2["success"])
+			{
+				return new JObject
+				{
+					["success"] = JToken.op_Implicit(false),
+					["error"] = JToken.op_Implicit("第" + num + "轮失败"),
+					["data"] = (JToken)(object)val2
+				};
+			}
+		}
+		JObject ctx = NpcProbe.Capture(npc);
+		return new JObject
+		{
+			["success"] = JToken.op_Implicit(true),
+			["data"] = (JToken)new JObject
+			{
+				["calls"] = JToken.op_Implicit(num),
+				["final_intim"] = JToken.op_Implicit(NpcProbe.Intim(ctx))
+			}
+		};
+	}
+
+	private static JObject RunRestoreIntim(string npc)
+	{
+		//IL_000c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0011: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0028: Unknown result type (might be due to invalid IL or missing references)
+		//IL_002d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0047: Expected O, but got Unknown
+		//IL_0048: Expected O, but got Unknown
+		//IL_0190: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0195: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01a6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01ac: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01b1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01c2: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01d8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01f2: Expected O, but got Unknown
+		//IL_01f3: Expected O, but got Unknown
+		//IL_006d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0072: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0083: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00ce: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00e8: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00f9: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0110: Expected O, but got Unknown
+		//IL_00bc: Expected O, but got Unknown
+		//IL_0137: Unknown result type (might be due to invalid IL or missing references)
+		//IL_013c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_014d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0173: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0181: Expected O, but got Unknown
+		if (InitialIntim != int.MinValue)
+		{
+			ToolExecutor toolExecutor = new ToolExecutor();
+			int num = 0;
+			while (num < 50)
+			{
+				JObject val = NpcProbe.Capture(npc);
+				int num2 = NpcProbe.Intim(val);
+				if (num2 == int.MinValue)
+				{
+					return new JObject
+					{
+						["success"] = JToken.op_Implicit(false),
+						["error"] = JToken.op_Implicit("状态探针失败: " + ((object)(val["error"] ?? JToken.op_Implicit("?"))).ToString())
+					};
+				}
+				if (num2 <= InitialIntim)
+				{
+					break;
+				}
+				JObject val2 = toolExecutor.Execute("social_relation", new JObject
+				{
+					["op"] = JToken.op_Implicit("reduce_intim"),
+					["target"] = JToken.op_Implicit(npc),
+					["value"] = JToken.op_Implicit(10)
+				});
+				num++;
+				if (val2["success"] == null || !(bool)val2["success"])
+				{
+					return new JObject
+					{
+						["success"] = JToken.op_Implicit(false),
+						["error"] = JToken.op_Implicit("第" + num + "轮失败"),
+						["data"] = (JToken)(object)val2
+					};
+				}
+			}
+			JObject ctx = NpcProbe.Capture(npc);
+			return new JObject
+			{
+				["success"] = JToken.op_Implicit(true),
+				["data"] = (JToken)new JObject
+				{
+					["calls"] = JToken.op_Implicit(num),
+					["final_intim"] = JToken.op_Implicit(NpcProbe.Intim(ctx)),
+					["initial_intim"] = JToken.op_Implicit(InitialIntim)
+				}
+			};
+		}
+		return new JObject
+		{
+			["success"] = JToken.op_Implicit(true),
+			["data"] = (JToken)new JObject { ["skipped"] = JToken.op_Implicit("初始好感未记录") }
+		};
+	}
+}
+
+
+//==================== TYPE AgentLoopVerify.VerifyRunner ====================
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using AgentLoopBridge;
+using Il2CppSystem;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+
+namespace AgentLoopVerify;
+
+public class VerifyRunner
+{
+	private readonly List<TestItem> _tests;
+
+	private int _cursor = -1;
+
+	private int _passed;
+
+	private int _failed;
+
+	private int _recorded;
+
+	private readonly List<string> _failedIds = new List<string>();
+
+	private readonly List<string> _unexpectedIds = new List<string>();
+
+	private string _file;
+
+	private bool _done;
+
+	public VerifyRunner()
+	{
+		_tests = TestCatalog.Build();
+	}
+
+	public void Announce()
+	{
+		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0049: Unknown result type (might be due to invalid IL or missing references)
+		//IL_005e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0082: Unknown result type (might be due to invalid IL or missing references)
+		//IL_008e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00a9: Unknown result type (might be due to invalid IL or missing references)
+		VerifyConfig.Load();
+		OpenFile();
+		JObject val = NpcProbe.Capture(VerifyConfig.Npc);
+		TestCatalog.InitialIntim = NpcProbe.Intim(val);
+		AppendLine(((JToken)new JObject
+		{
+			["session_start"] = JToken.op_Implicit(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+			["npc"] = JToken.op_Implicit(VerifyConfig.Npc),
+			["initial_intim"] = ((TestCatalog.InitialIntim == int.MinValue) ? null : JToken.op_Implicit(TestCatalog.InitialIntim)),
+			["probe"] = (JToken)(object)val,
+			["total_tests"] = JToken.op_Implicit(_tests.Count),
+			["keys"] = JToken.op_Implicit("F8=下一项 F9=状态 F10=重跑当前")
+		}).ToString((Formatting)0, Array.Empty<JsonConverter>()));
+		string text = ((val["same_grid"] == null) ? "?" : (((bool)val["same_grid"]) ? "是" : "否"));
+		string text2 = ((TestCatalog.InitialIntim == int.MinValue) ? "?" : TestCatalog.InitialIntim.ToString());
+		Tip($"[验证] 目标:{VerifyConfig.Npc} 好感:{text2} 同格:{text} | 共{_tests.Count}项 F8开始 F9状态");
+	}
+
+	public void OnUpdate()
+	{
+		if (Input.GetKeyDown((KeyCode)289))
+		{
+			RunNext();
+		}
+		else if (Input.GetKeyDown((KeyCode)290))
+		{
+			ShowStatus();
+		}
+		else if (Input.GetKeyDown((KeyCode)291))
+		{
+			RerunCurrent();
+		}
+	}
+
+	public void Close()
+	{
+		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
+		//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0048: Unknown result type (might be due to invalid IL or missing references)
+		try
+		{
+			if (_file != null)
+			{
+				AppendLine(((JToken)new JObject
+				{
+					["session_close"] = JToken.op_Implicit(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+					["executed"] = JToken.op_Implicit(_cursor + 1),
+					["note"] = JToken.op_Implicit(_done ? "全部完成" : "中途停止")
+				}).ToString((Formatting)0, Array.Empty<JsonConverter>()));
+			}
+		}
+		catch
+		{
+		}
+	}
+
+	private void RunNext()
+	{
+		if (_cursor + 1 >= _tests.Count)
+		{
+			Finish();
+			return;
+		}
+		_cursor++;
+		ExecuteCurrent();
+	}
+
+	private void RerunCurrent()
+	{
+		if (_cursor < 0 || _cursor >= _tests.Count)
+		{
+			Tip("[验证] 还没有可重跑的项（先按 F8）");
+		}
+		else
+		{
+			ExecuteCurrent();
+		}
+	}
+
+	private void ExecuteCurrent()
+	{
+		//IL_0053: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0058: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0070: Expected O, but got Unknown
+		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00bb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00cc: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00f6: Expected O, but got Unknown
+		//IL_01eb: Unknown result type (might be due to invalid IL or missing references)
+		//IL_01f0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0206: Unknown result type (might be due to invalid IL or missing references)
+		//IL_021c: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0232: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0248: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0254: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0261: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0273: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0285: Unknown result type (might be due to invalid IL or missing references)
+		//IL_029b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02a7: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02cc: Expected O, but got Unknown
+		TestItem testItem = _tests[_cursor];
+		if (!string.IsNullOrEmpty(testItem.Note))
+		{
+			Tip("[注意] " + testItem.Note);
+		}
+		JObject val = null;
+		if (testItem.Args != null)
+		{
+			try
+			{
+				val = testItem.Args(VerifyConfig.Npc);
+			}
+			catch (Exception ex)
+			{
+				val = new JObject { ["_args_error"] = JToken.op_Implicit(ex.Message) };
+			}
+		}
+		JObject val2 = NpcProbe.Capture(VerifyConfig.Npc);
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		JObject val3;
+		try
+		{
+			val3 = ((testItem.CustomRun == null) ? new ToolExecutor().Execute(testItem.Tool, val) : testItem.CustomRun(VerifyConfig.Npc));
+		}
+		catch (Exception ex2)
+		{
+			val3 = new JObject
+			{
+				["success"] = JToken.op_Implicit(false),
+				["error"] = JToken.op_Implicit("EXCEPTION: " + ex2)
+			};
+		}
+		stopwatch.Stop();
+		bool flag = val3["success"] != null && (bool)val3["success"];
+		string text = ((testItem.Expect == ExpectKind.Fail) ? (flag ? "UNEXPECTED-OK" : "PASS(expect-fail)") : ((testItem.Expect != ExpectKind.Any) ? (flag ? "PASS" : "FAIL") : "RECORDED"));
+		switch (text)
+		{
+		case "PASS":
+			_passed++;
+			break;
+		case "FAIL":
+		case "UNEXPECTED-OK":
+			_failed++;
+			_failedIds.Add(testItem.Id);
+			if (text == "UNEXPECTED-OK")
+			{
+				_unexpectedIds.Add(testItem.Id);
+			}
+			break;
+		default:
+			_recorded++;
+			break;
+		}
+		JObject val4 = new JObject
+		{
+			["id"] = JToken.op_Implicit(testItem.Id),
+			["phase"] = JToken.op_Implicit(testItem.Phase),
+			["title"] = JToken.op_Implicit(testItem.Title),
+			["tool"] = JToken.op_Implicit(testItem.Tool),
+			["args"] = (JToken)(object)val,
+			["result"] = (JToken)(object)val3,
+			["success"] = JToken.op_Implicit(flag),
+			["verdict"] = JToken.op_Implicit(text),
+			["elapsed_ms"] = JToken.op_Implicit(stopwatch.ElapsedMilliseconds),
+			["npc_probe"] = (JToken)(object)val2,
+			["time"] = JToken.op_Implicit(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+		};
+		AppendLine(((JToken)val4).ToString((Formatting)0, Array.Empty<JsonConverter>()));
+		string text2 = "";
+		if (!flag && val3["error"] != null)
+		{
+			text2 = " " + Truncate(((object)val3["error"]).ToString(), 48);
+		}
+		Tip(string.Format("[{0}] {1} {2}{3}", testItem.Id, text, testItem.Tool ?? "custom", text2));
+		if (_cursor + 1 < _tests.Count)
+		{
+			TestItem testItem2 = _tests[_cursor + 1];
+			Tip(string.Format("下一项: {0} {1} {2}", testItem2.Id, testItem2.Tool ?? "custom", Truncate(testItem2.Title, 30)));
+		}
+		else
+		{
+			Finish();
+		}
+	}
+
+	private void Finish()
+	{
+		//IL_001a: Unknown result type (might be due to invalid IL or missing references)
+		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+		//IL_004b: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0061: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0077: Unknown result type (might be due to invalid IL or missing references)
+		//IL_008d: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00a0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00aa: Expected O, but got Unknown
+		//IL_00aa: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00bd: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00c7: Expected O, but got Unknown
+		//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
+		//IL_00ea: Expected O, but got Unknown
+		if (_done)
+		{
+			Tip("[验证] 已全部完成，详见 results\\*.jsonl");
+			return;
+		}
+		_done = true;
+		JObject val = new JObject
+		{
+			["summary"] = JToken.op_Implicit(true),
+			["total"] = JToken.op_Implicit(_tests.Count),
+			["passed"] = JToken.op_Implicit(_passed),
+			["failed"] = JToken.op_Implicit(_failed),
+			["recorded"] = JToken.op_Implicit(_recorded)
+		};
+		object[] array = _failedIds.ToArray();
+		val["failed_ids"] = (JToken)new JArray(array);
+		array = _unexpectedIds.ToArray();
+		val["unexpected_ok_ids"] = (JToken)new JArray(array);
+		val["time"] = JToken.op_Implicit(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+		JObject val2 = val;
+		AppendLine(((JToken)val2).ToString((Formatting)0, Array.Empty<JsonConverter>()));
+		Tip($"[验证] 完成: {_passed}通过 / {_failed}失败 / {_recorded}记录（共{_tests.Count}项）");
+	}
+
+	private void ShowStatus()
+	{
+		int num = _cursor + 1;
+		string text = ((num < _tests.Count) ? string.Format("下一项: {0} {1}", _tests[num].Id, _tests[num].Tool ?? "custom") : "已到末尾（再F8出汇总）");
+		Tip($"[验证] 进度 {_cursor + 1}/{_tests.Count} 通过{_passed} 失败{_failed} | {text}");
+	}
+
+	private void OpenFile()
+	{
+		try
+		{
+			Directory.CreateDirectory(VerifyConfig.ResultDir);
+			_file = Path.Combine(VerifyConfig.ResultDir, "verify_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".jsonl");
+		}
+		catch (Exception ex)
+		{
+			_file = Path.Combine(Environment.CurrentDirectory, "AgentLoopVerify_fallback.jsonl");
+			Log("结果目录不可用(" + ex.Message + ")，改用: " + _file);
+		}
+	}
+
+	private void AppendLine(string line)
+	{
+		try
+		{
+			File.AppendAllText(_file, line + Environment.NewLine, Encoding.UTF8);
+		}
+		catch (Exception ex)
+		{
+			Log("结果写入失败: " + ex.Message);
+		}
+		Log(line);
+	}
+
+	private static void Tip(string msg)
+	{
+		try
+		{
+			UITipItem.AddTip(msg, 0f);
+		}
+		catch
+		{
+		}
+		Log(msg);
+	}
+
+	private static void Log(string msg)
+	{
+		try
+		{
+			Debug.Log(Object.op_Implicit("[AgentLoopVerify] " + msg));
+		}
+		catch
+		{
+		}
+	}
+
+	private static string Truncate(string s, int len)
+	{
+		if (string.IsNullOrEmpty(s) || s.Length <= len)
+		{
+			return s;
+		}
+		return s.Substring(0, len) + "…";
+	}
+}
+
+
+//==================== TYPE MOD_test01.ModMain ====================
+using AgentLoopVerify;
+
+namespace MOD_test01;
+
+public class ModMain
+{
+	public void Init()
+	{
+		Bootstrap.Start();
+	}
+
+	public void Destroy()
+	{
+		Bootstrap.Shutdown();
+	}
+}
+
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>c ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>c in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>c__DisplayClass1_0 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>c__DisplayClass1_0 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>c__DisplayClass2_0 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>c__DisplayClass2_0 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>c__DisplayClass3_0 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>c__DisplayClass3_0 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>o__14 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>o__14 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>o__19 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>o__19 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>o__3 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>o__3 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>o__8 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>o__8 in type system.
+
+//==================== TYPE AgentLoopBridge.ToolExecutor.<>o__9 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.ToolExecutor.<>o__9 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>c__DisplayClass7_0 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>c__DisplayClass7_0 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__10 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__10 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__11 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__11 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__13 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__13 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__14 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__14 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__16 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__16 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__17 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__17 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__6 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__6 in type system.
+
+//==================== TYPE AgentLoopBridge.UnitSnapshot.<>o__9 ====================
+// decompile failed: Could not find type definition AgentLoopBridge.UnitSnapshot.<>o__9 in type system.
+
+//==================== TYPE AgentLoopVerify.TestCatalog.<>c ====================
+// decompile failed: Could not find type definition AgentLoopVerify.TestCatalog.<>c in type system.
+

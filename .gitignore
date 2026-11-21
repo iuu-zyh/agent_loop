@@ -25,7 +25,6 @@ scripts/dev/.depmap.json
 # 公开仓库：本地数据与不可分发素材
 config.json
 dist/
-reference/
 hw1_jupyterhub/
 generated-images/
 .agent_loop_build/

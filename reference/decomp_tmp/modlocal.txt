@@ -1,0 +1,3145 @@
+//==================== TYPE UIModLocal ====================
+using System;
+using System.Runtime.CompilerServices;
+using Il2CppSystem;
+using Il2CppSystem.Collections.Generic;
+using Steamworks;
+using UnhollowerBaseLib;
+using UnhollowerBaseLib.Attributes;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
+public class UIModLocal : UIModLocalBase
+{
+	public class ItemData : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_path;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_folderName;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_modType;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_isIncludeDll;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_String_String_Int32_Data_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<ItemData>.NativeClassPtr));
+
+		public unsafe string path
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_path);
+				return IL2CPP.Il2CppStringToManaged(*(System.IntPtr*)num);
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_path), IL2CPP.ManagedStringToIl2Cpp(str));
+			}
+		}
+
+		public unsafe string folderName
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_folderName);
+				return IL2CPP.Il2CppStringToManaged(*(System.IntPtr*)num);
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_folderName), IL2CPP.ManagedStringToIl2Cpp(str));
+			}
+		}
+
+		public unsafe int modType
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_modType);
+				return *(int*)num;
+			}
+			set
+			{
+				*(int*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_modType)) = num;
+			}
+		}
+
+		public unsafe ModExportData.Data data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ModExportData.Data(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe bool isIncludeDll
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_isIncludeDll);
+				return *(bool*)num;
+			}
+			set
+			{
+				*(bool*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_isIncludeDll)) = flag;
+			}
+		}
+
+		[CallerCount(3)]
+		[CachedScanResults(RefRangeStart = 3128979, RefRangeEnd = 3128982, XrefRangeStart = 3128975, XrefRangeEnd = 3128979, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe ItemData(string path, string floderName, int modType, ModExportData.Data data)
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<ItemData>.NativeClassPtr))
+		{
+			System.IntPtr* ptr = stackalloc System.IntPtr[4];
+			*ptr = IL2CPP.ManagedStringToIl2Cpp(path);
+			*(System.IntPtr*)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = IL2CPP.ManagedStringToIl2Cpp(floderName);
+			*(int**)((byte*)ptr + checked((nuint)2u * unchecked((nuint)sizeof(System.IntPtr)))) = &modType;
+			*(System.IntPtr*)((byte*)ptr + checked((nuint)3u * unchecked((nuint)sizeof(System.IntPtr)))) = IL2CPP.Il2CppObjectBaseToPtr(data);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_String_String_Int32_Data_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static ItemData()
+		{
+			Il2CppClassPointerStore<ItemData>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "ItemData");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<ItemData>.NativeClassPtr);
+			NativeFieldInfoPtr_path = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<ItemData>.NativeClassPtr, "path");
+			NativeFieldInfoPtr_folderName = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<ItemData>.NativeClassPtr, "folderName");
+			NativeFieldInfoPtr_modType = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<ItemData>.NativeClassPtr, "modType");
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<ItemData>.NativeClassPtr, "data");
+			NativeFieldInfoPtr_isIncludeDll = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<ItemData>.NativeClassPtr, "isIncludeDll");
+			NativeMethodInfoPtr__ctor_Public_Void_String_String_Int32_Data_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<ItemData>.NativeClassPtr, 100736324);
+		}
+
+		public ItemData(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[System.Serializable]
+	[ObfuscatedName("UIModLocal/<>c")]
+	public sealed class __c : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr___9;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__10_0;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__18_6;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__26_1;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_0_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__18_6_Internal_Int32_Item_Item_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateHandleInput_b__26_1_Internal_Boolean_UIOperationItem_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c>.NativeClassPtr));
+
+		public unsafe static __c __9
+		{
+			get
+			{
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr intPtr);
+				IL2CPP.il2cpp_field_static_get_value(NativeFieldInfoPtr___9, &intPtr);
+				System.IntPtr intPtr2 = intPtr;
+				return (intPtr2 != (System.IntPtr)0) ? new __c(intPtr2) : null;
+			}
+			set
+			{
+				IL2CPP.il2cpp_field_static_set_value(NativeFieldInfoPtr___9, (void*)IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe static UnityAction __9__10_0
+		{
+			get
+			{
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr intPtr);
+				IL2CPP.il2cpp_field_static_get_value(NativeFieldInfoPtr___9__10_0, &intPtr);
+				System.IntPtr intPtr2 = intPtr;
+				return (intPtr2 != (System.IntPtr)0) ? new UnityAction(intPtr2) : null;
+			}
+			set
+			{
+				IL2CPP.il2cpp_field_static_set_value(NativeFieldInfoPtr___9__10_0, (void*)IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe static Il2CppSystem.Comparison<Item> __9__18_6
+		{
+			get
+			{
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr intPtr);
+				IL2CPP.il2cpp_field_static_get_value(NativeFieldInfoPtr___9__18_6, &intPtr);
+				System.IntPtr intPtr2 = intPtr;
+				return (intPtr2 != (System.IntPtr)0) ? new Il2CppSystem.Comparison<Item>(intPtr2) : null;
+			}
+			set
+			{
+				IL2CPP.il2cpp_field_static_set_value(NativeFieldInfoPtr___9__18_6, (void*)IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe static ReturnAction<bool, UIOperationItem> __9__26_1
+		{
+			get
+			{
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr intPtr);
+				IL2CPP.il2cpp_field_static_get_value(NativeFieldInfoPtr___9__26_1, &intPtr);
+				System.IntPtr intPtr2 = intPtr;
+				return (intPtr2 != (System.IntPtr)0) ? new ReturnAction<bool, UIOperationItem>(intPtr2) : null;
+			}
+			set
+			{
+				IL2CPP.il2cpp_field_static_set_value(NativeFieldInfoPtr___9__26_1, (void*)IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3128982, XrefRangeEnd = 3128983, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _Init_b__10_0()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_0_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3128983, XrefRangeEnd = 3128997, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe int _UpdateUI_b__18_6(Item a, Item b)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[2];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(a);
+			*(System.IntPtr*)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = IL2CPP.Il2CppObjectBaseToPtr(b);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__18_6_Internal_Int32_Item_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(int*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3128997, XrefRangeEnd = 3129012, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateHandleInput_b__26_1(UIOperationItem item)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(item);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateHandleInput_b__26_1_Internal_Boolean_UIOperationItem_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c()
+		{
+			Il2CppClassPointerStore<__c>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c>.NativeClassPtr);
+			NativeFieldInfoPtr___9 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c>.NativeClassPtr, "<>9");
+			NativeFieldInfoPtr___9__10_0 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c>.NativeClassPtr, "<>9__10_0");
+			NativeFieldInfoPtr___9__18_6 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c>.NativeClassPtr, "<>9__18_6");
+			NativeFieldInfoPtr___9__26_1 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c>.NativeClassPtr, "<>9__26_1");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c>.NativeClassPtr, 100736326);
+			NativeMethodInfoPtr__Init_b__10_0_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c>.NativeClassPtr, 100736327);
+			NativeMethodInfoPtr__UpdateUI_b__18_6_Internal_Int32_Item_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c>.NativeClassPtr, 100736328);
+			NativeMethodInfoPtr__UpdateHandleInput_b__26_1_Internal_Boolean_UIOperationItem_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c>.NativeClassPtr, 100736329);
+		}
+
+		public __c(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_0")]
+	public sealed class __c__DisplayClass18_0 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_selectedIems;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___4__this;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_datas;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_onSelected;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_allItems;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_offsetLoadOrderCall;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__15;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__11;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__12;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__0_Internal_Void_Boolean_Boolean_Boolean_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__1_Internal_Boolean_Item_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__2_Internal_Single_ItemData_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__15_Internal_Boolean_Item_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__11_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__12_Internal_Void_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr));
+
+		public unsafe List<Item> selectedIems
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectedIems);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new List<Item>(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectedIems), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe UIModLocal __4__this
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___4__this);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new UIModLocal(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___4__this), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe List<ItemData> datas
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_datas);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new List<ItemData>(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_datas), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe bool onSelected
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_onSelected);
+				return *(bool*)num;
+			}
+			set
+			{
+				*(bool*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_onSelected)) = flag;
+			}
+		}
+
+		public unsafe List<Item> allItems
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_allItems);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new List<Item>(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_allItems), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe Il2CppSystem.Action<bool, bool, bool> offsetLoadOrderCall
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_offsetLoadOrderCall);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new Il2CppSystem.Action<bool, bool, bool>(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_offsetLoadOrderCall), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe Il2CppSystem.Predicate<Item> __9__15
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__15);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new Il2CppSystem.Predicate<Item>(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__15), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe UnityAction __9__11
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__11);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new UnityAction(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__11), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe UnityAction __9__12
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__12);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new UnityAction(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__12), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_0()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129012, XrefRangeEnd = 3129147, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateUI_b__0(bool isUp, bool isMoveMax, bool isMove)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[3];
+			*ptr = (nint)(&isUp);
+			*(bool**)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = &isMoveMax;
+			*(bool**)((byte*)ptr + checked((nuint)2u * unchecked((nuint)sizeof(System.IntPtr)))) = &isMove;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__0_Internal_Void_Boolean_Boolean_Boolean_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129147, XrefRangeEnd = 3129163, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__1(ModMgr.ModLoadData.Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__1_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129163, XrefRangeEnd = 3129179, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe float _UpdateUI_b__2(ItemData v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__2_Internal_Single_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(float*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129179, XrefRangeEnd = 3129187, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__15(Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__15_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129187, XrefRangeEnd = 3129193, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateUI_b__11()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__11_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129193, XrefRangeEnd = 3129199, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateUI_b__12()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__12_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static __c__DisplayClass18_0()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_0");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr);
+			NativeFieldInfoPtr_selectedIems = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "selectedIems");
+			NativeFieldInfoPtr___4__this = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "<>4__this");
+			NativeFieldInfoPtr_datas = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "datas");
+			NativeFieldInfoPtr_onSelected = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "onSelected");
+			NativeFieldInfoPtr_allItems = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "allItems");
+			NativeFieldInfoPtr_offsetLoadOrderCall = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "offsetLoadOrderCall");
+			NativeFieldInfoPtr___9__15 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "<>9__15");
+			NativeFieldInfoPtr___9__11 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "<>9__11");
+			NativeFieldInfoPtr___9__12 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, "<>9__12");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736330);
+			NativeMethodInfoPtr__UpdateUI_b__0_Internal_Void_Boolean_Boolean_Boolean_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736331);
+			NativeMethodInfoPtr__UpdateUI_b__1_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736332);
+			NativeMethodInfoPtr__UpdateUI_b__2_Internal_Single_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736333);
+			NativeMethodInfoPtr__UpdateUI_b__15_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736334);
+			NativeMethodInfoPtr__UpdateUI_b__11_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736335);
+			NativeMethodInfoPtr__UpdateUI_b__12_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_0>.NativeClassPtr, 100736336);
+		}
+
+		public __c__DisplayClass18_0(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_1")]
+	public sealed class __c__DisplayClass18_1 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__3_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr));
+
+		public unsafe ItemData data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_1()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129199, XrefRangeEnd = 3129201, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__3(ItemData v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__3_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_1()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_1");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr);
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr, "data");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr, 100736337);
+			NativeMethodInfoPtr__UpdateUI_b__3_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_1>.NativeClassPtr, 100736338);
+		}
+
+		public __c__DisplayClass18_1(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_2")]
+	public sealed class __c__DisplayClass18_2 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__4_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr));
+
+		public unsafe ItemData data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_2()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe bool _UpdateUI_b__4(ItemData v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__4_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_2()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_2");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr);
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr, "data");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr, 100736339);
+			NativeMethodInfoPtr__UpdateUI_b__4_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_2>.NativeClassPtr, 100736340);
+		}
+
+		public __c__DisplayClass18_2(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_3")]
+	public sealed class __c__DisplayClass18_3 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__5_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr));
+
+		public unsafe ItemData data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_3()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe bool _UpdateUI_b__5(ItemData v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__5_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_3()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_3");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr);
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr, "data");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr, 100736341);
+			NativeMethodInfoPtr__UpdateUI_b__5_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_3>.NativeClassPtr, 100736342);
+		}
+
+		public __c__DisplayClass18_3(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_4")]
+	public sealed class __c__DisplayClass18_4 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_i;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__7_Internal_Boolean_Item_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr));
+
+		public unsafe int i
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_i);
+				return *(int*)num;
+			}
+			set
+			{
+				*(int*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_i)) = num;
+			}
+		}
+
+		public unsafe __c__DisplayClass18_0 field_Public___c__DisplayClass18_0_0
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new __c__DisplayClass18_0(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_4()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129201, XrefRangeEnd = 3129205, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__7(ModMgr.ModLoadData.Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__7_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_4()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_4");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr);
+			NativeFieldInfoPtr_i = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr, "i");
+			NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr, "CS$<>8__locals1");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr, 100736343);
+			NativeMethodInfoPtr__UpdateUI_b__7_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_4>.NativeClassPtr, 100736344);
+		}
+
+		public __c__DisplayClass18_4(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_5")]
+	public sealed class __c__DisplayClass18_5 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_v;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__8_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr));
+
+		public unsafe ModMgr.ModLoadData.Item v
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_v);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ModMgr.ModLoadData.Item(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_v), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_5()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129205, XrefRangeEnd = 3129207, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__8(ItemData v2)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v2);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__8_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_5()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_5");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr);
+			NativeFieldInfoPtr_v = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr, "v");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr, 100736345);
+			NativeMethodInfoPtr__UpdateUI_b__8_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_5>.NativeClassPtr, 100736346);
+		}
+
+		public __c__DisplayClass18_5(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_6")]
+	public sealed class __c__DisplayClass18_6 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_v;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__9_Internal_Boolean_Item_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr));
+
+		public unsafe ItemData v
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_v);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_v), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_6()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe bool _UpdateUI_b__9(ModMgr.ModLoadData.Item v2)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v2);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__9_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_6()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_6");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr);
+			NativeFieldInfoPtr_v = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr, "v");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr, 100736347);
+			NativeMethodInfoPtr__UpdateUI_b__9_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_6>.NativeClassPtr, 100736348);
+		}
+
+		public __c__DisplayClass18_6(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_7")]
+	public sealed class __c__DisplayClass18_7 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_item;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__10_Internal_Void_Boolean_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__13_Internal_Boolean_Item_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__14_Internal_Void_Boolean_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr));
+
+		public unsafe Item item
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_item);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new Item(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_item), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe ItemData data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe __c__DisplayClass18_0 field_Public___c__DisplayClass18_0_0
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new __c__DisplayClass18_0(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_7()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129207, XrefRangeEnd = 3129359, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateUI_b__10(bool v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = (nint)(&v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__10_Internal_Void_Boolean_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129359, XrefRangeEnd = 3129361, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__13(ModMgr.ModLoadData.Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__13_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129361, XrefRangeEnd = 3129459, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateUI_b__14(bool v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = (nint)(&v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__14_Internal_Void_Boolean_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static __c__DisplayClass18_7()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_7");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr);
+			NativeFieldInfoPtr_item = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, "item");
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, "data");
+			NativeFieldInfoPtr_field_Public___c__DisplayClass18_0_0 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, "CS$<>8__locals2");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, 100736349);
+			NativeMethodInfoPtr__UpdateUI_b__10_Internal_Void_Boolean_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, 100736350);
+			NativeMethodInfoPtr__UpdateUI_b__13_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, 100736351);
+			NativeMethodInfoPtr__UpdateUI_b__14_Internal_Void_Boolean_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_7>.NativeClassPtr, 100736352);
+		}
+
+		public __c__DisplayClass18_7(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_8")]
+	public sealed class __c__DisplayClass18_8 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_goGroupRoot;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__16_Internal_Boolean_Item_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr));
+
+		public unsafe GameObject goGroupRoot
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_goGroupRoot);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_goGroupRoot), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_8()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129459, XrefRangeEnd = 3129469, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__16(Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__16_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_8()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_8");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr);
+			NativeFieldInfoPtr_goGroupRoot = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr, "goGroupRoot");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr, 100736353);
+			NativeMethodInfoPtr__UpdateUI_b__16_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_8>.NativeClassPtr, 100736354);
+		}
+
+		public __c__DisplayClass18_8(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_9")]
+	public sealed class __c__DisplayClass18_9 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_index;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__17_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr));
+
+		public unsafe int index
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_index);
+				return *(int*)num;
+			}
+			set
+			{
+				*(int*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_index)) = num;
+			}
+		}
+
+		public unsafe __c__DisplayClass18_7 field_Public___c__DisplayClass18_7_0
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new __c__DisplayClass18_7(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_9()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129469, XrefRangeEnd = 3129473, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__17(ItemData v2)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v2);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__17_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_9()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_9");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr);
+			NativeFieldInfoPtr_index = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr, "index");
+			NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr, "CS$<>8__locals3");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr, 100736355);
+			NativeMethodInfoPtr__UpdateUI_b__17_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_9>.NativeClassPtr, 100736356);
+		}
+
+		public __c__DisplayClass18_9(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass18_10")]
+	public sealed class __c__DisplayClass18_10 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_goGroupRoot;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_index;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__18_Internal_Boolean_Item_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateUI_b__19_Internal_Boolean_ItemData_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr));
+
+		public unsafe GameObject goGroupRoot
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_goGroupRoot);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_goGroupRoot), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe int index
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_index);
+				return *(int*)num;
+			}
+			set
+			{
+				*(int*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_index)) = num;
+			}
+		}
+
+		public unsafe __c__DisplayClass18_7 field_Public___c__DisplayClass18_7_0
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new __c__DisplayClass18_7(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass18_10()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129473, XrefRangeEnd = 3129483, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__18(Item v)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__18_Internal_Boolean_Item_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129483, XrefRangeEnd = 3129487, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe bool _UpdateUI_b__19(ItemData v2)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(v2);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateUI_b__19_Internal_Boolean_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+		}
+
+		static __c__DisplayClass18_10()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass18_10");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr);
+			NativeFieldInfoPtr_goGroupRoot = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, "goGroupRoot");
+			NativeFieldInfoPtr_index = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, "index");
+			NativeFieldInfoPtr_field_Public___c__DisplayClass18_7_0 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, "CS$<>8__locals4");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, 100736357);
+			NativeMethodInfoPtr__UpdateUI_b__18_Internal_Boolean_Item_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, 100736358);
+			NativeMethodInfoPtr__UpdateUI_b__19_Internal_Boolean_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass18_10>.NativeClassPtr, 100736359);
+		}
+
+		public __c__DisplayClass18_10(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	[ObfuscatedName("UIModLocal/<>c__DisplayClass19_0")]
+	public sealed class __c__DisplayClass19_0 : Il2CppSystem.Object
+	{
+		private static readonly System.IntPtr NativeFieldInfoPtr_data;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___4__this;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__5;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__7;
+
+		private static readonly System.IntPtr NativeFieldInfoPtr___9__6;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__0_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__1_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__5_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__2_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__3_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__4_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__6_Internal_Void_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__UpdateInfoUI_b__7_Internal_Void_RemoteStorageUnsubscribePublishedFileResult_t_Boolean_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr));
+
+		public unsafe ItemData data
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new ItemData(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_data), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe UIModLocal __4__this
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___4__this);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new UIModLocal(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___4__this), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe Il2CppSystem.Action __9__5
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__5);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new Il2CppSystem.Action(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__5), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe CallResult<RemoteStorageUnsubscribePublishedFileResult_t>.APIDispatchDelegate __9__7
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__7);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new CallResult<RemoteStorageUnsubscribePublishedFileResult_t>.APIDispatchDelegate(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__7), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		public unsafe Il2CppSystem.Action __9__6
+		{
+			get
+			{
+				nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__6);
+				System.IntPtr intPtr = *(System.IntPtr*)num;
+				return (intPtr != (System.IntPtr)0) ? new Il2CppSystem.Action(intPtr) : null;
+			}
+			set
+			{
+				System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr___9__6), IL2CPP.Il2CppObjectBaseToPtr(obj));
+			}
+		}
+
+		[CallerCount(33091)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe __c__DisplayClass19_0()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129487, XrefRangeEnd = 3129489, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__0()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__0_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129489, XrefRangeEnd = 3129514, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__1()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__1_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129514, XrefRangeEnd = 3129532, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__5()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__5_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129532, XrefRangeEnd = 3129537, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__2()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__2_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe void _UpdateInfoUI_b__3()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__3_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129537, XrefRangeEnd = 3129562, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__4()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__4_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129562, XrefRangeEnd = 3129585, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__6()
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__6_Internal_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129585, XrefRangeEnd = 3129620, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void _UpdateInfoUI_b__7(RemoteStorageUnsubscribePublishedFileResult_t param, bool ioFailure)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[2];
+			*ptr = (nint)(&param);
+			*(bool**)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = &ioFailure;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateInfoUI_b__7_Internal_Void_RemoteStorageUnsubscribePublishedFileResult_t_Boolean_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static __c__DisplayClass19_0()
+		{
+			Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "<>c__DisplayClass19_0");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr);
+			NativeFieldInfoPtr_data = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, "data");
+			NativeFieldInfoPtr___4__this = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, "<>4__this");
+			NativeFieldInfoPtr___9__5 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, "<>9__5");
+			NativeFieldInfoPtr___9__7 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, "<>9__7");
+			NativeFieldInfoPtr___9__6 = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, "<>9__6");
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736360);
+			NativeMethodInfoPtr__UpdateInfoUI_b__0_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736361);
+			NativeMethodInfoPtr__UpdateInfoUI_b__1_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736362);
+			NativeMethodInfoPtr__UpdateInfoUI_b__5_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736363);
+			NativeMethodInfoPtr__UpdateInfoUI_b__2_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736364);
+			NativeMethodInfoPtr__UpdateInfoUI_b__3_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736365);
+			NativeMethodInfoPtr__UpdateInfoUI_b__4_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736366);
+			NativeMethodInfoPtr__UpdateInfoUI_b__6_Internal_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736367);
+			NativeMethodInfoPtr__UpdateInfoUI_b__7_Internal_Void_RemoteStorageUnsubscribePublishedFileResult_t_Boolean_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<__c__DisplayClass19_0>.NativeClassPtr, 100736368);
+		}
+
+		public __c__DisplayClass19_0(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_lastDireSoleID;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_selectModSoleID;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_modLoadData;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_upEvent;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_downEvent;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_steamModDatas;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_selectItem;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_dicItems;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_opGroupRoot;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_upTime;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_downTime;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_nextMoveTime;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_moveInterval;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_Init_Public_Virtual_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_OnReadSortClick_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_OnSaveSortClick_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_OnDelAllClick_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_GetPathSoleID_Private_String_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_DestroyUI_Public_Virtual_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_OnAddClick_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_OnPathClick_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_UpdateUI_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_UpdateInfoUI_Private_Void_ItemData_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_GetItemTypeStr_Private_String_Int32_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_Update_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_UpdateHandleInput_Public_Virtual_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_1_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_2_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_3_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_4_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_5_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_6_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__Init_b__10_7_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__OnDelAllClick_b__13_0_Private_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_PDM_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__UpdateHandleInput_b__26_0_Private_Boolean_InputButton_UIOperationItem_0;
+
+	[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+	public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr));
+
+	public unsafe string lastDireSoleID
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_lastDireSoleID);
+			return IL2CPP.Il2CppStringToManaged(*(System.IntPtr*)num);
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_lastDireSoleID), IL2CPP.ManagedStringToIl2Cpp(str));
+		}
+	}
+
+	public unsafe string selectModSoleID
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectModSoleID);
+			return IL2CPP.Il2CppStringToManaged(*(System.IntPtr*)num);
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectModSoleID), IL2CPP.ManagedStringToIl2Cpp(str));
+		}
+	}
+
+	public unsafe ModMgr.ModLoadData modLoadData
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_modLoadData);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new ModMgr.ModLoadData(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_modLoadData), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Button.ButtonClickedEvent upEvent
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_upEvent);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Button.ButtonClickedEvent(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_upEvent), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Button.ButtonClickedEvent downEvent
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_downEvent);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Button.ButtonClickedEvent(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_downEvent), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe List<ItemData> steamModDatas
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_steamModDatas);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new List<ItemData>(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_steamModDatas), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Item selectItem
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectItem);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Item(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_selectItem), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Dictionary<int, Item> dicItems
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_dicItems);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Dictionary<int, Item>(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_dicItems), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe UIOperationGroup opGroupRoot
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_opGroupRoot);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new UIOperationGroup(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_opGroupRoot), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe float upTime
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_upTime);
+			return *(float*)num;
+		}
+		set
+		{
+			*(float*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_upTime)) = num;
+		}
+	}
+
+	public unsafe float downTime
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_downTime);
+			return *(float*)num;
+		}
+		set
+		{
+			*(float*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_downTime)) = num;
+		}
+	}
+
+	public unsafe float nextMoveTime
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_nextMoveTime);
+			return *(float*)num;
+		}
+		set
+		{
+			*(float*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_nextMoveTime)) = num;
+		}
+	}
+
+	public unsafe float moveInterval
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_moveInterval);
+			return *(float*)num;
+		}
+		set
+		{
+			*(float*)((nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_moveInterval)) = num;
+		}
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129620, XrefRangeEnd = 3129855, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public new unsafe void Init()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_Init_Public_Virtual_Void_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3129896, RefRangeEnd = 3129897, XrefRangeStart = 3129855, XrefRangeEnd = 3129896, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void OnReadSortClick()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_OnReadSortClick_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3129954, RefRangeEnd = 3129955, XrefRangeStart = 3129897, XrefRangeEnd = 3129954, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void OnSaveSortClick()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_OnSaveSortClick_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3129955, XrefRangeEnd = 3129979, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void OnDelAllClick()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_OnDelAllClick_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(2)]
+	[CachedScanResults(RefRangeStart = 3130005, RefRangeEnd = 3130007, XrefRangeStart = 3129979, XrefRangeEnd = 3130005, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe string GetPathSoleID()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr il2CppString = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_GetPathSoleID_Private_String_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+		return IL2CPP.Il2CppStringToManaged(il2CppString);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130007, XrefRangeEnd = 3130010, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public new unsafe void DestroyUI()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_DestroyUI_Public_Virtual_Void_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3130170, RefRangeEnd = 3130171, XrefRangeStart = 3130010, XrefRangeEnd = 3130170, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void OnAddClick()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_OnAddClick_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130171, XrefRangeEnd = 3130173, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void OnPathClick()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_OnPathClick_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(6)]
+	[CachedScanResults(RefRangeStart = 3130608, RefRangeEnd = 3130614, XrefRangeStart = 3130173, XrefRangeEnd = 3130608, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void UpdateUI()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_UpdateUI_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3130738, RefRangeEnd = 3130739, XrefRangeStart = 3130614, XrefRangeEnd = 3130738, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void UpdateInfoUI(ItemData data)
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* ptr = stackalloc System.IntPtr[1];
+		*ptr = IL2CPP.Il2CppObjectBaseToPtr(data);
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_UpdateInfoUI_Private_Void_ItemData_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130739, XrefRangeEnd = 3130744, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe string GetItemTypeStr(int type)
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* ptr = stackalloc System.IntPtr[1];
+		*ptr = (nint)(&type);
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr il2CppString = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_GetItemTypeStr_Private_String_Int32_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+		return IL2CPP.Il2CppStringToManaged(il2CppString);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130744, XrefRangeEnd = 3130763, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void Update()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_Update_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130763, XrefRangeEnd = 3130810, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public new unsafe void UpdateHandleInput()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_UpdateHandleInput_Public_Virtual_Void_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130810, XrefRangeEnd = 3130821, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe UIModLocal()
+		: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr))
+	{
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130821, XrefRangeEnd = 3130822, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void _Init_b__10_1()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_1_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(/*Could not decode attribute arguments.*/)]
+	public unsafe void _Init_b__10_2()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_2_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(/*Could not decode attribute arguments.*/)]
+	public unsafe void _Init_b__10_3()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_3_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130822, XrefRangeEnd = 3130823, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void _Init_b__10_4()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_4_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130823, XrefRangeEnd = 3130824, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void _Init_b__10_5()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_5_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(/*Could not decode attribute arguments.*/)]
+	public unsafe void _Init_b__10_6()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_6_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130824, XrefRangeEnd = 3130828, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void _Init_b__10_7()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__Init_b__10_7_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130828, XrefRangeEnd = 3130856, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void _OnDelAllClick_b__13_0()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__OnDelAllClick_b__13_0_Private_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130856, XrefRangeEnd = 3130872, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void Method_Private_Void_Boolean_Boolean_PDM_0(bool isCtrl, bool isShift)
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* ptr = stackalloc System.IntPtr[2];
+		*ptr = (nint)(&isCtrl);
+		*(bool**)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = &isShift;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_PDM_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3130895, RefRangeEnd = 3130896, XrefRangeStart = 3130872, XrefRangeEnd = 3130895, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe void Method_Private_Void_Boolean_Boolean_0(bool isCtrl, bool isShift)
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* ptr = stackalloc System.IntPtr[2];
+		*ptr = (nint)(&isCtrl);
+		*(bool**)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = &isShift;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3130896, XrefRangeEnd = 3130898, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe bool _UpdateHandleInput_b__26_0(InputButton key, UIOperationItem item)
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* ptr = stackalloc System.IntPtr[2];
+		*ptr = (nint)(&key);
+		*(System.IntPtr*)((byte*)ptr + checked((nuint)1u * unchecked((nuint)sizeof(System.IntPtr)))) = IL2CPP.Il2CppObjectBaseToPtr(item);
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr obj = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__UpdateHandleInput_b__26_0_Private_Boolean_InputButton_UIOperationItem_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+		return *(bool*)IL2CPP.il2cpp_object_unbox(obj);
+	}
+
+	static UIModLocal()
+	{
+		Il2CppClassPointerStore<UIModLocal>.NativeClassPtr = IL2CPP.GetIl2CppClass("Assembly-CSharp.dll", "", "UIModLocal");
+		IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr);
+		NativeFieldInfoPtr_lastDireSoleID = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "lastDireSoleID");
+		NativeFieldInfoPtr_selectModSoleID = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "selectModSoleID");
+		NativeFieldInfoPtr_modLoadData = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "modLoadData");
+		NativeFieldInfoPtr_upEvent = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "upEvent");
+		NativeFieldInfoPtr_downEvent = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "downEvent");
+		NativeFieldInfoPtr_steamModDatas = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "steamModDatas");
+		NativeFieldInfoPtr_selectItem = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "selectItem");
+		NativeFieldInfoPtr_dicItems = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "dicItems");
+		NativeFieldInfoPtr_opGroupRoot = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "opGroupRoot");
+		NativeFieldInfoPtr_upTime = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "upTime");
+		NativeFieldInfoPtr_downTime = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "downTime");
+		NativeFieldInfoPtr_nextMoveTime = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "nextMoveTime");
+		NativeFieldInfoPtr_moveInterval = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, "moveInterval");
+		NativeMethodInfoPtr_Init_Public_Virtual_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699188);
+		NativeMethodInfoPtr_OnReadSortClick_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699189);
+		NativeMethodInfoPtr_OnSaveSortClick_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699190);
+		NativeMethodInfoPtr_OnDelAllClick_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699191);
+		NativeMethodInfoPtr_GetPathSoleID_Private_String_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699192);
+		NativeMethodInfoPtr_DestroyUI_Public_Virtual_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699193);
+		NativeMethodInfoPtr_OnAddClick_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699194);
+		NativeMethodInfoPtr_OnPathClick_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699195);
+		NativeMethodInfoPtr_UpdateUI_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699196);
+		NativeMethodInfoPtr_UpdateInfoUI_Private_Void_ItemData_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699197);
+		NativeMethodInfoPtr_GetItemTypeStr_Private_String_Int32_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699198);
+		NativeMethodInfoPtr_Update_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699199);
+		NativeMethodInfoPtr_UpdateHandleInput_Public_Virtual_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699200);
+		NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699201);
+		NativeMethodInfoPtr__Init_b__10_1_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699202);
+		NativeMethodInfoPtr__Init_b__10_2_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699203);
+		NativeMethodInfoPtr__Init_b__10_3_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699204);
+		NativeMethodInfoPtr__Init_b__10_4_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699205);
+		NativeMethodInfoPtr__Init_b__10_5_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699206);
+		NativeMethodInfoPtr__Init_b__10_6_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699207);
+		NativeMethodInfoPtr__Init_b__10_7_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699208);
+		NativeMethodInfoPtr__OnDelAllClick_b__13_0_Private_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699209);
+		NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_PDM_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699210);
+		NativeMethodInfoPtr_Method_Private_Void_Boolean_Boolean_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699211);
+		NativeMethodInfoPtr__UpdateHandleInput_b__26_0_Private_Boolean_InputButton_UIOperationItem_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocal>.NativeClassPtr, 100699212);
+	}
+
+	public UIModLocal(System.IntPtr P_0)
+		: base(P_0)
+	{
+	}
+}
+
+
+//==================== TYPE UIModLocal.ItemData ====================
+// decompile failed: Could not find type definition UIModLocal.ItemData in type system.
+
+//==================== TYPE UIModLocal.__c ====================
+// decompile failed: Could not find type definition UIModLocal.__c in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_0 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_0 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_1 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_1 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_2 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_2 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_3 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_3 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_4 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_4 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_5 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_5 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_6 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_6 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_7 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_7 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_8 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_8 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_9 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_9 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass18_10 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass18_10 in type system.
+
+//==================== TYPE UIModLocal.__c__DisplayClass19_0 ====================
+// decompile failed: Could not find type definition UIModLocal.__c__DisplayClass19_0 in type system.
+
+//==================== TYPE UIModLocalBase ====================
+using System;
+using System.Runtime.CompilerServices;
+using Il2CppSystem;
+using TMPro;
+using UnhollowerBaseLib;
+using UnhollowerBaseLib.Attributes;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class UIModLocalBase : UIBase
+{
+	public class Item : UIGroupBase
+	{
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_tglItem_Public_get_Toggle_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextName_Public_get_TextMeshProUGUI_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_tglWindow_Public_get_Toggle_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goDire_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_btnUp_Public_get_Button_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_btnDown_Public_get_Button_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goTypeSteam_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goTypeLocal_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<Item>.NativeClassPtr));
+
+		public unsafe UIModLocal modLocal
+		{
+			[CallerCount(0)]
+			[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3249924, XrefRangeEnd = 3249933, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new UIModLocal(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goGroupRoot
+		{
+			[CallerCount(7)]
+			[CachedScanResults(RefRangeStart = 3249938, RefRangeEnd = 3249945, XrefRangeStart = 3249933, XrefRangeEnd = 3249938, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe Toggle tglItem
+		{
+			[CallerCount(7)]
+			[CachedScanResults(RefRangeStart = 3249950, RefRangeEnd = 3249957, XrefRangeStart = 3249945, XrefRangeEnd = 3249950, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_tglItem_Public_get_Toggle_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Toggle(intPtr) : null;
+			}
+		}
+
+		public unsafe TextMeshProUGUI ptextName
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3249962, RefRangeEnd = 3249963, XrefRangeStart = 3249957, XrefRangeEnd = 3249962, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextName_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+			}
+		}
+
+		public unsafe TextMeshProUGUI ptextDesc
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3249968, RefRangeEnd = 3249969, XrefRangeStart = 3249963, XrefRangeEnd = 3249968, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+			}
+		}
+
+		public unsafe Toggle tglWindow
+		{
+			[CallerCount(5)]
+			[CachedScanResults(RefRangeStart = 3249974, RefRangeEnd = 3249979, XrefRangeStart = 3249969, XrefRangeEnd = 3249974, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_tglWindow_Public_get_Toggle_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Toggle(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goDire
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3249984, RefRangeEnd = 3249985, XrefRangeStart = 3249979, XrefRangeEnd = 3249984, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goDire_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe Button btnUp
+		{
+			[CallerCount(3)]
+			[CachedScanResults(RefRangeStart = 3249990, RefRangeEnd = 3249993, XrefRangeStart = 3249985, XrefRangeEnd = 3249990, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnUp_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+			}
+		}
+
+		public unsafe Button btnDown
+		{
+			[CallerCount(3)]
+			[CachedScanResults(RefRangeStart = 3249998, RefRangeEnd = 3250001, XrefRangeStart = 3249993, XrefRangeEnd = 3249998, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnDown_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goTypeSteam
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3250006, RefRangeEnd = 3250007, XrefRangeStart = 3250001, XrefRangeEnd = 3250006, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goTypeSteam_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goTypeLocal
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3250012, RefRangeEnd = 3250013, XrefRangeStart = 3250007, XrefRangeEnd = 3250012, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goTypeLocal_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250013, XrefRangeEnd = 3250095, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void Init(Transform transform)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(transform);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(695)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe Item()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<Item>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static Item()
+		{
+			Il2CppClassPointerStore<Item>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, "Item");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<Item>.NativeClassPtr);
+			NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738915);
+			NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738916);
+			NativeMethodInfoPtr_get_tglItem_Public_get_Toggle_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738917);
+			NativeMethodInfoPtr_get_ptextName_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738918);
+			NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738919);
+			NativeMethodInfoPtr_get_tglWindow_Public_get_Toggle_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738920);
+			NativeMethodInfoPtr_get_goDire_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738921);
+			NativeMethodInfoPtr_get_btnUp_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738922);
+			NativeMethodInfoPtr_get_btnDown_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738923);
+			NativeMethodInfoPtr_get_goTypeSteam_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738924);
+			NativeMethodInfoPtr_get_goTypeLocal_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738925);
+			NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738926);
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Item>.NativeClassPtr, 100738927);
+		}
+
+		public Item(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	public class Info : UIGroupBase
+	{
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_btnDel_Public_get_Button_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_textDel_Public_get_Text_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_goPreview_Public_get_GameObject_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_imgPreview_Public_get_Image_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_btnPath_Public_get_Button_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextPath_Public_get_TextMeshProUGUI_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0;
+
+		private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+		[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+		public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<Info>.NativeClassPtr));
+
+		public unsafe UIModLocal modLocal
+		{
+			[CallerCount(0)]
+			[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250095, XrefRangeEnd = 3250104, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new UIModLocal(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goGroupRoot
+		{
+			[CallerCount(2)]
+			[CachedScanResults(RefRangeStart = 3250109, RefRangeEnd = 3250111, XrefRangeStart = 3250104, XrefRangeEnd = 3250109, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe Button btnDel
+		{
+			[CallerCount(5)]
+			[CachedScanResults(RefRangeStart = 3250116, RefRangeEnd = 3250121, XrefRangeStart = 3250111, XrefRangeEnd = 3250116, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnDel_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+			}
+		}
+
+		public unsafe Text textDel
+		{
+			[CallerCount(2)]
+			[CachedScanResults(RefRangeStart = 3250126, RefRangeEnd = 3250128, XrefRangeStart = 3250121, XrefRangeEnd = 3250126, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textDel_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goRoot
+		{
+			[CallerCount(0)]
+			[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250128, XrefRangeEnd = 3250133, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe GameObject goPreview
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3250138, RefRangeEnd = 3250139, XrefRangeStart = 3250133, XrefRangeEnd = 3250138, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goPreview_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+			}
+		}
+
+		public unsafe Image imgPreview
+		{
+			[CallerCount(2)]
+			[CachedScanResults(RefRangeStart = 3250144, RefRangeEnd = 3250146, XrefRangeStart = 3250139, XrefRangeEnd = 3250144, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_imgPreview_Public_get_Image_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Image(intPtr) : null;
+			}
+		}
+
+		public unsafe TextMeshProUGUI ptextDesc
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3250151, RefRangeEnd = 3250152, XrefRangeStart = 3250146, XrefRangeEnd = 3250151, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+			}
+		}
+
+		public unsafe Button btnPath
+		{
+			[CallerCount(7)]
+			[CachedScanResults(RefRangeStart = 3250157, RefRangeEnd = 3250164, XrefRangeStart = 3250152, XrefRangeEnd = 3250157, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnPath_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+			}
+		}
+
+		public unsafe TextMeshProUGUI ptextPath
+		{
+			[CallerCount(1)]
+			[CachedScanResults(RefRangeStart = 3250169, RefRangeEnd = 3250170, XrefRangeStart = 3250164, XrefRangeEnd = 3250169, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+			get
+			{
+				IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+				System.IntPtr* param = null;
+				System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+				System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextPath_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+				Il2CppException.RaiseExceptionIfNecessary(exc);
+				return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+			}
+		}
+
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250170, XrefRangeEnd = 3250250, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		public unsafe void Init(Transform transform)
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* ptr = stackalloc System.IntPtr[1];
+			*ptr = IL2CPP.Il2CppObjectBaseToPtr(transform);
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)ptr, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		[CallerCount(695)]
+		[CachedScanResults(/*Could not decode attribute arguments.*/)]
+		public unsafe Info()
+			: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<Info>.NativeClassPtr))
+		{
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+		}
+
+		static Info()
+		{
+			Il2CppClassPointerStore<Info>.NativeClassPtr = IL2CPP.GetIl2CppNestedType(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, "Info");
+			IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<Info>.NativeClassPtr);
+			NativeMethodInfoPtr_get_modLocal_Public_get_UIModLocal_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738928);
+			NativeMethodInfoPtr_get_goGroupRoot_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738929);
+			NativeMethodInfoPtr_get_btnDel_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738930);
+			NativeMethodInfoPtr_get_textDel_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738931);
+			NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738932);
+			NativeMethodInfoPtr_get_goPreview_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738933);
+			NativeMethodInfoPtr_get_imgPreview_Public_get_Image_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738934);
+			NativeMethodInfoPtr_get_ptextDesc_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738935);
+			NativeMethodInfoPtr_get_btnPath_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738936);
+			NativeMethodInfoPtr_get_ptextPath_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738937);
+			NativeMethodInfoPtr_Init_Public_Virtual_New_Void_Transform_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738938);
+			NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<Info>.NativeClassPtr, 100738939);
+		}
+
+		public Info(System.IntPtr P_0)
+			: base(P_0)
+		{
+		}
+	}
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_item;
+
+	private static readonly System.IntPtr NativeFieldInfoPtr_info;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_textTitle_Public_get_Text_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextTitleName_Public_get_TextMeshProUGUI_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextTitleDesc_Public_get_TextMeshProUGUI_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextTitleLoad_Public_get_TextMeshProUGUI_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnDown_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_textDown_Public_get_Text_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnAdd_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_textAdd_Public_get_Text_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnPath_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_textPath_Public_get_Text_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_ptextNotMod_Public_get_TextMeshProUGUI_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnReadSort_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnSaveSort_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnDelAll_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_textDelAll_Public_get_Text_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_get_btnClose_Public_get_Button_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_Init_Public_Virtual_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr_UIActionFunc_Public_Void_0;
+
+	private static readonly System.IntPtr NativeMethodInfoPtr__ctor_Public_Void_0;
+
+	[System.Obsolete("Use Il2CppType.Of<T>() instead. This will be removed in a future version of unhollower.")]
+	public new static Il2CppSystem.Type Il2CppType => Il2CppSystem.Type.internal_from_handle(IL2CPP.il2cpp_class_get_type(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr));
+
+	public unsafe Item item
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_item);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Item(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_item), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Info info
+	{
+		get
+		{
+			nint num = (nint)IL2CPP.Il2CppObjectBaseToPtrNotNull(this) + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_info);
+			System.IntPtr intPtr = *(System.IntPtr*)num;
+			return (intPtr != (System.IntPtr)0) ? new Info(intPtr) : null;
+		}
+		set
+		{
+			System.IntPtr num = IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			IL2CPP.il2cpp_gc_wbarrier_set_field(num, (nint)num + (int)IL2CPP.il2cpp_field_get_offset(NativeFieldInfoPtr_info), IL2CPP.Il2CppObjectBaseToPtr(obj));
+		}
+	}
+
+	public unsafe Text textTitle
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250250, XrefRangeEnd = 3250255, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textTitle_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+		}
+	}
+
+	public unsafe GameObject goRoot
+	{
+		[CallerCount(5)]
+		[CachedScanResults(RefRangeStart = 3250260, RefRangeEnd = 3250265, XrefRangeStart = 3250255, XrefRangeEnd = 3250260, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new GameObject(intPtr) : null;
+		}
+	}
+
+	public unsafe TextMeshProUGUI ptextTitleName
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250265, XrefRangeEnd = 3250270, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextTitleName_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+		}
+	}
+
+	public unsafe TextMeshProUGUI ptextTitleDesc
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250270, XrefRangeEnd = 3250275, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextTitleDesc_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+		}
+	}
+
+	public unsafe TextMeshProUGUI ptextTitleLoad
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250275, XrefRangeEnd = 3250280, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextTitleLoad_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnDown
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250280, XrefRangeEnd = 3250285, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnDown_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Text textDown
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250285, XrefRangeEnd = 3250290, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textDown_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnAdd
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250290, XrefRangeEnd = 3250295, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnAdd_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Text textAdd
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250295, XrefRangeEnd = 3250300, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textAdd_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnPath
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250300, XrefRangeEnd = 3250305, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnPath_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Text textPath
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250305, XrefRangeEnd = 3250310, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textPath_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+		}
+	}
+
+	public unsafe TextMeshProUGUI ptextNotMod
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250310, XrefRangeEnd = 3250315, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_ptextNotMod_Public_get_TextMeshProUGUI_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new TextMeshProUGUI(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnReadSort
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250315, XrefRangeEnd = 3250320, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnReadSort_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnSaveSort
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250320, XrefRangeEnd = 3250325, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnSaveSort_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnDelAll
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250325, XrefRangeEnd = 3250330, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnDelAll_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	public unsafe Text textDelAll
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250330, XrefRangeEnd = 3250335, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_textDelAll_Public_get_Text_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Text(intPtr) : null;
+		}
+	}
+
+	public unsafe Button btnClose
+	{
+		[CallerCount(0)]
+		[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250335, XrefRangeEnd = 3250340, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+		get
+		{
+			IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+			System.IntPtr* param = null;
+			System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+			System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_get_btnClose_Public_get_Button_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+			Il2CppException.RaiseExceptionIfNecessary(exc);
+			return (intPtr != (System.IntPtr)0) ? new Button(intPtr) : null;
+		}
+	}
+
+	[CallerCount(1)]
+	[CachedScanResults(RefRangeStart = 3250531, RefRangeEnd = 3250532, XrefRangeStart = 3250340, XrefRangeEnd = 3250531, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public new unsafe void Init()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(IL2CPP.il2cpp_object_get_virtual_method(IL2CPP.Il2CppObjectBaseToPtr(this), NativeMethodInfoPtr_Init_Public_Virtual_Void_0), IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(18374)]
+	[CachedScanResults(/*Could not decode attribute arguments.*/)]
+	public unsafe void UIActionFunc()
+	{
+		IL2CPP.Il2CppObjectBaseToPtrNotNull(this);
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr_UIActionFunc_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	[CallerCount(0)]
+	[CachedScanResults(RefRangeStart = 0, RefRangeEnd = 0, XrefRangeStart = 3250532, XrefRangeEnd = 3250543, MetadataInitTokenRva = 0L, MetadataInitFlagRva = 0L)]
+	public unsafe UIModLocalBase()
+		: this(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr))
+	{
+		System.IntPtr* param = null;
+		System.Runtime.CompilerServices.Unsafe.SkipInit(out System.IntPtr exc);
+		System.IntPtr intPtr = IL2CPP.il2cpp_runtime_invoke(NativeMethodInfoPtr__ctor_Public_Void_0, IL2CPP.Il2CppObjectBaseToPtrNotNull(this), (void**)param, ref exc);
+		Il2CppException.RaiseExceptionIfNecessary(exc);
+	}
+
+	static UIModLocalBase()
+	{
+		Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr = IL2CPP.GetIl2CppClass("Assembly-CSharp.dll", "", "UIModLocalBase");
+		IL2CPP.il2cpp_runtime_class_init(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr);
+		NativeFieldInfoPtr_item = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, "item");
+		NativeFieldInfoPtr_info = IL2CPP.GetIl2CppField(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, "info");
+		NativeMethodInfoPtr_get_textTitle_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704255);
+		NativeMethodInfoPtr_get_goRoot_Public_get_GameObject_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704256);
+		NativeMethodInfoPtr_get_ptextTitleName_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704257);
+		NativeMethodInfoPtr_get_ptextTitleDesc_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704258);
+		NativeMethodInfoPtr_get_ptextTitleLoad_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704259);
+		NativeMethodInfoPtr_get_btnDown_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704260);
+		NativeMethodInfoPtr_get_textDown_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704261);
+		NativeMethodInfoPtr_get_btnAdd_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704262);
+		NativeMethodInfoPtr_get_textAdd_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704263);
+		NativeMethodInfoPtr_get_btnPath_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704264);
+		NativeMethodInfoPtr_get_textPath_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704265);
+		NativeMethodInfoPtr_get_ptextNotMod_Public_get_TextMeshProUGUI_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704266);
+		NativeMethodInfoPtr_get_btnReadSort_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704267);
+		NativeMethodInfoPtr_get_btnSaveSort_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704268);
+		NativeMethodInfoPtr_get_btnDelAll_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704269);
+		NativeMethodInfoPtr_get_textDelAll_Public_get_Text_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704270);
+		NativeMethodInfoPtr_get_btnClose_Public_get_Button_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704271);
+		NativeMethodInfoPtr_Init_Public_Virtual_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704272);
+		NativeMethodInfoPtr_UIActionFunc_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704273);
+		NativeMethodInfoPtr__ctor_Public_Void_0 = IL2CPP.GetIl2CppMethodByToken(Il2CppClassPointerStore<UIModLocalBase>.NativeClassPtr, 100704274);
+	}
+
+	public UIModLocalBase(System.IntPtr P_0)
+		: base(P_0)
+	{
+	}
+}
+
+
+//==================== TYPE UIModLocalBase.Item ====================
+// decompile failed: Could not find type definition UIModLocalBase.Item in type system.
+
+//==================== TYPE UIModLocalBase.Info ====================
+// decompile failed: Could not find type definition UIModLocalBase.Info in type system.
+
