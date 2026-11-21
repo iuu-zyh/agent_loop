@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 气泡去重决策的单元测试。**故意独立于主工程**：
+       主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），而 BubbleCommitPolicy
+       是刻意做成零 Unity 依赖的纯逻辑，所以这里直接把它当源码链接进来编成 net8.0 控制台程序，
+       用 `dotnet run` 就能在开发机上跑（不需要 Unity、不需要游戏）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py        （加 quiet 只看最后一行结论）
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编 —— `dotnet run` 是增量构建，
+       变异验证在同一秒内反复改源码时会被"无需重编"骗过去（踩过）。
+       ⚠ 本注释里不能出现两个连续的减号（XML 注释非法），写命令参数时注意。
+
+       注意：主工程 csproj 是显式 <Compile Include> 列表 + `UI\*.cs` 通配，
+       本目录不在通配范围内，所以加这个工程**不会**影响模组构建。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>BubbleCommitPolicyTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\BubbleCommitPolicy.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 工具侧边栏判定核（ToolCatalogCore）的单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity 依赖的纯逻辑（输入全是字符串），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么这个核必须有测试：它判的是"台词里那个全角空格 U+3000 在哪、光标该落在哪"。
+       这类错在实机上**完全静默** —— 找不到空位 → 光标落在末尾（玩家得自己找位置删字）；
+       认错字符（把半角空格当空位）→ 光标停在一个无关的字中间。两者都不报错、都没日志，
+       只有"手感怪"，永远不会有人来修。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py            （自动发现本工程）
+         只跑本工程：给脚本加 only=ToolCatalogTests（参数写法见该脚本 docstring）
+         ⚠ 本注释里不能出现两个连续减号，故上面不写命令行原文。
+
+       接线（建面板、拉 list_tools、点击→填框/发送）在 UI/ToolPanel.cs，
+       由 Python 侧源码契约测试 tests/test_tool_sidebar_contract.py 锁住 ——
+       两边合起来才完整：这里测"规则对不对"，那边测"接线有没有被改回去"。-->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>ToolCatalogTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\ToolCatalogCore.cs" />
+  </ItemGroup>
+
+</Project>

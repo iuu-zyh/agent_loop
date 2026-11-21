@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 常驻帧回调的生命周期判据（FrameTickerCore）单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity 依赖的纯逻辑（帧号由调用方传入），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么这个核必须有测试：它要防的故障在真机上**完全静默** ——
+       11-19 01:09 那次，NPC 传功被排进「此间事了」队列后永不执行，玩家一直催、
+       模型一直答"还在等"，而 Player.log 里一个字都没有。根因是队列的每帧驱动
+       在世界重载时被清掉了，而我们用一个不会失效的布尔"记得挂过"⇒ 再也不重挂。
+
+       这里锁两件事：
+         ① **该不该重挂**（判宽了 = 重载后仍以为活着，故障原样复现；
+                      判窄了 = 每帧撤旧挂新，队列稳定窗永远走不完）；
+         ② **同一帧只跑一份**（历史事故：F9/F10/F11 同一次按键触发两次开关、开→关自己抵消）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编。
+
+       接线（谁持有句柄、谁在 Destroy 里 StopAll）由 Python 侧
+       tests/test_frame_tick_contract.py 锁在真实 FrameTicker.cs / ModMain.cs 上 ——
+       两边合起来才完整：这里测"判据对不对"，那边测"接线有没有被改回去"。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>FrameTickerCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\app\FrameTickerCore.cs" />
+  </ItemGroup>
+
+</Project>

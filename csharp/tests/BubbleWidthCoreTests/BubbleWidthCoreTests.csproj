@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 气泡宽度策略核（BubbleWidthCore）的单元测试。**故意独立于主工程**：
+       主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），而 BubbleWidthCore 是刻意做成
+       零 Unity 依赖的纯逻辑，所以这里把它当源码链接进来编成 net8.0 控制台程序。
+
+       为什么需要它：11-19 用户报「气泡全挤在左侧」，根因是气泡盒在预制体里是**死宽 450**
+       （`NpcBubble/UserBubble` 的 `m_SizeDelta.x`，行模板 HLG 是 `m_ChildControlWidth = 0`
+       ⇒ 布局永不覆盖）。改成跟内容区走之后，错的方向有两条，**都不会报错**：
+         · 上限算宽了  → 气泡撑出窗口（穿模）；
+         · 上限算窄了  → 整屏气泡缩成一条线（比原来更糟）。
+       这两条在实机上只看一眼"对不对"很难量化，所以把算式钉在表里。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py 加 only 参数只跑本工程（写参数时见下方警告）
+
+       ⚠ 诚实边界：这里只测**算式**。"有没有接上、读的是不是那几个 rect"由 Python 侧
+       源码契约测试 tests/test_chat_bubble_layout_contract.py 锁在真实 ChatItemViews.cs /
+       ChatUiBuilder.cs 上 —— 单测全绿 + 一处没接 = 用户侧一点变化都没有。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>BubbleWidthCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\BubbleWidthCore.cs" />
+  </ItemGroup>
+
+</Project>

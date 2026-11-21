@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「此刻能不能做事」四个视角（WorldStateCore）的单元测试。
+
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity / 零 Newtonsoft 依赖的纯逻辑（吃一个纯数据快照），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序。
+
+       为什么必须有：这里每一条错在真机上**全是静默的** ——
+         · Yield 里误加"对话窗" ⇒ 模型在聊天里发起动作时，排队器永远让路，
+           动作被拖到玩家关窗（他可能聊很久），看起来就是"NPC 不理我"；
+         · Busy 里少一条"对话窗" ⇒ 玩家正在跟 A 聊天，B 直接弹确认窗打断他；
+         · Execute 里少一条"不在主世界" ⇒ 弹窗沉进游戏系统队列不出队，
+           90 秒后静默超时（09-24 那个故障的形状）；
+         · SpeechBlock 里误加"战斗中" ⇒ 战斗中传音全被丢掉（本该允许，只弹横幅）。
+       没有一条会报错，所以四个视角的成员与顺序必须由断言钉住。
+
+       跑法：python3 scripts/dev/run_csharp_tests.py
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编。
+       ⚠ 本注释里不能写两个连续的减号（XML 注释非法）。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>WorldStateCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本。
+         只链接核（不含 Facts/Gate —— 那两个碰 Unity）。 -->
+    <Compile Include="..\..\state\WorldStateCore.cs" />
+  </ItemGroup>
+
+</Project>

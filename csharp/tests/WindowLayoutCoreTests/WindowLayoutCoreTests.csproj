@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 窗口版式判定核（WindowLayoutCore）的单元测试。与 NoticeCoreTests / DragCoreTests 同款：
+       被测源码**链接**进 net8.0 控制台工程，`dotnet run` 直接跑（零 Unity、零文件 IO）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+          python3 scripts/dev/run_csharp_tests.py 加 only WindowLayoutCoreTests
+
+       ⚠ 诚实边界：这里只测**判据**（盘上的数还能不能用 / 夹进视口 / 变没变）。
+         真实落盘与"开窗两帧后写回"由 tests/test_window_layout_contract.py 锁在
+         WindowLayoutStore.cs / ChatWindow.cs 上。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>WindowLayoutCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587;CS0649</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\UI\WindowLayoutCore.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「战前 / 战中」两态判据（BattleFlowCore）的单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity / 零 Newtonsoft 依赖的纯逻辑（时间由调用方传入），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么必须有：这里每条规则错在真机上**全是静默的** ——
+         · 该挡没挡 ⇒ 两场架叠在一起（10-25 那次「点了对话没反应」的根因链）；
+         · 不该挡却挡 ⇒ NPC 永久哑掉，日志里只有"它不再发起动作"；
+         · 退出条件写错 ⇒ 婉拒一场切磋后再也不能攻击，直到重启游戏。
+       没有一条会报错，所以判据必须由断言锁住。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编。
+       ⚠ 本注释里不能写两个连续的减号（XML 注释非法）—— 写命令行参数时注意。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>BattleFlowCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\state\BattleFlowCore.cs" />
+  </ItemGroup>
+
+</Project>

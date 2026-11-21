@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「战前 / 战中」闸的**端到端调用链模拟**（10-25 复核新增）。
+       与 `BattleFlowCoreTests` 的分工：
+         · 那边是**单元**断言（判据表本身，一条一条钉）；
+         · 这里是**把四层串起来跑一遍真机时间线**，看链条上有没有"每层都对、合起来错"。
+
+       链接的是**与模组编译的同一批源码文件**（不是副本）：
+         · state/BattleFlowCore.cs     —— 两态机 + 点击作用域
+         · state/WorldStateCore.cs     —— 四个视角（谁算忙）
+         · drama/DeferredActionCore.cs —— 排队器状态机（稳定窗/硬顶/退让）
+       只有三处是复刻的（它们必须碰 Unity，没法链接）：
+         ① 接线层把"游戏事件"翻译成 `NotePage/NoteSampled/…` 的参数；
+         ② `BattleFlowGate.VerdictOf`（= 未武装 ⇒ Pass，否则 `Grade`，两行）；
+         ③ `ToolExecutor` 的决策顺序（判拒绝 → 判排队 → 直发，以及排队执行体里的两道复查）。
+       ③ 的源码顺序由 `tests/test_battle_flow_gate.py` 那几条契约钉着（本文件不重复钉）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py    （加 only 参数可只跑本工程）
+       失败时进程退出码非 0。
+       ⚠ 本注释里不能写两个连续的减号（XML 注释非法）。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>BattleFlowSim</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\state\BattleFlowCore.cs" />
+    <Compile Include="..\..\state\WorldStateCore.cs" />
+    <Compile Include="..\..\drama\DeferredActionCore.cs" />
+  </ItemGroup>
+
+</Project>

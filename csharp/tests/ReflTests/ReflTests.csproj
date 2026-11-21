@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 反射门面（game/Refl.cs）的单元测试。**故意独立于主工程**：主工程是 net472 +
+       Unity/IL2CPP 引用（WSL 里跑不起来），而 Refl.cs 只依赖 `ModMain.P` 一个日志口，
+       所以这里把被测源码当**同一个文件**链接进来，另配一个 10 行的 ModMain 桩接日志。
+
+       为什么需要它：11-19 把 7 份反射实现收成 1 份，能省的前提是"语义没变"。
+       而这里的语义有几条是**静默**的（读不到返回 null、同名成员取最派生、缓存命中含"没找到"），
+       错了不会报错，只会在真机上表现为"某个字段突然读不到"——这类问题一旦流到实机，
+       排查成本是一晚上。所以把它们钉死。
+
+       ⚠ 诚实边界：这里只测**门面自己的行为**（对象是普通 C# 类，不是 Il2Cpp 代理）。
+       "代理类型把原生字段暴露成属性"这条结论来自反编 dump，不是这里测出来的；
+       真机上的可观测证据只有 `[Refl] 读不到：类型.成员` 那几行。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>ReflTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\game\Refl.cs" />
+  </ItemGroup>
+
+</Project>

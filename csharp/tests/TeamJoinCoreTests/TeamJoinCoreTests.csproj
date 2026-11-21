@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「决斗要不要带队友」状态机的单元测试（10-25）。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而 `TeamJoinCore` 是刻意做成零 Unity 依赖的纯逻辑，所以这里直接把源码链接进来
+       编成 net8.0 控制台程序（与 DramaLedgerCoreTests / BattleFlowCoreTests 同一套路）。
+
+       为什么必须有：这套判据错在真机上**全是静默的** ——
+         · 该问没问 ⇒ 玩家永远看不到确认窗，队友永远不来（日志一片正常）；
+         · 不该重复问 ⇒ 应战窗期间连弹两次，第二次会把玩家刚做的选择顶掉；
+         · 表态没作废 ⇒ 上一场点过"一起应战"，下一场没问就自己带人上场；
+         · 该作废的没作废 ⇒ 取消应战之后，表态残留到很久以后的某一场。
+       这些都没法靠"进游戏打一场"稳定复现（要看运气凑齐时序），所以判据表必须由测试锁住。
+
+       跑法：python3 scripts/dev/run_csharp_tests.py（加 only 参数可只跑本工程：TeamJoinCoreTests） -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>TeamJoinCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是同一个文件，不是副本 -->
+    <Compile Include="..\..\state\BattleFlowCore.cs" />
+    <Compile Include="..\..\state\TeamJoinCore.cs" />
+  </ItemGroup>
+
+</Project>

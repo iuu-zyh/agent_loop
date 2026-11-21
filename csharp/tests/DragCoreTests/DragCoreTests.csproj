@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 窗口拖动纯算术（DragCore）单元测试。套路同 BubbleTextTests（源码链接进 net8.0）。
+       ⚠ 诚实边界：只测算术（缩放换算/钳制域）；"挂在 Update 上、起点判据、不新建
+         MonoBehaviour"由 tests/test_drag_contract.py 锁真实 ChatWindow.cs。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>DragCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\UI\DragCore.cs" />
+  </ItemGroup>
+
+</Project>

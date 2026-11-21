@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 捎话优先队列排序键（InitiativeSortCore）的单元测试。
+
+       为什么单独一个工程：`SortRows` 原先住在 `NpcInitiativeMonitor` 里，而那个类
+       依赖 Unity / IL2CPP（WSL 里编不了、跑不了），于是"优先队列比好感高"这条
+       用户明确拍板的判据**没有任何断言**。它是纯比较函数，抽出来零成本就能钉住。
+
+       判据出错的方式全都不报错（见 InitiativeSortCore.cs 文件头）：
+         · 优先没生效 → 收信人被好感压到后面，与"没做这个功能"一模一样；
+         · 优先过度   → 有信就天天触发，玩家体感"这 NPC 抽风了"；
+         · 污染好感   → PickIntent/BuildReason 读到假好感，仇人进正向池。
+
+       跑法：python3 scripts/dev/run_csharp_tests.py -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>InitiativeSortCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\npc\InitiativeSortCore.cs" />
+  </ItemGroup>
+
+</Project>

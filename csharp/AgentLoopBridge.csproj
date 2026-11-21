@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A1B2C3D4-E5F6-4A7B-8C9D-E0F1A2B3C4D5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AgentLoopBridge</RootNamespace>
+    <!-- 程序集名必须与官方模组命名空间一致（GGBH_MOD 反射 {命名空间}.ModMain，三者一致约定） -->
+    <AssemblyName>MOD_Jgmg5L</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;MELONLOADER;AB_UI</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <!-- Release = **发包专用**。与 Debug 的唯一实质差别是 DebugType=none：
+       Debug/pdbonly 都会在 PE 的 CodeView(RSDS) 目录里写下 PDB 的**绝对路径**
+       （实测 `F:\agent_loop\csharp\obj\Debug\MOD_Jgmg5L.pdb`），而这个字符串会跟着
+       DLL 一起发给玩家 —— 既泄漏开发机目录，也让人一眼看出是未清理的调试产物。
+       DebugType=none 则完全不生成 PDB、不写 RSDS，DLL 里没有任何本机路径。
+       （AB_UI 两个配置都定义 —— 面板代码不能只在 Debug 里编。） -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;MELONLOADER;AB_UI</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <!-- 游戏互操作程序集与 Unity/IL2CPP 托管引用（真实路径：游戏 MelonLoader\Managed\）
+       发行版打包时才需要改这两个值——**只影响编译期**，运行时路径由 ModPaths 动态解析。
+       可用环境变量覆盖而无需改文件：set GGBH_GAME_ROOT=D:\...\鬼谷八荒 -->
+  <PropertyGroup>
+    <GameRoot Condition="'$(GGBH_GAME_ROOT)' != ''">$(GGBH_GAME_ROOT)</GameRoot>
+    <GameRoot Condition="'$(GameRoot)' == ''">E:\SteamLibrary\steamapps\common\鬼谷八荒</GameRoot>
+    <GameManaged>$(GameRoot)\MelonLoader\Managed</GameManaged>
+  </PropertyGroup>
+
+  <!-- 注意：GameRoot 默认值是本机 Steam 库路径；换机器请改上面一行，或设环境变量 GGBH_GAME_ROOT -->
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>$(GameRoot)\MelonLoader\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>$(GameManaged)\..\MelonLoader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(GameManaged)\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(GameManaged)\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>$(GameManaged)\Il2Cppmscorlib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>$(GameManaged)\Il2CppSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Il2CppNewtonsoft.Json">
+      <HintPath>$(GameManaged)\Il2CppNewtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(GameManaged)\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnhollowerBaseLib">
+      <HintPath>$(GameManaged)\UnhollowerBaseLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnhollowerRuntimeLib">
+      <HintPath>$(GameManaged)\UnhollowerRuntimeLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(GameManaged)\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>$(GameManaged)\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>$(GameManaged)\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GameManaged)\Unity.TextMeshPro.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(GameManaged)\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(GameManaged)\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(GameManaged)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(GameManaged)\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(GameManaged)\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 按职责域分目录（2026-09-21 整理）：每个子目录一条通配 —— 新增文件自动纳入编译，
+       彻底消灭"根目录 .cs 漏登记 → CS0103 连环"的事故面（显式列表曾漏登记 ActionWatcher 一次）。
+       域职责速查（详见各文件头注释）：
+         app       mod 装配与基础设施：入口壳/ModMain/诊断开关/主线程调度/路径/配置/AB注入
+         bridge    与 Python 侧的通道与进程管理：WS 客户端/传输/进程拉起/存活检测/身份帧出站
+         game      游戏世界数据只读层：快照/解析/登记表/关系网/物品占位符/ID 空间
+         tools     工具与动作执行：ToolExecutor/动作挂起/动作钩子/动作收尾观察
+         drama     剧情窗域：确认窗挂起/记录钩子/文本捕获/归因凭证
+         npc       NPC 自主行为：主动互动监测/开对话窗统一入口
+         contacts  通讯录职责层：数据中转/常驻职责/未读信箱
+         portrait  立绘：原生管线加载/像素缓存
+       ⚠ 两个加载敏感点（契约钉在 tests/test_mod_entry_contract.py，移动/改名前先看它）：
+         · app\ModMainEntry.cs —— namespace 必须保持 MOD_Jgmg5L（官方桥反射 {命名空间}.ModMain）
+         · AssemblyName 必须保持 MOD_Jgmg5L（与官方模组命名空间一致）
+       命名空间与文件夹解耦：全部文件统一 namespace AgentLoopBridge，移动文件不改命名空间。 -->
+  <ItemGroup>
+    <Compile Include="app\*.cs" />
+    <Compile Include="bridge\*.cs" />
+    <Compile Include="game\*.cs" />
+    <Compile Include="tools\*.cs" />
+    <Compile Include="drama\*.cs" />
+    <Compile Include="npc\*.cs" />
+    <Compile Include="contacts\*.cs" />
+    <Compile Include="portrait\*.cs" />
+    <!-- state：**「此刻世界是什么状态」的唯一一处**（10-25 新增）。
+         判据分三层，别混：
+           · 事实层（哪些位现在亮着）——将来 `WorldStateProbe` 统一读；
+           · 两级闸（能说话 / 能做动作）；
+           · 业务态（战前 / 战中 / 剧情链收尾）。
+         为什么单独一个目录：这些判据出错**全是静默的**（该挡没挡 = 打两场架；
+         不该挡却挡 = NPC 哑掉），必须能被测试盯住，也必须有明确的归属地 ——
+         过去它们散在 npc\NpcInitiativeMonitor.cs（1702 行，混了业务/诊断/日历五件事）、
+         app\ModMain.cs 的一个 lambda 里，同一个"忙"字出现三份互不相同的口径。 -->
+    <Compile Include="state\*.cs" />
+    <!-- diag\team：组队的**调试面**（现只剩 TeamMultiProbe 一个真机探针）。
+         与 tools\ 下的产品代码分开放：产品代码**不引用**这里
+         ⇒ 这里可以整体不编译而不影响组队功能。
+         10-21 删除了 TeamProbe / TeamBattleEventProbe（结论已并入产品代码，见 docs\team.md §9.6）。 -->
+    <Compile Include="diag\team\*.cs" />
+    <!-- UnitIdRegistryCore（game）：零 Unity/零 Newtonsoft 的纯逻辑核，csharp/tests/UnitIdRegistryTests
+         直接链接本文件跑断言（失败模式全是静默的：跨档污染/覆盖写/自愈误删）。
+         PropsSigilCore（game）、BubbleTextCore（UI）同理 —— 见各自文件头注释。 -->
+    <Compile Include="UI\*.cs" />
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

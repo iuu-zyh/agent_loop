@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 群聊 @ 补全策略核（MentionPickCore）的单元测试。**故意独立于主工程**：
+       主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），而 MentionPickCore 是刻意做成
+       零 Unity 依赖的纯逻辑，所以这里把它当源码链接进来编成 net8.0 控制台程序。
+
+       为什么需要它：11-21 用户要求「打 @ 就弹候选、继续打字候选跟着变」。
+       判据错的三处都是**静默**的（候选不弹 / 弹着不消失 / 吃掉半个名字），
+       实机上肉眼很难判断"该弹却没弹"到底是判据错还是 UI 没接上。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+
+       ⚠ 诚实边界：这里只测**判据**。"浮层有没有真建出来、键盘事件有没有接上"
+       由 Python 侧源码契约测试 tests/test_mention_pick_contract.py 锁在真实
+       ChatPresenter.cs / ChatWindow.cs 上 —— 单测全绿 + 一处没接 = 玩家侧毫无变化。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>MentionPickCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\MentionPickCore.cs" />
+  </ItemGroup>
+
+</Project>

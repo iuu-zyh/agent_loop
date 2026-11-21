@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 通讯录快捷键（C）判定核（HotkeyCore）的单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity 依赖的纯逻辑（输入全是接线层传进来的布尔），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么这个核必须有测试：它的第一条规则（同帧去重）正是本工程踩过最贵一课的**解药** ——
+       历史上 F9/F10/F11 三个热键"能注册、能按下、就是没反应"，根因是帧回调被重复注册
+       （`g.timer` 是游戏全局对象，回主界面再进世界会多挂一份），同帧两次判定 ⇒
+       Toggle 型一开一关互相抵消。这类错误**在真机上全是静默的**（零报错 + "没反应"），
+       只能靠这里的断言锁住。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+         只跑本工程：python3 scripts/dev/run_csharp_tests.py 配 only=HotkeyCoreTests
+         （脚本参数写法见其 docstring；⚠ 本注释里不能出现两个连续减号，故不写命令行原文）
+       失败时进程退出码非 0（脚本会先清 obj/bin 强制重编）。
+
+       接线（读 Input、喂判据、触发 ContactPanelOpener、打日志）由 Python 侧源码契约测试
+       tests/test_contact_hotkey_contract.py 锁在真实 AbHotkeys.cs / HotkeyGate.cs /
+       FastKeyGate.cs / ContactPanelOpener.cs 上 —— 两边合起来才完整：这里测"规则对不对"，
+       那边测"接线有没有被改回去"。-->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>HotkeyCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\HotkeyCore.cs" />
+  </ItemGroup>
+
+</Project>

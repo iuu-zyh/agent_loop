@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 通讯录「最近」行时间判档（ContactTimeCore.Format）的单元测试。
+       套路同 BubbleTextTests：被测源码链接进 net8.0 控制台工程，
+       python3 scripts/dev/run_csharp_tests.py 加 only 参数可单跑。
+
+       ⚠ 诚实边界：只测**判档规则**；接线（只在最近 Tab 打、时钟一轮取一次、
+         Name 让位）由 tests/test_contact_recent_time_contract.py 锁真实源码。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>ContactTimeCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\UI\ContactTimeCore.cs" />
+  </ItemGroup>
+
+</Project>

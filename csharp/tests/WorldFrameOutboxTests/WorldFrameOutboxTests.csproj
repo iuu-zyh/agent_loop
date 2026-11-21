@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「存档身份帧」发送队列（WorldFrameOutbox）单元测试。
+       **故意独立于主工程**，理由与同目录另外几个工程相同：主工程是 net472 + Unity/IL2CPP
+       引用（WSL 里跑不起来），而 `WorldFrameOutbox` 是刻意做成**零 Unity / 零 Newtonsoft**
+       的纯逻辑（载荷类型参数化，单测用 string），所以直接把源文件链接进来编成 net8.0
+       控制台程序即可。
+
+       为什么这一层值得单独钉：它的每个失败模式都是**静默**的 ——
+         ① 未连接时把帧丢掉（= 整局没有存档身份 → 写入落扁平目录 → 跨档串号）；
+         ② 补投顺序反了（先存档后读档 = 刚固化的内容又被丢掉）；
+         ③ 积压时丢**最新**（"最后一次读档"永远投不出去）；
+         ④ 补投时没看连接状态（把帧原地烧掉，之后再也不会补）。
+       没有界面、没有异常，只能靠这里钉。
+
+       ⚠ 诚实边界：这里只测队列本身。**真正的发送时机**（哪条回调里调 Send/Flush）由
+         Python 侧源码契约（`tests/test_world_identity_contract.py`）+ 实机验收兜。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py            （加 quiet 只看最后一行结论）
+       失败时进程退出码非 0。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>WorldFrameOutboxTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\bridge\WorldFrameOutbox.cs" />
+  </ItemGroup>
+
+</Project>

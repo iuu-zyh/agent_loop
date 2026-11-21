@@ -1,0 +1,23 @@
+# agent_loop 运行依赖
+#
+# 分层说明（2026-09-13 打包审计修正：原清单只列了 websockets，漏了 openai——
+# 照原清单装出来的环境会在「真要调 LLM」那一刻才炸，且被 Echo 兜底掩盖成"AI 不回话"）：
+#
+# 【必需】
+#   websockets —— C#↔Python 单 WebSocket 全双工通道（Python 作服务器）。
+#                 项目首个第三方依赖：stdlib 无 asyncio WS 服务器，websockets 纯 Python、轻量、业界标准。
+#   openai     —— LLM 客户端（llm/openai_client.py 懒导入 `from openai import OpenAI`）。
+#                 缺失 = 内芯退回 Echo 回显（对话永远复读），是最容易被误判成"mod 坏了"的故障。
+#                 它自身会带入 httpx / pydantic / anyio / distro / jiter / sniffio / tqdm / typing-extensions。
+#                 **上限钉在 <2 是有意的**：本机开发与全部测试跑的是 1.109.1；上游已出 3.x
+#                 （依赖换成 httpx2 那一代），只确认过 `chat.completions.create` 仍在，
+#                 未做真实链路回归。发行包用已验证的大版本，升 3.x 请先补一次真实调用测试。
+#
+# 【可选】
+#   Pillow     —— 仅在「对象/像素 → 标准图」这条路上用（llm_adapter 的 PIL 分支：截图、剪贴板位图）。
+#                 纯「文件路径 / 字节流 → data URI」不需要它。缺失只影响这一种图片来源。
+websockets>=12,<18
+openai>=1.30,<2
+
+# 可选：需要支持「截图/位图」图片来源时再装
+# Pillow>=10

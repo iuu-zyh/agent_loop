@@ -1,0 +1,38 @@
+# 构建产物 / 缓存
+bin/
+obj/
+__pycache__/
+*.pyc
+.venv*/
+*.egg-info/
+
+# 历史手工备份（体积大，且本身就是"后悔药"，不进版本控制）
+backup/
+*.bak_*
+
+# 运行日志
+logs/
+*.log
+
+# 本地杂项
+.mine_*/
+.workbuddy/
+
+# 依赖快照（由 scripts/dev/run_tests_for.py --probe 重采；内容与本机文件时间戳相关）
+scripts/dev/.depmap.json
+.pytest_last_subset_run
+
+# 公开仓库：本地数据与不可分发素材
+config.json
+dist/
+reference/
+hw1_jupyterhub/
+generated-images/
+.agent_loop_build/
+*.zip
+*.bak_*
+_diag_*
+NUL
+.pytest_last_subset_run
+scripts/dev/.depmap.json
+scripts/dev/.test_durations.json

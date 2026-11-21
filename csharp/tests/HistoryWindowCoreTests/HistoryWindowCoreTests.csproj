@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 历史分页窗口判定核（HistoryWindowCore）的单元测试。
+       与 HistoryBuildCoreTests / NoticeCoreTests 同款：源码链接进 net8.0 控制台工程。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+          python3 scripts/dev/run_csharp_tests.py 加 only 本工程名
+
+       ⚠ 诚实边界：这里只测**判据**（切在哪 / 要不要分页 / 插入后滚动位置怎么补偿）。
+         真实接线（首屏只建窗口内、插入到顶部保顺序）由 tests/test_chat_history_paging_contract.py
+         锁在 ChatWindow 上。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>HistoryWindowCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\UI\HistoryWindowCore.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 历史回放分帧构建策略核（HistoryBuildCore）的单元测试。**故意独立于主工程**：
+       主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），而 HistoryBuildCore 是刻意
+       做成零 Unity 依赖的纯逻辑，所以这里把它当源码链接进来编成 net8.0 控制台程序。
+
+       为什么需要它：11-20 单聊窗 575 条历史回放**卡住 1.13 秒**（一帧 770ms）。
+       修法是把构建摊到多帧，但"摊多少"这件事错的方向有两条，**都不会报错**：
+         · 摊太多（每帧几行）→ 575 行拖成好几百帧，屏幕十几秒画不全（比卡一下更糟）；
+         · 摊太少（每帧几十行）→ 单帧仍然超预算，等于没修。
+       所以把判据钉在表里。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+
+       ⚠ 诚实边界：这里只测**判据**。"有没有接上、是否真的每帧只建这么多"由 Python 侧
+       源码契约测试 tests/test_history_build_contract.py 锁在真实 ChatWindow.cs 上 ——
+       单测全绿 + 一处没接 = 用户侧一点变化都没有。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>HistoryBuildCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\UI\HistoryBuildCore.cs" />
+  </ItemGroup>
+
+</Project>

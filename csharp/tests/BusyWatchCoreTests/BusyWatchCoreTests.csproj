@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「玩家忙 / 战斗中」观测状态机（BusyWatchCore）的单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity 依赖的纯逻辑（时刻由调用方传入），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么这个核必须有测试：它服务的报障是「检测频繁显示正在忙/正在战斗中，但实际不是」。
+       边沿、补报、统计窗口、时间不前进这四类规则错一条在真机上**都是静默的** ——
+       要么日志被刷爆（真故障反而淹掉），要么该补的没补（"卡住不放"这个形态直接丢失），
+       要么统计窗口不清零（用户说的"频繁"被抹平成 3 次）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编。
+
+       接线（谁采样、谁注入日志出口）由 Python 侧
+       tests/test_busy_watch_contract.py 锁在真实 BusyWatch.cs / ModMain.cs 上。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>BusyWatchCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\state\BusyWatchCore.cs" />
+  </ItemGroup>
+
+</Project>

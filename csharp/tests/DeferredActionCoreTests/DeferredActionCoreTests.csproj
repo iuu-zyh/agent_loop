@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「此刻发不出去的动作」排队器纯逻辑核（DeferredActionCore）的单元测试。
+       **故意独立于主工程**：主工程是 net472 + Unity/IL2CPP 引用（WSL 里跑不起来），
+       而这个核是刻意做成零 Unity / 零 Newtonsoft 依赖的纯逻辑（时间由调用方传入），
+       所以这里直接把它当源码链接进来编成 net8.0 控制台程序，用 `dotnet run` 就能跑。
+
+       为什么这个核必须有测试：它管的全是**时间与顺序**规则（稳定窗 / 硬顶 / 谁先执行 /
+       告知 TTL），错一条在真机上都是静默的 —— "排了队却不执行"、"抢在处置页之前开窗"、
+       "同一件事执行两遍"、"半分钟后凭空冒出一句话"，没有一个会报错。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py        （加 quiet 只看最后一行结论）
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编 —— `dotnet run` 是增量构建，
+       变异验证在同一秒内反复改源码时会被"无需重编"骗过去（踩过）。
+       ⚠ 本注释里不能出现两个连续的减号（XML 注释非法），写命令参数时注意。
+
+       接线（谁注入判据、谁执行闭包、谁发告知）由 Python 侧源码契约测试
+       tests/test_action_done_queue.py 锁在真实 ToolExecutor.cs / DramaGate.cs /
+       ModMain.cs 上 —— 两边合起来才完整：这里测"规则对不对"，那边测"接线有没有被改回去"。-->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>DeferredActionCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\drama\DeferredActionCore.cs" />
+  </ItemGroup>
+
+</Project>

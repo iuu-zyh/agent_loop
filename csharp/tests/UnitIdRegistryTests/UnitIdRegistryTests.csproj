@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 名字→unitID **全局登记表**的纯逻辑核心（UnitIdRegistryCore）单元测试。
+       **故意独立于主工程**，理由与同目录另外五个工程相同：主工程是 net472 + Unity/IL2CPP 引用
+       （WSL 里跑不起来），而 `UnitIdRegistryCore` 是刻意做成**零 Unity / 零 Newtonsoft**
+       的纯逻辑（只用 System + System.Collections.Generic），所以直接把源文件链接进来
+       编成 net8.0 控制台程序即可，不需要 Unity、不需要游戏。
+
+       为什么这一层值得单独钉：它的每个失败模式都是**静默**的 ——
+         ① 跨存档不校验 → 旧档的 unitID 被当成本档的权威。unitID 换档即失效，而最坏情形
+            不是"查不到"（那会自愈），是那个 id 在新档里**恰好是另一个人** ⇒ 静默错人；
+         ② `Remember` 不幂等 → 每次开窗都写一次盘；
+         ③ `Forget` 不校验旧值 → 自愈时把**刚登记的正确值**误删，之后一路按名猜；
+         ④ 两个方向（name→id / id→name）不同步 → 反查给出过期答案，
+            "模型把 unitID 填进 target"时提示会指向**上一个人**。
+
+       ⚠ 诚实边界：这里只测核心。**文件读写 / 原子替换 / Mod 根解析**要碰 Unity 与真实磁盘，
+          WSL 里跑不起来 —— 那部分由 `scripts/dev/mutate_check_manual_identity.py` 的
+         `wide` 层（源码契约）加 Python 侧契约测试一起兜。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+         python3 scripts/dev/run_csharp_tests.py            （加 quiet 只看最后一行结论）
+       失败时进程退出码非 0。该脚本会先清 obj/bin 强制重编 —— `dotnet run` 是增量构建，
+       变异验证在同一秒内反复改源码时会被"无需重编"骗过去（踩过）。
+
+       注意：主工程 csproj 是显式 <Compile Include> 列表 + `UI\*.cs` 通配，
+       本目录不在通配范围内，所以加这个工程**不会**影响模组构建。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>UnitIdRegistryTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 被测源码：与模组编译的是**同一个文件**，不是副本 -->
+    <Compile Include="..\..\game\UnitIdRegistryCore.cs" />
+  </ItemGroup>
+
+</Project>

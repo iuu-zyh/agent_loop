@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 「须知」面板判定核（NoticeCore）的单元测试。与 TimeSepCoreTests / BubbleTextTests 同款：
+       被测源码**链接**进 net8.0 控制台工程，`dotnet run` 直接跑（零 Unity、零游戏类型）。
+
+       跑法（WSL，走 Windows 的 dotnet）：
+          python3 scripts/dev/run_csharp_tests.py 加 only NoticeCoreTests 只跑本工程
+
+       ⚠ 诚实边界：这里只测**判据**（弹不弹 / 弹哪页 / 哪条算新 / 水位只前进不后退）。
+         面板有没有真的接线、文案有没有被面板硬编码，由 Python 侧
+         tests/test_notice_panel_contract.py 锁在真实 NoticePanel.cs 上。
+         本工程**不链接 NoticeContentCore**：那份内容带中文长文，判据不该依赖它的具体条数。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NoticeCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\UI\NoticeCore.cs" />
+  </ItemGroup>
+
+</Project>

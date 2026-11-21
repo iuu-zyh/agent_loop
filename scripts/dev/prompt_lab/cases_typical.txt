@@ -1,0 +1,20 @@
+# 典型场景用例集：真实历史后面接这些话，看模型调不调、调对没有（=> 后是可接受的工具名，任一即算调对；none = 期望不调）
+# 用法：python scripts/dev/prompt_lab/replay_sessions.py --npc <NPC> --say-file scripts/dev/prompt_lab/cases_typical.txt --current-system --repeat 3
+你宗门近来可有什么动静？=>query_world
+凝寂宗永宁州分舵如今是个什么光景？=>query_world
+近来天下可有什么大事？=>query_world
+天下战力上数得着的都有谁？=>query_world
+附近有什么城镇，或者能寻到突破材料的地界？=>query_world
+你身上还有多少灵石？丹药也报个数。=>inspect_unit
+我背包里都有些什么，你替我数数。=>inspect_unit
+你可认得「风止」此人？=>search_units
+你可认得一个姓姜的前辈？=>search_units
+送我几枚丹药吧。=>inspect_unit,economy_item
+你那柄剑我看着不错，给我罢。=>item_acquire,economy_item,inspect_unit
+你手里那枚丹我出三百灵石买。=>inspect_unit,trade
+教我几手剑法吧，我想学剑。=>world_ai_action,inspect_unit
+你来寻我便是，我原地不动。=>movement
+你我如今是个什么交情？=>none
+此刻你身边还有旁人么？=>none
+你现在在何处？=>none
+我方才说的那些，你可都记着？=>none
