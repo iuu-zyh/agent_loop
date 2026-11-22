@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 用户数据迁移判定核（UserDataMigrationCore）的单测。与 WindowLayoutCoreTests 同款：
+       被测源码链接进 net8.0 控制台工程，`dotnet run` 直接跑（零 Unity）。
+
+       为什么值得单测：迁移是"静默"的 —— 覆盖错了不会报错，只会让用户改过的提示词
+       在某次更新后悄悄回退。这里钉死的是「只补缺失、绝不覆盖」这条判据。 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>UserDataMigrationCoreTests</AssemblyName>
+    <RootNamespace>AgentLoopBridge.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <NoWarn>CS1587;CS0649</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\app\UserDataMigrationCore.cs" />
+  </ItemGroup>
+
+</Project>

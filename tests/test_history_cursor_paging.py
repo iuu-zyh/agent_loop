@@ -21,7 +21,7 @@ if str(_ROOT.parent) not in sys.path:
 
 from agent_loop.session.history import project_ui_history  # noqa: E402
 
-_LEDGER = Path("/mnt/c/Users/<用户名>/.sessions/worlds/BOlQu6/%E5%A7%9C%E8%90%8C.jsonl")
+_LEDGER = Path("/mnt/c/Users/iu/.sessions/worlds/BOlQu6/%E5%A7%9C%E8%90%8C.jsonl")
 
 
 # ---------------------------------------------------------------- 测试账本

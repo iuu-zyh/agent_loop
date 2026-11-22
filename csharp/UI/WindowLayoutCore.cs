@@ -13,7 +13,7 @@
 /// 「位置和尺寸跨局记住，这就和配置里面的设置一样的啊」。于是写盘，但**不写 config.json**——
 /// 那个文件归 Python 的 `config_loader` 独占解释，C# 侧 `ModConfigFile` 只读不写，
 /// 两边同时写一个文件必然互相覆盖。落盘走独立文件 `window_layout.json`，与
-/// `notice_seen.json` 同层同款（数据根 = `ModAssets\`）。
+/// `notice_seen.json` 同层同款（数据根 = `%USERPROFILE%\.agent_loop\`）。
 ///
 /// ── 数值口径 ──────────────────────────────────────────────────────────────
 /// X/Y 是 `BG.anchoredPosition`（**画布单位**，不是屏幕像素——两者差一个 CanvasScaler 的

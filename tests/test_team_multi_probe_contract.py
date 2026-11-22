@@ -334,15 +334,23 @@ def test_auto_does_not_dump_in_battle():
 # **直接导致游戏启动闪退**（Player.log 停在 BattleEndHook 之后，一行输出都没写）。
 # 下面的测试把这个教训钉死：允许读，禁止挂。
 
+#: 早期这批断言写死了 WSL 路径；Windows 侧跑全量时统一折算到 ROOT。
+_WSL_ROOT = "/mnt/f/agent_loop/"
+
+
 def _src(path):
     from pathlib import Path
-    return Path(path).read_text(encoding="utf-8")
+    p = Path(path)
+    # Windows 侧 Path("/mnt/...") 的 str 会变成反斜杠，先统一成正斜杠再匹配
+    s = str(p).replace("\\", "/")
+    if s.startswith(_WSL_ROOT):
+        p = ROOT / s[len(_WSL_ROOT):]
+    return p.read_text(encoding="utf-8")
 
 
 def test_trigger_check_exists_and_is_readonly():
     """只查**代码行**，不查注释 —— 头注释里解释"为什么不用 Harmony"是正当的。"""
-    from pathlib import Path
-    lines = Path("/mnt/f/agent_loop/csharp/app/TriggerSelfCheck.cs").read_text(
+    lines = (ROOT / "csharp" / "app" / "TriggerSelfCheck.cs").read_text(
         encoding="utf-8").splitlines()
     code = "\n".join(l for l in lines if not l.lstrip().startswith(("//", "///", "*", "/*")))
     for bad in ("Harmony", "PatchAll", "[HarmonyPatch"):
@@ -405,8 +413,7 @@ def test_experiment_log_exists_and_has_structure():
       · **归档流水**还在（那可是真机烧出来的，不许丢）；
       · **入口文档**存在且指向归档（否则没人知道历史去哪了）。
     """
-    from pathlib import Path
-    p = Path("/mnt/f/agent_loop/docs/archive/2026-10-18-组队实验记录表.md")
+    p = ROOT / "docs" / "archive" / "2026-10-18-组队实验记录表.md"
     assert p.exists(), "实验记录表没了（docs/archive/2026-10-18-组队实验记录表.md）"
     txt = p.read_text(encoding="utf-8")
     # 每条实验要有：结构、预期、观测、结论
@@ -419,7 +426,7 @@ def test_experiment_log_exists_and_has_structure():
     assert "失败也要记" in txt, "记录表要写明失败也要记"
 
     # 入口文档必须在，并且告诉读者历史去哪了
-    entry = Path("/mnt/f/agent_loop/docs/features/team.md")
+    entry = ROOT / "docs" / "features" / "team.md"
     assert entry.exists(), "组队整合文档 docs/features/team.md 不存在"
     etxt = entry.read_text(encoding="utf-8")
     assert "docs/archive/" in etxt, \

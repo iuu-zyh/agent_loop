@@ -9,6 +9,50 @@
 
 ---
 
+## 2026-11-22 · 解除义父母关系（`jie_chu_ren_yi_fu_mu`）
+
+**问题**：`social_relation` 能 `ren_yi_fu_mu` 认义父母，却没有对应的解除 op ——
+一旦认下，工具层无法撤销；而其余 5 类关系都能解。
+
+**定案**：沿现有解除路径补一个 op：原生 `UnitActionRoleBreakWith` 先试，读回仍在则
+字段直写兜底。义父母/义子女在引擎里是**互逆的两种容器**
+（`parentBack` = 我的义父母、`childrenBack` = 我的义子女），所以兜底同时清
+`npc.parentBack` / `target.childrenBack` 及反向组合，读回也查两侧 ——
+只清一侧会留下"对方仍把 npc 当义亲"的半解除，且不报错。
+
+**范围**：对象可以是任意 NPC（`target` 真名），NPC↔NPC 与原来一样走免窗 `DirectBreak`；
+对玩家走确认窗。群聊里解除成功仍补一条公开叙述（`REL_BREAK_OPS`）。
+
+**验证**：定向 pytest 190 passed；变异验证（把 `tr.childrenBack.Remove` 改成
+`tr.parentBack.Remove`）新契约测试立刻变红，已还原；`dotnet build -c Release` 0 错误。
+已部署：PyInstaller 自测档 exe md5 `7add5d46…`，DLL md5 `AE1E3390…`（三处一致）。
+**未验证**：真机；原生 BreakWith 是否覆盖 `ParentBack`（代码不依赖它，兜底会接管）。
+详见 [`archive/journal/2026-11-22-解除义父母关系/`](archive/journal/2026-11-22-解除义父母关系/README.md)。
+
+---
+
+## 2026-11-22 · 用户数据根外置（v1.2.3 公告）
+
+**问题**：创意工坊整包更新会同步 `ModAssets/`，用户填的 API Key、改过的提示词、自建人设
+每次更新都被盖回去；窗口位置、公告水位、剧情账本也可能被清。
+
+**定案**：数据根移到 `%USERPROFILE%\.agent_loop`。优先级
+`AGENT_LOOP_DATA` > 用户目录 > 旧 `ModAssets` > Mod 根（源码树 / 手工布局）。
+首次启动迁移 **只补缺失、绝不覆盖**：`config.json` / `prompts/` / `window_layout.json` /
+`notice_seen.json` / `drama_ledger.jsonl`；`prompts/` 逐文件补缺，作者新增的内置人设能进来，
+用户改过的同名文件不动。
+
+**验证**：C# `UserDataMigrationCoreTests` 15 项全过；Python 契约 8 条全过；变异验证
+（删「目标已存在」早退 + 把 `File.Copy(..., false)` 改成 `true`）→ C# 3 项红、Python 1 条红。
+全量 pytest **2391 绿**、C# **34 个工程全过**、`run_tests_for.py --probe --force` 已重采快照。
+
+**顺带**：修了三处只在 WSL 成立的测试路径假设（`test_big_portrait_contract` /
+`test_team_multi_probe_contract` / `test_run_tests_for_contract`），Windows 侧全量不再假红。
+
+详见 [`features/user-data-root.md`](features/user-data-root.md)。
+
+---
+
 ## 2026-11-21 · 对话窗拖动 + 历史分页（v1.2.2 公告）
 
 两件用户可见的事：窗口能拖了、开窗不再一次拉全部历史。中间踩了四次"一次没做完整"。

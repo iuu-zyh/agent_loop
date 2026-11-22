@@ -415,7 +415,8 @@ code = marshal.loads(pyz.extract('agent_loop.session.history'))
 | 游戏 mod 目录 | `E:\SteamLibrary\steamapps\common\鬼谷八荒\ModExportData\Mod_Jgmg5L` |
 | 编辑器工程 | `F:\mod\ModProject_Jgmg5L\ModProject` |
 | **C# 日志** | `C:\Users\<用户名>\AppData\LocalLow\guigugame\guigubahuang\Player.log` |
-| **Python 日志** | `<mod目录>\ModAssets\logs\agent_loop.log` |
+| **用户数据根** | `C:\Users\<用户名>\.agent_loop`（config / prompts / logs / 窗口位置 / 公告水位 / 剧情账本） |
+| **Python 日志** | `C:\Users\<用户名>\.agent_loop\logs\agent_loop.log` |
 | 反编译素材 | `reference/`（**必留**，多个源码与测试引用它） |
 
 > `Player.log` 是 Unity 的；`MelonLoader/Latest.log` **没有**我们的行，别去那里找。

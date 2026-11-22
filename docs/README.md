@@ -33,6 +33,7 @@
 | [`brain-liveness.md`](./features/brain-liveness.md) | **Python 存活检测**：状态模型；九条自动拉起风险与对应的闸 |
 | [`lun-dao-fixed.md`](./features/lun-dao-fixed.md) | **论道静默失败**：传送扣光天数；四道保险 |
 | [`ui-lifecycle-and-input.md`](./features/ui-lifecycle-and-input.md) | **世界输入冻结**：双根因；R1/R2/R3 三条现行规则 |
+| [`user-data-root.md`](./features/user-data-root.md) | **用户数据根**：`.agent_loop` 优先级；迁移只补缺失、绝不覆盖 |
 
 ## 二、参考资料（`reference/`）
 

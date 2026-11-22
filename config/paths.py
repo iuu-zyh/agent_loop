@@ -5,10 +5,12 @@
     与 `<源码树>/config.json` 并排），所以各模块直接用 `Path(__file__).parent`
     找 config/prompts/logs —— 在源码树里完全正确，一旦打包成发行版就全错：
     包会躺在 `<Mod根>\\AgentLoop\\agent_loop\\`，而 config.json / prompts 必须在
-    `<Mod根>\\`（用户看得见、改得动、升级代码不覆盖）。
+    用户数据根（用户看得见、改得动、升级代码不覆盖）。
 
 契约（与 C# 侧 `ModPaths.EnvDataRoot` 同源，勿单方面改名）：
-    C# 拉起 Python 时下发环境变量 `AGENT_LOOP_DATA=<Mod根>`；
+    C# 拉起 Python 时下发环境变量 `AGENT_LOOP_DATA=<用户数据根>`；
+    发行版由 C# 的 `ModPaths.DataRoot` 解析为 `%USERPROFILE%\\.agent_loop`
+    （旧版的 `<Mod根>\\ModAssets` 会在首次启动时迁过去，见 UserDataMigrationCore）；
     本模块据此返回数据根。**未下发时退回包目录**——即开发机与全部单测的现有行为，
     一字不变（`python scripts/server.py`、`pytest` 都不需要设任何环境变量）。
 
@@ -38,7 +40,9 @@ TREE_ROOT = PKG_DIR.parent
 
 
 def data_root() -> Path:
-    """用户数据根：`AGENT_LOOP_DATA` 优先，未下发则用包目录本身。
+    """用户数据根：`AGENT_LOOP_DATA` 优先，未下发则用包目录本身（开发机 / 单测）。
+
+    发行版的 `%USERPROFILE%\\.agent_loop` 由 C# 经该环境变量下发，Python 侧不自己猜路径。
 
     返回绝对路径。环境变量指向不存在的目录时**不抛错**——退回包目录并让上层的
     「文件不存在」逻辑正常降级（配置读不到有代码内默认值，绝不因路径问题崩启动）。

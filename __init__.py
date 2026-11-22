@@ -8,7 +8,7 @@
 #    都会在启动日志里打出原作者信息；要抹掉就得主动改代码。
 #    条款见仓库根 README「授权与声明」与 LICENSE。
 __mod_name__ = "八荒智能体"
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 __author__ = "iuu-zyh"
 __repo__ = "https://github.com/iuu-zyh/agent_loop"
 __license__ = "PolyForm Noncommercial 1.0.0"

@@ -895,6 +895,7 @@ _SOCIAL_OP_CN = {
     "jie_yuan": "道侣", "jie_chu_jie_yuan": "道侣", "marry": "夫妻", "divorce": "夫妻",
     "bai_shi": "师徒", "shou_tu": "师徒", "jie_chu_bai_shi": "师徒", "jie_chu_shou_tu": "师徒",
     "jie_yi": "结义", "jie_chu_jie_yi": "结义", "ren_yi_fu_mu": "义父母",
+    "jie_chu_ren_yi_fu_mu": "义父母",
 }
 # 提案文案的动词短语（"提出…之意"）：名词版（道侣/师徒）塞进这个句式会读成"提出道侣之意"，
 # 对「结义」更是直接出错（"结为结义"）。与 `room_flow.REL_ASK_CN` 是同一套说法，改一处记得改另一处。
@@ -902,7 +903,8 @@ _SOCIAL_ASK_CN = {
     "jie_yuan": "结为道侣", "marry": "结为夫妻", "bai_shi": "拜师",
     "shou_tu": "收徒", "ren_yi_fu_mu": "认义亲", "jie_yi": "结义",
 }
-_BREAK_OPS = {"jie_chu_jie_yuan", "divorce", "jie_chu_bai_shi", "jie_chu_shou_tu", "jie_chu_jie_yi"}
+_BREAK_OPS = {"jie_chu_jie_yuan", "divorce", "jie_chu_bai_shi", "jie_chu_shou_tu",
+              "jie_chu_jie_yi", "jie_chu_ren_yi_fu_mu"}
 
 # 引擎关系裁决码（`UnitActionRelationSet.IsCreate(bool)` 的返回码）——**0 = 同意；非 0 = 拒绝**。
 # 权威版本（含反汇编 RVA 与逐条判据）在 C# `csharp/ToolExecutor.cs` 关系段顶部的注释块里；

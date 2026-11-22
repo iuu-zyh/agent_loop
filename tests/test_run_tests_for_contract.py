@@ -227,8 +227,10 @@ def test_brand_new_file_inside_a_scan_scope_is_still_hit(rtf, snap, picked):
     只挑**通配符**扫描（`*.cs`）：像 `test_mod_entry_contract.py` 扫的是
     `**/ModMain.cs` 这种**具体文件名**，新文件本来就不该命中它。
     """
+    # 只挑**递归**扫描（rglob）：非递归的 `csharp/*.cs` 本来就不该命中
+    # `csharp/UI/` 子目录下的新文件，要求它命中等于是测试自己的假设写错了。
     scanners = {f: specs for f, specs in snap["globs"].items()
-                if any(b == "csharp" and "*" in p and "/" not in p
+                if any(b == "csharp" and "*" in p and "/" not in p and _r
                        for b, p, _r in specs)}
     assert scanners, "快照里一个通配符扫 csharp/ 的测试都没有？globs 没采到"
     fake = "csharp/UI/__BrandNewFileForContractTest.cs"

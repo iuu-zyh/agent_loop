@@ -2,7 +2,7 @@
 /// 须知面板的**水位落盘**（`notice_seen.json`）与两个诊断哨兵。
 ///
 /// ── 文件在哪、为什么 ────────────────────────────────────────────────────
-/// `<数据根>/notice_seen.json`（发行版 = `ModAssets\notice_seen.json`，与 `config.json`、
+/// `<数据根>/notice_seen.json`（发行版 = `%USERPROFILE%\.agent_loop\notice_seen.json`，与 `config.json`、
 /// `logs\` 同层）。**刻意不按存档隔离**：须知是"这台机器装了这个 mod、这个版本"的信息，
 /// 不是某个存档的剧情进度 —— 换存档不该让人重看一遍"怎么填 Key"。
 ///

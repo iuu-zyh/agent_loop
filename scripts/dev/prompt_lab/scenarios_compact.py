@@ -467,7 +467,7 @@ def case_name_fidelity() -> Dict[str, Any]:
 def _real_sessions_root() -> Optional[Path]:
     cands = [
         Path("C:/Users/<用户名>/.sessions/worlds"),
-        Path("/mnt/c/Users/<用户名>/.sessions/worlds"),
+        Path("/mnt/c/Users/iu/.sessions/worlds"),
         Path(os.path.expanduser("~/.sessions/worlds")),
     ]
     for c in cands:

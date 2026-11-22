@@ -573,7 +573,7 @@ def test_no_as_recttransform_anywhere():
     }
     bad = []
     for p in _all_cs_files():
-        rel = str(p.relative_to(ROOT))
+        rel = str(p.relative_to(ROOT)).replace("\\", "/")
         if rel in EXEMPT:
             continue
         # `_code_only` 只剥注释、**保留字符串**（它对别的契约是必须的），

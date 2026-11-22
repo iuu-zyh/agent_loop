@@ -288,10 +288,12 @@ REL_ASK_CN: Dict[str, str] = {
 }
 # 解除类关系 op：**单方面行为**（不需要对方同意，所以不走提案），但对在场 NPC 的
 # **结果要公开**（与缔结的"应下"对称）—— 由 `_make_break_settle` 在落刀成功后补叙述行。
-REL_BREAK_OPS = ("jie_chu_jie_yuan", "divorce", "jie_chu_bai_shi", "jie_chu_shou_tu", "jie_chu_jie_yi")
+REL_BREAK_OPS = ("jie_chu_jie_yuan", "divorce", "jie_chu_bai_shi", "jie_chu_shou_tu",
+                 "jie_chu_jie_yi", "jie_chu_ren_yi_fu_mu")
 REL_BREAK_CN: Dict[str, str] = {
     "jie_chu_jie_yuan": "道侣之约", "divorce": "夫妻之约", "jie_chu_bai_shi": "师徒之约",
     "jie_chu_shou_tu": "师徒之约", "jie_chu_jie_yi": "结义之约",
+    "jie_chu_ren_yi_fu_mu": "义亲之谊",
 }
 # 提案的有效期（完整回合数）。2 = 提出后还有两轮轮转，对手方两次被优先点名。
 PROPOSAL_TTL_ROUNDS = 2

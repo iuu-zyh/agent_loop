@@ -117,6 +117,20 @@ namespace AgentLoopBridge
         {
             new NoticeRelease
             {
+                Seq = 8,
+                Version = "1.2.3",
+                Date = "11 月 22 日 下午 12:50",
+                Author = "iuuuuuu",
+                Items = new[]
+                {
+                    "设置、提示词和自建人设搬到用户目录，更新不再覆盖",
+                    "首次启动自动迁移，已填的接口地址、Key 和自建人设都会保留",
+                    "新版本增加的内置人设会自动补进来，用户改过的不动",
+                    "窗口位置、公告已读状态、剧情账本也一起搬过去",
+                },
+            },
+            new NoticeRelease
+            {
                 Seq = 7,
                 Version = "1.2.2",
                 Date = "11 月 21 日 下午 4:10",

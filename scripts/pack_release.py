@@ -950,8 +950,13 @@ INSTALL_TXT = """\
     mod 自带的是"空大脑"：不填 key 时对话只会复读你的话。
     两种填法（任选其一）：
       · 打开对话窗（NPC 面板「对话」/ 传音簿点一行）→ 点右上角 ⚙ 齿轮 → 填 base_url / api_key / model → 保存（自动重启生效）
-      · 直接编辑 @DATA@\\config.json 的 llm 块，然后重启游戏
+      · 直接编辑 %USERPROFILE%\\.agent_loop\\config.json 的 llm 块，然后重启游戏
     base_url 例：https://api.deepseek.com/v1   （填到 /v1 为止，不要再往后加 /chat/completions）
+
+【你的数据在哪】%USERPROFILE%\\.agent_loop\\
+    config.json / prompts\\ / logs\\ / 窗口位置 / 公告已读状态 / 剧情账本都在这里。
+    这个目录**不在 MOD 里**，创意工坊更新不会覆盖；自建人设也放 prompts\\personas\\。
+    @DATA@ 下的 config.json 与 prompts\\ 只是首次启动的出厂模板，之后改那份不再生效。
 
 【怎么打开界面】对话窗：NPC 面板的「对话」按钮 / 传音簿里点一行 / 剧情窗里的「对话」选项
     传音簿（通讯录）：大地图 HUD 上的「传」按钮
@@ -961,7 +966,7 @@ INSTALL_TXT = """\
       开→关自己抵消了。上面三个界面入口都可用，功能没有任何缺失。
       如果你看到别处（工坊简介 / 旧教程）写着「按 F11 填 key」，那是指 **⚙ 齿轮**。
 
-【出问题看这里】@DATA@\\logs\\agent_loop.log
+【出问题看这里】%USERPROFILE%\\.agent_loop\\logs\\agent_loop.log
     报障时把这个文件发给作者即可。
     想自己先查一步：在 @DATA@ 目录里开命令行跑
         AgentLoopServer.exe --selftest
@@ -969,17 +974,20 @@ INSTALL_TXT = """\
 
 【不要动】@DATA@\\AgentLoopServer.exe  （Python 侧程序本体）
           Mod_Jgmg5L\\ModCode\\     Mod_Jgmg5L\\ModRes\\     Mod_Jgmg5L\\ModExcel\\
-【可以改】@DATA@\\config.json   @DATA@\\prompts\\
+【可以改】%USERPROFILE%\\.agent_loop\\config.json   %USERPROFILE%\\.agent_loop\\prompts\\
           （改了下次对话生效，无需重启）
 
 【对话记录存在哪】C:\\Users\\<你的用户名>\\.sessions\\
     每个 NPC 一份 jsonl，按存档分子目录：worlds\\<存档ID>\\<NPC名>.jsonl；
     同目录下还有 contacts.json（传音簿名单）。
       · 想重新开始（忘掉所有对话）：删掉 .sessions 即可，mod 一行都不用动
-      · 想彻底卸载：删掉 mod 文件夹 + 这个 .sessions 目录
-      · 想换台机器接着玩：把 .sessions 整个拷过去
+      · 想彻底卸载：删掉 mod 文件夹 + .sessions + %USERPROFILE%\\.agent_loop 两个目录
+      · 想换台机器接着玩：把 .sessions 和 .agent_loop 整个拷过去
     ⚠ 只有**游戏内存档**才会把对话写进去。不存档直接退游戏，这段对话不算数
       （下次进世界会回到上次存档时的样子）—— 这是刻意的，不是丢数据。
+
+【源码与反馈】https://github.com/iuu-zyh/agent_loop
+    mod 永久免费，源码公开；任何收费都不是作者做的。问题与建议可到上面的仓库提 Issue。
 
 【杀软提示】AgentLoopServer.exe 是自解压的单文件程序，个别安全软件（360/火绒等）
     可能误报。它只做三件事：监听 127.0.0.1 的本机端口、读写同目录下的文件、按你填的

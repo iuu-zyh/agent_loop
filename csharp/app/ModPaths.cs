@@ -19,11 +19,14 @@
 /// 目录约定（发行版布局，&lt;ModRoot&gt; = ModExportData/Mod_Jgmg5L）：
 ///   &lt;ModRoot&gt;/ModCode/dll/MOD_Jgmg5L.dll      本程序集（游戏只枚举这一层）
 ///   &lt;ModRoot&gt;/ModAssets/AgentLoopServer.exe    自包含 Python 入口（一个文件，勿手改）
-///   &lt;ModRoot&gt;/ModAssets/config.json            用户可编辑配置
-///   &lt;ModRoot&gt;/ModAssets/prompts/               用户可编辑提示词
-///   &lt;ModRoot&gt;/logs/                            日志与诊断哨兵
-/// 为什么数据（config/prompts）与 exe 同在 ModAssets：它们是「用户要看得见、改得动」的东西，
-/// 而 ModAssets 是官方编辑器唯一会**逐字节原样带进发行包**的槽位（见 RuntimeDirNames 注释）。
+///   &lt;ModRoot&gt;/ModAssets/config.json            出厂模板（工坊更新会整包覆盖，不是用户数据）
+///   &lt;ModRoot&gt;/ModAssets/prompts/               出厂提示词（同上，只作首次迁移的种子）
+///   %USERPROFILE%/.agent_loop/config.json      用户可编辑配置（升级不覆盖）
+///   %USERPROFILE%/.agent_loop/prompts/         用户可编辑提示词（自建人设也在这里）
+///   %USERPROFILE%/.agent_loop/logs/            日志与诊断哨兵
+/// 为什么 config/prompts 从 ModAssets 移到用户目录：ModAssets 会被创意工坊整包同步，
+/// 用户填的 Key、改过的提示词、自建人设每次更新都会被盖回去。ModAssets 里那份只保留为
+/// 「首次迁移的种子」（与 Reset 的出厂原文由 exe 内置的 prompts 提供，不依赖这里）。
 ///
 /// **为什么运行时放 &lt;ModRoot&gt;/ModAssets\，而不是 &lt;ModRoot&gt;/ModCode/python/**（实证）：
 ///   ① 游戏把 `ModCode\dll\` 里**所有** dll 都当 mod 程序集加载——工坊 mod 2814703549 连
@@ -68,6 +71,8 @@ namespace AgentLoopBridge
         private static bool _resolved;
         private static string _modRoot;
         private static string _rootSource;
+        private static string _dataRoot;
+        private static string _dataRootSource;
 
         /// <summary>Mod 根目录；解析不到返回 null（调用方降级，勿抛）。</summary>
         internal static string ModRoot
@@ -82,35 +87,31 @@ namespace AgentLoopBridge
         }
 
         /// <summary>
-        /// 用户可编辑数据根（config.json / prompts / logs 都锚这层）。
+        /// 用户可编辑数据根（config.json / prompts / logs / 窗口位置 / 公告水位 / 剧情账本都锚这层）。
         ///
-        /// 两种布局都认：
-        ///   · `&lt;Mod根&gt;\ModAssets\` —— **官方管线布局**：config.json / prompts 放 here，
-        ///     编辑器导出会一起带走（与神识传音把 AIPrompt.json 放 ModAssets 同款）。
-        ///   · `&lt;Mod根&gt;\` —— 手工拼装 / 开发机（源码树根）布局，历史行为不变。
-        /// 判据用「ModAssets 下是否真有我们的数据文件」，而不是「ModAssets 存不存在」——
-        /// 后者任何 mod 都有（里面至少有一张说明纸），拿它当判据会把数据根错误地下移一层。
+        /// 解析顺序：
+        ///   ① `AGENT_LOOP_DATA` —— 显式覆盖（开发机 / 单测 / 高级用户）
+        ///   ② `%USERPROFILE%\.agent_loop` —— **发行版默认**。工坊更新只同步 MOD 目录，
+        ///      数据放这里才不会被整包覆盖（详见 UserDataMigrationCore）
+        ///   ③ `&lt;Mod根&gt;\ModAssets` —— 旧布局 / 迁移来源；用户目录不可用时兜底
+        ///   ④ `&lt;Mod根&gt;` —— 源码树 / 手工根布局，保持历史行为
+        ///
+        /// 为什么用「ModAssets 是否存在」判断发行布局，而不是「里面有没有 config.json」：
+        /// 新装用户的 `ModAssets` 里本来就只有出厂模板，用户目录还是空的；按文件判会把数据根
+        /// 错误地留在 MOD 目录里，下次更新照旧全丢。
         /// </summary>
         internal static string DataRoot
         {
-            get
-            {
-                string r = ModRoot;
-                if (string.IsNullOrEmpty(r)) return null;
-                try
-                {
-                    string ma = Path.Combine(r, "ModAssets");
-                    if (Directory.Exists(ma) &&
-                        (File.Exists(Path.Combine(ma, "config.json")) ||
-                         Directory.Exists(Path.Combine(ma, "prompts"))))
-                        return ma;
-                }
-                catch { }
-                return r;
-            }
+            get { Resolve(); return _dataRoot; }
         }
 
-        /// <summary>诊断哨兵目录（`_diag_*.txt`）——与 Mod 根同层，开发机即源码树根。</summary>
+        /// <summary>数据根是怎么来的（诊断用，进日志）。</summary>
+        internal static string DataRootSource
+        {
+            get { Resolve(); return _dataRootSource; }
+        }
+
+        /// <summary>诊断哨兵目录（`_diag_*.txt`）——数据根；发行版是 `%USERPROFILE%\.agent_loop`，开发机即源码树根。</summary>
         internal static string DiagDir
         {
             get
@@ -402,6 +403,7 @@ namespace AgentLoopBridge
                 {
                     _modRoot = Path.GetFullPath(env);
                     _rootSource = "env:" + EnvRootOverride;
+                    ResolveDataRoot();
                     return;
                 }
             }
@@ -413,6 +415,7 @@ namespace AgentLoopBridge
             {
                 _modRoot = fromDll;
                 _rootSource = "dll";
+                ResolveDataRoot();
                 return;
             }
 
@@ -424,6 +427,7 @@ namespace AgentLoopBridge
                 {
                     _modRoot = Path.GetFullPath(r);
                     _rootSource = "g.mod";
+                    ResolveDataRoot();
                     return;
                 }
             }
@@ -437,6 +441,7 @@ namespace AgentLoopBridge
                 {
                     _modRoot = Path.GetFullPath(r);
                     _rootSource = "ModMgr";
+                    ResolveDataRoot();
                     return;
                 }
             }
@@ -444,6 +449,81 @@ namespace AgentLoopBridge
 
             _modRoot = null;
             _rootSource = "未解析";
+            ResolveDataRoot();
+        }
+
+        /// <summary>
+        /// 在 Mod 根确定之后解析数据根（见 <see cref="DataRoot"/> 的优先级）。
+        /// 发行版会先把旧 `ModAssets` 里的用户数据迁到 `%USERPROFILE%\.agent_loop`。
+        /// </summary>
+        private static void ResolveDataRoot()
+        {
+            _dataRoot = null;
+            _dataRootSource = "未解析";
+
+            // ① 显式覆盖：不存在就尝试创建；仍失败则继续走默认逻辑
+            try
+            {
+                string env = Environment.GetEnvironmentVariable(EnvDataRoot);
+                if (!string.IsNullOrEmpty(env))
+                {
+                    try { Directory.CreateDirectory(env); } catch { }
+                    if (Directory.Exists(env))
+                    {
+                        _dataRoot = Path.GetFullPath(env);
+                        _dataRootSource = "env:" + EnvDataRoot;
+                        return;
+                    }
+                }
+            }
+            catch { }
+
+            string root = _modRoot;
+            if (string.IsNullOrEmpty(root)) return;
+
+            string modAssets = null;
+            bool releaseLayout = false;
+            try
+            {
+                modAssets = Path.Combine(root, "ModAssets");
+                releaseLayout = Directory.Exists(modAssets);
+            }
+            catch { }
+
+            if (releaseLayout)
+            {
+                string profile = null;
+                try { profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); } catch { }
+                if (string.IsNullOrEmpty(profile))
+                {
+                    try { profile = Environment.GetEnvironmentVariable("USERPROFILE"); } catch { }
+                }
+                string userRoot = UserDataMigrationCore.DefaultUserRoot(profile);
+                if (!string.IsNullOrEmpty(userRoot))
+                {
+                    UserDataMigrationReport report = UserDataMigrationCore.Migrate(modAssets, userRoot);
+                    for (int i = 0; i < report.Failed.Count; i++)
+                        ModMain.P("[ModPaths] 用户数据迁移失败：" + report.Failed[i]);
+                    if (Directory.Exists(userRoot))
+                    {
+                        if (report.Changed)
+                            ModMain.P("[ModPaths] 用户数据根已迁到 " + userRoot +
+                                      "（复制 " + report.Copied.Count + " 个文件；只补缺失，未覆盖）");
+                        _dataRoot = userRoot;
+                        _dataRootSource = "用户目录";
+                        return;
+                    }
+                }
+
+                // 用户目录不可用：退回旧布局，至少本次还能跑
+                _dataRoot = modAssets;
+                _dataRootSource = "ModAssets（用户目录不可用）";
+                return;
+            }
+
+            // 源码树 / 手工根布局：保持历史行为
+            _dataRoot = root;
+            _dataRootSource = "Mod根（非 ModAssets 布局）";
         }
 
         /// <summary>
@@ -494,7 +574,7 @@ namespace AgentLoopBridge
             string exe = string.IsNullOrEmpty(dev) ? FindSelfContainedExe() : null;
             string script = FindServerScript();
             return "root=" + (_modRoot ?? "(未解析)") + " 来源=" + _rootSource +
-                   " 数据根=" + (DataRoot ?? "(无)") +
+                   " 数据根=" + (DataRoot ?? "(无)") + "(" + (_dataRootSource ?? "未解析") + ")" +
                    " 入口=" + (exe != null ? exe + "（自包含 exe）"
                                             : (script ?? "(未找到 server.py 也无 exe)")) +
                    (string.IsNullOrEmpty(dev) ? "" : " ⚠开发覆盖=" + dev + "（跑源码树，非随包副本）");

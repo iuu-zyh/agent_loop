@@ -1,5 +1,5 @@
 /// <summary>
-/// RelationTool —— **动作域·关系**：`social_relation`（好感/结缘/婚姻/师徒/结义/捎话）+ 引擎裁决码表。
+/// RelationTool —— **动作域·关系**：`social_relation`（好感/结缘/婚姻/师徒/结义/义父母/捎话）+ 引擎裁决码表。
 /// （11-19 由 6711 行的 `ToolExecutor.cs` 拆出，11-20 按 Python 的域归并；成员逐字搬移。）
 /// 跨类调用一律 `<类名>.<方法>`；`internal` = 仅本程序集可见。
 /// 【Python 对应】动作域·关系（`social_relation`） —— 划分以 Python 侧为准，别在这里另立一套分类。
@@ -206,6 +206,14 @@ namespace AgentLoopBridge
                     if (!otherIsPlayer)
                         return DirectEstablish(wub, player, UnitRelationType.ParentBack, op, cpName);
                     return StartRelationAction(wub, player, UnitRelationType.ParentBack, op, askText);
+                }
+                case "jie_chu_ren_yi_fu_mu":
+                {
+                    if (!rel.IsRelation(player, UnitRelationType.ParentBack))
+                        return Fail("你与" + target + "并非义父母");
+                    if (!otherIsPlayer)
+                        return DirectBreak(wub, player, op, cpName);
+                    return StartBreakWith(wub, player, op, askText);
                 }
                 case "jie_yi":       // 结义：NPC 与玩家结义 → BrotherBack（亲测 BrotherBack 单向写入不可靠，改双写兜底）
                 {
@@ -731,6 +739,18 @@ namespace AgentLoopBridge
                         bool d = tr.brother.Remove(npcId);
                         return $"brotherBack 双向 Remove({a},{b}) + brother 兼容({c},{d})";
                     }
+                case "jie_chu_ren_yi_fu_mu":
+                    {
+                        // 义父母/义子女是**互逆的两种容器**：我认对方为义父母 ⇒ 我的
+                        // parentBack 有他、他的 childrenBack 有我。原生 BreakWith 若只清一侧，
+                        // 对方仍会看到义亲关系（静默半解除），所以四种组合一起清（Remove 幂等，
+                        // 且引擎里一对人只记一条关系，不会误伤别的名分）。
+                        bool a = nr.parentBack.Remove(targetId);
+                        bool b = tr.childrenBack.Remove(npcId);
+                        bool c = nr.childrenBack.Remove(targetId);
+                        bool d = tr.parentBack.Remove(npcId);
+                        return $"parentBack/childrenBack 双向 Remove({a},{b}) + 兼容({c},{d})";
+                    }
                 default:
                     throw new Exception("unsupported break op: " + op);
             }
@@ -749,6 +769,15 @@ namespace AgentLoopBridge
                     case "jie_chu_bai_shi": return nr.IsRelation(target, UnitRelationType.Master);
                     case "jie_chu_shou_tu": return nr.IsRelation(target, UnitRelationType.Student);
                     case "jie_chu_jie_yi": return nr.IsRelation(target, UnitRelationType.BrotherBack) || nr.IsRelation(target, UnitRelationType.Brother);
+                    case "jie_chu_ren_yi_fu_mu":
+                        {
+                            // 两侧都查：原生动作或直写只清一侧时，对方视角仍是义亲 —— 不查就报"已解除"。
+                            var tr = target.data.unitData.relationData;
+                            return nr.IsRelation(target, UnitRelationType.ParentBack)
+                                || nr.IsRelation(target, UnitRelationType.ChildrenBack)
+                                || tr.IsRelation(npc, UnitRelationType.ParentBack)
+                                || tr.IsRelation(npc, UnitRelationType.ChildrenBack);
+                        }
                     default: return false;
                 }
             }
@@ -765,6 +794,7 @@ namespace AgentLoopBridge
                 case "jie_chu_bai_shi":
                 case "jie_chu_shou_tu": return "师徒";
                 case "jie_chu_jie_yi": return "结义";
+                case "jie_chu_ren_yi_fu_mu": return "义父母";
                 default: return "该";
             }
         }

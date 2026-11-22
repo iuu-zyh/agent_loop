@@ -99,6 +99,24 @@ def _break_body() -> str:
     )
 
 
+def _break_fields() -> str:
+    return _body(
+        _cs_tools.tool_src(),
+        " string BreakFieldsDirect(string op, WorldUnitBase npc, WorldUnitBase target)",
+    )
+
+
+def _break_still() -> str:
+    return _body(
+        _cs_tools.tool_src(),
+        " bool BreakStillRelated(string op, WorldUnitBase npc, WorldUnitBase target)",
+    )
+
+
+def _break_rel_name() -> str:
+    return _body(_cs_tools.tool_src(), " string BreakRelName(string op)")
+
+
 def _r(data: dict, args: dict | None = None) -> str:
     return tr.render("social_relation", args or {"op": "shou_tu"}, {"success": True, "data": data})
 
@@ -320,6 +338,48 @@ def test_break_ops_report_the_verdict_but_never_block_on_it():
     assert "if (created == 0 && !stillAfterNative)" in b, \
         "原生解除的成败判据不是 `created == 0`（0 才是「引擎执行了」）"
     assert "if (created == 1)" not in b, "还留着反的判据 `created == 1`"
+
+
+def test_ren_yi_fu_mu_can_be_dissolved():
+    """认义父母必须能解除，且兜底清的是**互逆的两种容器**。
+
+    引擎事实（`types36_fulldll.txt` 关系面板逐字读出）：`parentBack` = 我的义父母、
+    `childrenBack` = 我的义子女；`UnitActionRoleBreakWith` **不带关系类型**，原生动作
+    不保证覆盖义亲。所以字段兜底必须同时清两侧的两种容器 —— 只清 `npc.parentBack`
+    会留下"对方仍把 npc 当义亲"的半解除状态，而且不报错。
+    """
+    op = "jie_chu_ren_yi_fu_mu"
+    from agent_loop.tools import schemas as S
+    spec = S.SOCIAL_RELATION["function"]["parameters"]["properties"]["op"]
+    assert op in spec["enum"], "schema 没列出解除义父母"
+    assert op in spec["description"], "op 释义里没有它（模型不知道该填什么）"
+
+    src = _cs_tools.tool_src()
+    i = src.index(f'case "{op}"')
+    case = src[i: src.index('case "jie_yi"', i)]
+    assert "UnitRelationType.ParentBack" in case, "解除前没判双方是否义亲"
+    assert "DirectBreak(wub, player, op, cpName)" in case, "NPC↔NPC 没走免窗直写"
+    assert "StartBreakWith(wub, player, op, askText)" in case, "玩家路径没走确认窗"
+
+    fields = _break_fields()
+    seg = fields[fields.index(f'case "{op}"'):]
+    seg = seg[:seg.index("default:")]
+    for token in ("nr.parentBack.Remove(targetId)", "tr.childrenBack.Remove(npcId)",
+                  "nr.childrenBack.Remove(targetId)", "tr.parentBack.Remove(npcId)"):
+        assert token in seg, f"字段兜底缺 {token}（会留下半解除状态）"
+
+    still = _break_still()
+    seg2 = still[still.index(f'case "{op}"'):]
+    seg2 = seg2[:seg2.index("default:")]
+    assert "tr.IsRelation" in seg2 and "ChildrenBack" in seg2, "读回只查了单侧/单容器"
+
+    assert 'return "义父母"' in _break_rel_name(), "解除文案没映射到义父母"
+
+    from agent_loop.room.room_flow import REL_BREAK_CN, REL_BREAK_OPS
+    assert op in REL_BREAK_OPS and REL_BREAK_CN.get(op), "群聊解除类没纳入公开叙述"
+    assert op in tr._BREAK_OPS and tr._SOCIAL_OP_CN.get(op) == "义父母"
+    t = _r({"op": op, "target": "张三", "relation": "义父母", "readback_still_related": False})
+    assert "解除义父母关系" in t and "读回确认关系已解除" in t, t
 
 
 def test_marry_reports_the_same_state_snapshot():

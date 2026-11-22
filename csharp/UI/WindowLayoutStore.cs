@@ -5,7 +5,7 @@
 /// 失败只记一行日志、绝不影响开窗（**窗口位置记不住是小事，打不开窗是大事**）。
 ///
 /// ── 文件位置与格式 ────────────────────────────────────────────────────────
-/// `<数据根>\window_layout.json`（= `ModAssets\window_layout.json`，与 `config.json` 同层）：
+/// `<数据根>\window_layout.json`（= `%USERPROFILE%\.agent_loop\window_layout.json`，与 `config.json` 同层）：
 ///     { "x": -120.0, "y": 0.0, "w": 1200.0, "h": 800.0 }
 ///
 /// **故意不写进 `config.json`**：那个文件归 Python 的 `config_loader` 独占解释，

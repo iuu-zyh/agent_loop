@@ -42,7 +42,7 @@ namespace AgentLoopBridge
 
     internal static class NoticeCore
     {
-        /// <summary>水位文件名（落在数据根：`ModAssets\notice_seen.json`，与 config.json 同层）。</summary>
+        /// <summary>水位文件名（落在数据根：`%USERPROFILE%\.agent_loop\notice_seen.json`，与 config.json 同层）。</summary>
         internal const string FileName = "notice_seen.json";
 
         /// <summary>两个页签的下标（`NoticePanel` 与判据共用，避免各写各的数字）。</summary>

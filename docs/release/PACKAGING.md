@@ -19,9 +19,8 @@ Python 侧**不再是「便携 CPython + 源码目录树」**，而是**一个 ~
 Mod_Jgmg5L/
 ├── ModAssets/                       ★ 官方「自带文件」槽位，编辑器「导出模组」逐字节原样带走
 │   ├── AgentLoopServer.exe          Python 侧全部（~18 MB，一个文件，Nuitka 编译产物）
-│   ├── config.json                  ★ 用户填 API key（由 config.example.json 生成，空 key）
-│   ├── prompts/                     ★ 用户可编辑提示词
-│   └── logs/                        运行时生成
+│   ├── config.json                  出厂模板（空 key）；首次启动复制到 %USERPROFILE%\.agent_loop
+│   └── prompts/                     出厂提示词；首次启动复制到 %USERPROFILE%\.agent_loop
 ├── ModCode/dll/MOD_Jgmg5L.dll       C# 端（游戏只枚举这一层）
 ├── ModRes/AssetBundle/              UI 预制体 AB
 ├── ModExcel/                        剧情配置壳表
@@ -29,9 +28,10 @@ Mod_Jgmg5L/
 └── 安装说明.txt
 ```
 
-**为什么数据与 exe 同在 `ModAssets/`**：`ModAssets\` 是官方编辑器唯一保证会被带进发行包的槽位
-（md5 实证：工程内文件与导出产物逐字节相同）。参考实现：神识传音（MOD_9CiDqJ）把加密程序集与
-提示词 JSON 全放在 `ModAssets\` 下，loader DLL 放 `ModCode\dll\`——与本 mod 同一套路数。
+**为什么数据放在 `ModAssets/`、但运行时不从那里读写**：`ModAssets\` 是官方编辑器唯一保证会被
+带进发行包的槽位（md5 实证：工程内文件与导出产物逐字节相同），所以出厂模板放这里；而工坊更新
+会整包同步 `ModAssets/`，用户数据必须落在 `%USERPROFILE%\.agent_loop`（首次启动由
+`UserDataMigrationCore` 只补缺失地迁过去），否则每次更新都会盖掉 Key / 提示词 / 自建人设。
 
 ---
 
@@ -521,13 +521,13 @@ C# 侧只留协议胶水。**永远不要把 API key 写进 DLL 或 Python 常�
       `F:\.agent_loop_build\nuitka\AgentLoopServer.exe`（**不是** `pybuild\dist\` 那个）
 - [ ] `python3 scripts/pack_release.py --exe <nuitka产物> --install-to-project` 的**泄漏扫描通过**
 - [ ] 包里 `config.json` 的 `api_key` 是**空的**
-- [ ] `config.json` 与 `prompts/` 在 `ModAssets/`（不在 Mod 根层）
+- [ ] `config.json` 与 `prompts/` 在 `ModAssets/` 作为**出厂模板**（用户数据在 `%USERPROFILE%\.agent_loop`）
 - [ ] 没有 `.bak` / `portrait_cache` / `logs` / `_dev_root.txt` / `_diag_*.txt` 被打进去
 - [ ] `ModCode/` 下**只有** `MOD_Jgmg5L.dll` 一个 dll（官方文档明写「不要有多余的DLL」）
 - [ ] **杀软自查**：`MpCmdRun.exe -Scan -ScanType 3 -File <exe>` 干净（§6.2 的命令）
 - [ ] 找一台**没装过 Python** 的机器（或干净 Windows 沙箱）试跑一次
 - [ ] 首次启动填 key → 开对话 → 能正常回话（不是复读）
-- [ ] 报障指引指向 `ModAssets/logs/agent_loop.log`，且**写明被杀软拦截时怎么办**
+- [ ] 报障指引指向 `%USERPROFILE%\.agent_loop\logs\agent_loop.log`，且**写明被杀软拦截时怎么办**
 
 ---
 

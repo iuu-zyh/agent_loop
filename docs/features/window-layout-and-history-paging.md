@@ -15,7 +15,7 @@
 
 | 是 | 不是 |
 |---|---|
-| 窗口位置存 `ModAssets/window_layout.json` | 存 `config.json`（那个归 Python 独占解释） |
+| 窗口位置存 `%USERPROFILE%/.agent_loop/window_layout.json` | 存 `config.json`（那个归 Python 独占解释） |
 | 拖动时只更新子 Canvas 的变换矩阵 | 每帧重算整棵子树顶点 |
 | 服务端按游标分页 | 客户端拿全量再切片 |
 | 上划加载时视口**停在原处** | 加载完跳到顶 / 跳到底 |

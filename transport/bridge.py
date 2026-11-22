@@ -661,6 +661,7 @@ class StubGameBridge:
             "jie_chu_bai_shi": ("师徒", "前师徒"),
             "jie_chu_shou_tu": ("师徒", "前师徒"),
             "jie_chu_jie_yi": ("结义", "前结义"),
+            "jie_chu_ren_yi_fu_mu": ("义父母", "前义父母"),
         }
         if op in break_ops:
             need, after = break_ops[op]

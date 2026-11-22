@@ -18,8 +18,7 @@
 
 ## 关键证据
 
-**泄漏确认**：`hw1_jupyterhub/creds.json` 里有 `username: s20231301087` +
-`password: 1qaz@WSX` 明文，另有 `token.json`。101 个文件已入 git 历史（提交 `d0cb0d6`）。
+**泄漏确认**：`hw1_jupyterhub/creds.json` 里有一组明文课程账号密码，另有 `token.json`。101 个文件已入 git 历史（提交 `d0cb0d6`）。
 
 已验证**不会进发行包**（`pack_release.py` 的 `iter_package_files()` 是白名单；
 `export_public.py` 是白名单）—— 但它躺在源码仓库里，仓库一分享就泄漏。

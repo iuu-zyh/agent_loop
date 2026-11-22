@@ -70,7 +70,9 @@
 
 最特别的是：他思考与行动的全过程，你都看得见。
 
-需自备一个 OpenAI 兼容的模型接口（游戏内按 F11 填写，自带「测试连接」帮你排错）。
+需自备一个 OpenAI 兼容的模型接口（对话窗右上角「设置」里填写，自带「测试连接」帮你排错）。
+
+源码公开在 https://github.com/iuu-zyh/agent_loop ，永久免费，任何收费都不是作者。
 ```
 
 发布后再到网页上「编辑标题和描述」，换成 `WORKSHOP_PAGE_BBCODE.txt` 那份带图完整版。
@@ -193,7 +195,7 @@ imgur 之类在国内打不开，**不推荐**。如果要用，选国内可访�
 - [ ] `desc` 描述框填好（先用纯文本，别放 BBCode）
 - [ ] `tags` 至少加了 `修仙` / `功能` / `AI`
 - [ ] 5 张预览图都填了（尤其封面，注意**单张 ≤ 1 MB**）
-- [ ] `ModAssets/config.json` **是空的**（它是运行时数据根，你填的 key 就住在这里，会被一起上传）
+- [ ] `ModAssets/config.json` **是空的**（它只是出厂模板；用户的 Key 在 `%USERPROFILE%\.agent_loop\config.json`，不会进包）
 - [ ] 不开源（`ModProject.cache` 的 `"openCode":0`）—— 开了会把 45 MB 的 `Assembly-CSharp.dll` 一起传上去
 - [ ] 导出 → 本地模组导入 → 进游戏实测通过
 - [ ] 截图里的 API Key 已清空或打码
