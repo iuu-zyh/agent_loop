@@ -39,7 +39,7 @@ C# 在查询结果里给出 `(name, unit_id)` 对 → 本模块把它们收成�
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 # 显示名后缀：`名(判别字段)` 或 `名#序号`（都只在**确有冲突**时出现）
 _PAREN = re.compile(r"\(([^()]*)\)$")

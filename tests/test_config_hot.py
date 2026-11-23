@@ -310,7 +310,10 @@ def test_configservice_hot_applies_compactor_and_initiative(server_mod, tmp_path
     日志重配（logging 块）本次不测，否则真跑会把全局日志管道切到仓库 logs/ 落盘。
     """
     path = tmp_path / "config.json"
-    path.write_text(json.dumps({"compaction": {"ctx_window": 32768}, "initiative": {"min_interval": 300.0}},
+    # cool_down 不在本次 set_config 的 partial 里 —— 它必须从**配置文件**读回来，
+    # 而不是被默认值顶掉。旧写法没写这个键、又恰好与默认值同值，于是这条断言一直空转。
+    path.write_text(json.dumps({"compaction": {"ctx_window": 32768, "cool_down": 60.0},
+                                "initiative": {"min_interval": 300.0}},
                                ensure_ascii=False), encoding="utf-8")
     real_set_config = config_store.set_config
     monkeypatch.setattr(server_mod, "load_config", lambda *a, **k: config_loader.load_config(config_path=path))
@@ -323,7 +326,7 @@ def test_configservice_hot_applies_compactor_and_initiative(server_mod, tmp_path
     from agent_loop.transport.ws_channel import ChatHub
 
     old = Compressor(llm=EchoLlmClient(), ctx_window=32768, retain_ratio=0.16,
-                     threshold_ratio=0.8, cool_down=20000.0, enabled=True)
+                     threshold_ratio=0.8, cool_down=60.0, enabled=True)
     old._cool_until = {"热更甲": 12345.0}   # 热换要继承冷却表：别让"刚压过"的会话立刻再压
     loop = AgentLoop.reset_for_test(storage_root=str(tmp_path), llm=EchoLlmClient(),
                                    compactor=old, context_window=32768)
@@ -345,7 +348,7 @@ def test_configservice_hot_applies_compactor_and_initiative(server_mod, tmp_path
                                              "initiative.min_interval"]
         assert new is not old, "整块重建：必须换成新压缩器（否则改参数不生效）"
         assert (new.ctx_window, new.retain_ratio, new.threshold_ratio, new.enabled) == (16384, 0.3, 0.5, False)
-        assert new.cool_down == 20000.0, "没被改的既有参数（cool_down）不能在重建时丢失"
+        assert new.cool_down == 60.0, "没被改的既有参数（cool_down）不能在重建时丢失"
         assert new._cool_until == {"热更甲": 12345.0}, "冷却表必须继承"
         assert loop.get("热更甲") is agent and agent.compactor is new, "活动 agent 也要拿到新压缩器"
         assert agent.stats.context_window == 16384, "token 预算同步"

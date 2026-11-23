@@ -28,8 +28,11 @@ req_id 是连接内配对，新连接的 req_id 从 1 重来。
 
 from __future__ import annotations
 
+import asyncio
 import re
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 WS = ROOT / "transport" / "ws_channel.py"
@@ -92,9 +95,11 @@ def test_disconnect_drops_pending_rpcs():
     call_at = ws.index('log.warning("C# 连接已断开')
     fin_at = ws.rindex("finally", 0, call_at)
     seg = ws[fin_at:call_at]
-    assert "_drop_pending_on_disconnect()" in seg, "断连出口没有调用清理"
+    # 断言必须精确到接收者：裸调用在方法外是 NameError，而它正处在 finally 里 ——
+    # 于是「判死」与下一行断连日志会**一起被跳过**。只查方法名的旧写法对这种形态恒为真。
+    assert "self._drop_pending_on_disconnect()" in seg, "断连出口没有调用清理（或漏了 self.）"
     # 必须早于那行日志（先清再报，日志顺序才与事实一致）
-    assert seg.index("_drop_pending_on_disconnect()") < len(seg)
+    assert ws.index("self._drop_pending_on_disconnect()") < call_at, "清理排在了断连日志之后"
 
     body = _py_method(ws, "_drop_pending_on_disconnect")
     assert "set_exception" in body, "没有把挂起的 future 判死"
@@ -103,6 +108,27 @@ def test_disconnect_drops_pending_rpcs():
     assert ".done()" in body, "没有跳过已完成的 future（会抛 InvalidStateError）"
     # 清理路径自己绝不许再抛
     assert "except Exception" in body, "清理路径没有兜异常（会把断连处理本身炸掉）"
+
+
+def test_drop_pending_marks_futures_dead():
+    """真跑一次清理：挂起的 future 必须变 done(ConnectionError)，并从表里摘掉。
+
+    与上面那条互补 —— 上面守「这个方法在断连出口被正确调用」，这条守「它真的把
+    future 判死了」。缺任何一边，90 秒空转都会回来。
+    """
+    from agent_loop.transport.ws_channel import WsServer
+
+    async def scenario():
+        ws = WsServer()
+        fut = asyncio.get_running_loop().create_future()
+        ws._pending["req-1"] = fut
+        ws._drop_pending_on_disconnect()
+        assert fut.done(), "挂起的 future 没有被判死"
+        with pytest.raises(ConnectionError):
+            fut.result()
+        assert "req-1" not in ws._pending
+
+    asyncio.run(scenario())
 
 
 def test_request_catches_connection_error():

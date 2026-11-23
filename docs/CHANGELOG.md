@@ -9,6 +9,29 @@
 
 ---
 
+## 2026-11-23 · 断连判死从未生效 + 压缩冷却单位写错
+
+**断连判死**：`transport/ws_channel.py` 的断连出口把 `self._drop_pending_on_disconnect()`
+写成了裸调用。它在 `finally` 里，于是每次 C# 断连都抛 `NameError`：挂起的 RPC 不会被判死
+（11-20 的修复从未生效，每条空转 90 秒），下一行「C# 连接已断开」日志也被一起跳过 ——
+现场看不到断连。`tests/test_disconnect_contract.py` 只 grep 方法名，10 条全绿却拦不住；
+现改为断言接收者（`self.`），并新增一条真跑清理的行为用例（future 必须变
+`ConnectionError` 且从表里摘掉）。变异验证：改回裸调用 → 契约红。
+
+**压缩冷却**：`compaction.cool_down` 默认值 `20000.0` 被当秒用（`compress.py` 是
+`monotonic() + cool_down`），≈5.5 小时，等于一次会话只自动压一次。按毫秒误写处理，
+`config_loader` / `compress` / `server` 三处默认值统一改为 `20.0` 秒。
+`tests/test_config_hot.py` 原来那条「cool_down 不能在重建时丢失」因默认值同值而空转
+（临时 config 里根本没写这个键），已改成真从配置文件读回。
+
+**顺手补**：`ws_channel.py` 的 `List`、`tools/unit_refs.py` 的 `Set` 补上 typing 导入
+（此前靠 `from __future__ import annotations` 压着）。
+
+**未验证**：没有正在运行的 C# 端，断连行为未实机复现；压缩冷却只验到单测与配置读取。
+详见 [`archive/journal/2026-11-23-断连清理与压缩冷却修正/`](archive/journal/2026-11-23-断连清理与压缩冷却修正/README.md)。
+
+---
+
 ## 2026-11-23 · 兼容严格 schema 网关（`tools: null` 导致 400）
 
 **问题**：接某家严格 schema 的 OpenAI 兼容网关（`https://<gateway>/provider/v1`）时，NPC 只回兜底台词，

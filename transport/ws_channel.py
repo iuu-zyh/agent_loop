@@ -58,7 +58,7 @@ import asyncio
 import json
 import re
 from time import monotonic
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 from .. import log_setup
 
@@ -435,7 +435,7 @@ class WsServer:
             # 两边对同一件事的处理此前**不对称** —— 这里补上。
             #
             # 失败文案要能一眼看出是"连接没了"而不是"对端慢"：调用方会把 error 带给模型/玩家。
-            _drop_pending_on_disconnect()
+            self._drop_pending_on_disconnect()
             log.warning("C# 连接已断开（等待其自动重连；重连周期由 C# 侧决定）")
 
     def _drop_pending_on_disconnect(self) -> None:

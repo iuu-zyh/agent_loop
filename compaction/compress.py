@@ -45,7 +45,7 @@ class Compressor:
         retain_ratio: float = 0.16,
         ctx_window: int = 200000,
         compaction_retries: int = 1,
-        cool_down: float = 20000.0,
+        cool_down: float = 20.0,
         enabled: bool = True,
         player_name: str = "玩家",
     ):

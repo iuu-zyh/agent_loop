@@ -67,7 +67,10 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "retain_ratio": 0.16,       # 保留尾占比（最新消息不压）
         "ctx_window": 200000,       # LLM 上下文窗口（token；2026-09-14 由 32768 调高）
         "compaction_retries": 1,    # 摘要失败重试次数
-        "cool_down": 20000.0,       # 一次压缩后的冷却秒数（防抖）
+        # 一次压缩后的冷却秒数（防抖）。20 秒足够：压缩成功后上下文压力已降到阈值以下，
+        # 冷却只用来挡住「同一轮里反复触发」。旧默认 20000 是毫秒值误写进秒字段
+        # （≈5.5 小时），等于一个会话只自动压一次。
+        "cool_down": 20.0,
     },
     "storage": {
         "storage_root": "~/.sessions",  # 会话 jsonl 落盘目录（~ 由 AgentLoop 展开）

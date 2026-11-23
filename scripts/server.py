@@ -226,7 +226,7 @@ def _build_compactor(router):
         retain_ratio=cc.get("retain_ratio", 0.16),
         ctx_window=cc.get("ctx_window", 32768),
         compaction_retries=cc.get("compaction_retries", 1),
-        cool_down=cc.get("cool_down", 20000.0),
+        cool_down=cc.get("cool_down", 20.0),
         enabled=cc.get("enabled", True),
     )
     old = getattr(_loop, "compactor", None) if _loop is not None else None
@@ -289,7 +289,7 @@ class ConfigService:
                 n = _loop.rebind_compactor(_build_compactor(_router_ref.get("router")), context_window=new_ctx)
                 log.info("压缩器已热换：ctx_window=%s 阈值比=%s 保留比=%s 自动=%s 冷却=%ss（同步 agent %d 个）",
                          new_ctx, cc.get("threshold_ratio", 0.8), cc.get("retain_ratio", 0.16),
-                         cc.get("enabled", True), cc.get("cool_down", 20000.0), n)
+                         cc.get("enabled", True), cc.get("cool_down", 20.0), n)
             except Exception as e:  # 兜底：置 swap_error 让 C# 走重启（改动已写盘，重启后必然生效）
                 log.warning("压缩器热换失败（重启后生效）: %s", e, exc_info=True)
                 result["swap_error"] = str(e) or type(e).__name__
