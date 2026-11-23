@@ -32,6 +32,10 @@
 | `ab_probe.py` | **AB 内容探针**：解 UnityFS 包 → 抽出全部字符串，核对"这个 `.ab` 到底是哪次构建"（节点名/中文文案在不在）+ 包内资源与数据块尺寸。**判断 AB 内容别用 `grep`**（整包 LZMA，恒 0 命中），也别只看文件大小变大就下结论 | 标准库 + `lz4` |
 | `probe_gateway.py` | 探测 LLM 网关流式 chunk 结构（`reasoning` 字段名、content 里有无 `<think>`）；换网关/换端点时先跑它 | 标准库 + 网络 |
 | `verify_think_stream.py` | 端到端验证 think/body 分流（直连网关跑一次流式生成，确认 `reasoning` 回调到了） | 项目包 + 网络 |
+| `repro_null_fields.py` | 起本地假网关捕获请求体，判定有没有值为 `null` 的键 —— **严格 schema 网关的 400 就先在这里复现**，不花网关额度 | 标准库 |
+| `probe_strict_gateway.py` | 对真网关跑 10 项字段矩阵（`tools: null` / `tools: []` / 不带 tools / 真 tools / `tool_choice: null` / `stream_options` / tool 消息回灌…），逐项打印 HTTP 码与报错原文 | 标准库 + 网络 + key |
+| `check_gateway.py` | 核查某个网关现状：`GET /v1/models` 的 id 列表、UA 差异（有的网关不带 UA 会吃 Cloudflare `1010`）、逐 id ping。**换网关/换 key 先跑它** | 标准库 + 网络 + key |
+| `e2e_gateway.py` | 端到端：用**本仓自己的客户端**打真网关，覆盖探针 / 流式聊天 / 非流式压缩三条路 | 项目包 + 网络 + key |
 
 ## 预制件手术脚本（幂等，可重跑；跑前先备份 prefab）
 

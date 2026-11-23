@@ -34,6 +34,7 @@
 | [`lun-dao-fixed.md`](./features/lun-dao-fixed.md) | **论道静默失败**：传送扣光天数；四道保险 |
 | [`ui-lifecycle-and-input.md`](./features/ui-lifecycle-and-input.md) | **世界输入冻结**：双根因；R1/R2/R3 三条现行规则 |
 | [`user-data-root.md`](./features/user-data-root.md) | **用户数据根**：`.agent_loop` 优先级；迁移只补缺失、绝不覆盖 |
+| [`llm-gateway-compat.md`](./features/llm-gateway-compat.md) | **网关协议兼容**：空工具列表整对省略（不发 `null`）；`base_url` 填到 `/v1`；模型用 API id |
 
 ## 二、参考资料（`reference/`）
 

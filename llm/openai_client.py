@@ -271,23 +271,40 @@ class OpenAILlmClient:
             kwargs["default_headers"] = dict(self.headers)
         return OpenAI(**kwargs)
 
+    def _tool_kwargs(self, oai_tools: Optional[List[Dict[str, Any]]]) -> Dict[str, Any]:
+        """tools / tool_choice 的请求体片段：**这一回合没有工具就整对不发**。
+
+        为什么不能靠 SDK 省掉：SDK 对 `tools=None` 的处理是**把它序列化成 `"tools": null`**，
+        而不是省略这个键。严格 schema 的网关会直接 400 —— 实测一家严格网关的 `/provider/v1`：
+        `{"error":{"message":"Invalid input: expected array, received null","param":"tools"}}`，
+        且 `tool_choice: null` 同样被拒（`"Invalid input", param: tool_choice`）。
+        于是"本轮没有可用工具"这个完全正常的情形（探针 tools=[]、纯聊天回合、压缩摘要）
+        在这些网关上必然失败 —— 而症状是玩家侧一句「传音法阵没接上」，日志里只有一行 400，
+        与配置对不对毫无关系。
+
+        语义上也不需要那对 null：不发 tools 就等于"没有工具"，这是 OpenAI 兼容网关的共识。
+        """
+        if not oai_tools:
+            return {}
+        return {"tools": oai_tools, "tool_choice": "auto"}
+
     def _call(self, wire_system: str, wire_messages: List[Dict[str, Any]],
               wire_tools: Optional[List[Dict[str, Any]]]):
         """非流式一发（wire_system 本协议不用：已在 wire_messages 里）。"""
         oai_messages, oai_tools = wire_messages, wire_tools
         client = self._get_client()
         body_extra = self._reasoning_effort_kwargs()
+        tool_kw = self._tool_kwargs(oai_tools)
         # openai 1.x：client.chat.completions.create
         if hasattr(client, "chat") and hasattr(client.chat, "completions"):
             return client.chat.completions.create(
                 model=self.model,
                 messages=oai_messages,
-                tools=oai_tools,
-                tool_choice="auto" if oai_tools else None,
+                **tool_kw,
                 **body_extra,
             )
         if hasattr(client, "chat_completions_create"):
-            return client.chat_completions_create(messages=oai_messages, tools=oai_tools, **body_extra)
+            return client.chat_completions_create(messages=oai_messages, **tool_kw, **body_extra)
         # 兜底：可调用对象
         return client(oai_messages, oai_tools)
 
@@ -362,13 +379,13 @@ class OpenAILlmClient:
         except (TypeError, ValueError):
             extra = {}
         extra.update(self._reasoning_effort_kwargs())
+        tool_kw = self._tool_kwargs(oai_tools)
         if hasattr(client, "chat") and hasattr(client.chat, "completions"):
             try:
                 return client.chat.completions.create(
                     model=self.model,
                     messages=oai_messages,
-                    tools=oai_tools,
-                    tool_choice="auto" if oai_tools else None,
+                    **tool_kw,
                     stream=True,
                     stream_options={"include_usage": True},
                     **extra,
@@ -377,18 +394,17 @@ class OpenAILlmClient:
                 return client.chat.completions.create(
                     model=self.model,
                     messages=oai_messages,
-                    tools=oai_tools,
-                    tool_choice="auto" if oai_tools else None,
+                    **tool_kw,
                     stream=True,
                     **extra,
                 )
         if hasattr(client, "chat_completions_create"):
             try:
-                return client.chat_completions_create(messages=oai_messages, tools=oai_tools,
+                return client.chat_completions_create(messages=oai_messages, **tool_kw,
                                                       stream=True, stream_options={"include_usage": True},
                                                       **extra)
             except TypeError:
-                return client.chat_completions_create(messages=oai_messages, tools=oai_tools,
+                return client.chat_completions_create(messages=oai_messages, **tool_kw,
                                                       stream=True, **extra)
         return None
 

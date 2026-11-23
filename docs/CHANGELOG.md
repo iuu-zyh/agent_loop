@@ -9,6 +9,41 @@
 
 ---
 
+## 2026-11-23 · 兼容严格 schema 网关（`tools: null` 导致 400）
+
+**问题**：接某家严格 schema 的 OpenAI 兼容网关（`https://<gateway>/provider/v1`）时，NPC 只回兜底台词，
+日志里一行 `400 - {'error': {'message': 'Invalid input: expected array, received null',
+'param': 'tools'}}`。玩家先怀疑是缺 HTTP 头，试过 `x-cli-environment` / `x-cmd-zdr` /
+`x-command-code-version` / `x-project-slug` / `x-taste-learning` 全部无效 —— 因为根本不是头的问题。
+
+**定案**：OpenAI SDK 对 `tools=None` 的处理是**序列化成 `"tools": null`**（不是省略键），
+严格 schema 网关直接 400（`tool_choice: null` 同样被拒）。而"本轮没有工具"是正常情形
+（探针 `tools=[]`、纯聊天回合、压缩摘要都走这条），旧行为在这些网关上必然失败。
+`llm/openai_client.py` 新增 `_tool_kwargs()`：空工具列表返回 `{}`（两个键整对省略），
+非空返回 `{"tools": [...], "tool_choice": "auto"}`；`_call` / `_open_stream`
+（含 `stream_options` 的 `TypeError` 回退分支）/ `chat_completions_create` 共 5 处改用它。
+
+**范围**：只动 `llm/openai_client.py`。另外三条协议早就对：`anthropic_client.py` 与
+`responses_client.py` 的 `_body` 都是 `if wire_tools: body["tools"]`，空列表不进请求体。
+配置侧同一批"看起来像配错"的坑一并写进 features：`base_url` 填到 `/v1` 那一层
+（再深会变成 `.../chat/completions/chat/completions` → 404）、模型名必须用 API id
+（面板显示名 → 400 `unsupported_model`）、`403 error code: 1010` 是缺 UA 不是鉴权失败。
+
+**验证**：本地假网关修前 3/3 请求带 null、修后 0/3；真网关 10 项字段矩阵全部符合预期
+（`tools:null` 400 / `tools:[]` 200 / 不写 200 / 真 tools 200 且 `tool_calls` 正常）；
+端到端用本仓客户端打真网关，探针 `ok=True`、流式正文与 `tool_calls` 均正常、非流式压缩路径正常；
+新增 `tests/test_llm_no_null_fields_contract.py` 5 条，变异验证
+（`_tool_kwargs` 改回发 null）4 红 1 绿；真机跑 `scripts/server.py` + WS 客户端，
+`<model-id>` 一轮拿到正文「在的。传音一道我向来不多用，道友寻我，可是有事？」，日志无 400。
+**未验证**：游戏内（C# 侧拉起 + 配置面板「测试连接」）未实机跑；
+全量 `pytest tests/ -q` 是 `8 failed / 2366 passed / 17 errors`，其中 6 条 failed 与 17 条 errors
+在 `git stash` 掉本次改动后**同样全红**（仓库既有红，含 `.depmap.json` 快照缺失），
+故本次判据用"新增 0 红"，未为凑全绿去动无关文件。
+详见 [`features/llm-gateway-compat.md`](features/llm-gateway-compat.md) 与
+[`archive/journal/2026-11-23-兼容严格schema网关/`](archive/journal/2026-11-23-兼容严格schema网关/README.md)。
+
+---
+
 ## 2026-11-22 · 解除义父母关系（`jie_chu_ren_yi_fu_mu`）
 
 **问题**：`social_relation` 能 `ren_yi_fu_mu` 认义父母，却没有对应的解除 op ——
