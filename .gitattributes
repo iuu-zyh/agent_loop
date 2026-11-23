@@ -1,0 +1,27 @@
+# 统一行尾策略 —— 杜绝「同一文件在 Windows 上看起来整文件改动」的假 diff。
+#
+# 背景：本仓库曾在 Windows 与 Linux 两侧交替提交，历史里 LF / CRLF 混存。
+# 索引里存 LF、工作区由 core.autocrlf=true 在 checkout 时转 CRLF，
+# 这样 diff 只反映真实内容变化，不再被行尾差异淹没。
+* text=auto
+
+# 二进制：任何情况下都不做行尾转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.bmp   binary
+*.ico   binary
+*.ttf   binary
+*.otf   binary
+*.dll   binary
+*.exe   binary
+*.ab    binary
+*.zip   binary
+*.7z    binary
+*.pdf   binary
+*.xlsx  binary
+*.xls   binary
+*.docx  binary
+*.mp4   binary
+*.bytes binary
