@@ -542,3 +542,21 @@ C# 侧只留协议胶水。**永远不要把 API key 写进 DLL 或 Python 常�
 | 改端口后连不上 | 现在会自动跟随 `config.json`；若仍异常看 `[WsClient] starting, url=` |
 | **杀软报毒 / exe 被删** | Nuitka onefile 的**已知代价**，机制见 §6.1。处置顺序：① 让玩家加白名单/恢复隔离区；② 去对应厂商提交误报（Defender：<https://www.microsoft.com/en-us/wdsi/filesubmission>）；③ 若某家顽固不改，考虑 §6.2 末尾的 `--standalone` 备选。**先确认日志里 exe 是被删了还是启动失败**——两者现象都是「没反应」 |
 | 想二分定位是哪个部件出问题 | 在**数据根**放 `_diag_no_*.txt` 哨兵（见 `DiagSwitches.cs` 顶部清单），**运行中增删即时生效、免重启** |
+
+### 9.1 怀疑「新代码没打进去」时
+
+正常部署**不做任何验证**（见 `DEV_RULES` §四「部署完就结束」）。只有已经怀疑 exe 里没有新代码时才用这一节。
+
+`grep -a xxx AgentLoopServer.exe` 一定搜不到 —— `.py` 被编译成字节码放进压缩归档（PYZ），明文搜不到是预期。要确认就解包：
+
+```python
+# 用打包 venv 里的 Windows python 跑
+from PyInstaller.archive.readers import CArchiveReader
+import marshal
+r = CArchiveReader(r'E:\...\ModAssets\AgentLoopServer.exe')
+pyz = r.open_embedded_archive('PYZ.pyz')
+code = marshal.loads(pyz.extract('agent_loop.session.history'))
+# 必须深挖嵌套 tuple：字典字面量的键在 co_consts 的 tuple/frozenset 里，
+# 只看 co_names 会漏
+```
+
