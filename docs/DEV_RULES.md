@@ -553,7 +553,7 @@ docs/
 | 12 | **全量测试** | `pytest tests/ -q` 全绿 + `run_csharp_tests.py` 全绿 |
 | 13 | **链接校验** | 移动过文档就跑一遍相对链接检查，**0 断链** |
 | 14 | **构建部署** | `dotnet build -c Release` 0 错误 → 拷三处 → **三处 md5 一致**。**部署完即结束，不再解包/查符号/复查**（见 §四「部署完就结束」） |
-| 15 | **git 提交** | 一功能一提交，信息写"为什么" |
+| 15 | **git 提交与推送** | 一功能一提交，信息写"为什么"；推送前 `check_no_secrets.py` 必须 0 命中。角色分工与命令见 12.5 |
 | 16 | **报告** | 向用户交代：改了什么 / 验证到哪 / **没验证的是什么** / 下一步要他做什么 |
 
 ### 12.2 只在收尾做的事
@@ -605,3 +605,58 @@ grep -rn 'TODO\|FIXME\|临时\|PROBE\|XXX\|调试用' \
 
 **"验证到哪"和"没验证的"缺一不可。** 只报好消息的收尾，
 等于把"不确定"留给下一个人。
+
+### 12.5 git：提交、推送、外来贡献
+
+**仓库只有一个**：<https://github.com/iuu-zyh/agent_loop>，默认分支 `full-source`。
+
+> 不要再另开一份"干净副本"再推。那会造出两条**没有共同祖先**的历史，
+> 之后每次同步都得 force push 覆盖一边（2026-11-23 踩过）。
+> 只有一个例外：确实需要把历史重新起一条时，才这么做，并在 `CHANGELOG.md` 写清原因。
+
+#### 维护者（有写权限）
+
+```bash
+git status                                # 必须干净；确认没把本机文件带进来
+python scripts/dev/check_no_secrets.py    # 必须 0 命中，退出码 0
+git add -A
+git diff --cached --stat                  # 过一遍清单
+git commit -m "<类型>: <为什么>"
+git push                                  # master 已跟踪 origin/full-source
+```
+
+- 一功能一提交，提交信息写"为什么"，不写"改了哪几行"
+- 提交前按 §12.3 第 3 条 grep 一遍临时物
+- **推送前** `check_no_secrets.py` 不通过就不许推
+
+#### 外部贡献者（没有写权限）
+
+1. 在 GitHub 上 **Fork** 本仓库
+2. clone 自己的 fork，**新建分支**再改（不要直接改 `full-source`）
+3. 提交并推到自己 fork 的分支
+4. 向 `iuu-zyh/agent_loop` 的 `full-source` 发 **Pull Request**
+5. 等待维护者审阅合并
+
+**不要**尝试直接推原仓库（没有权限），也不要另建一份历史再让维护者 force push 覆盖。
+
+#### 永远不入库（已在 `.gitignore`，别用 `-f` 绕过）
+
+| 文件 | 原因 |
+|---|---|
+| `config.json` | 本机真实配置，含 API key |
+| `dist/` | 打包产物，几十 MB |
+| `.depmap.json` / `.test_durations.json` / `.pytest_last_subset_run` | 本机测试缓存 |
+| `debug-*.md` | 临时排查记录，结论进 `archive/` 后再删 |
+
+#### 行尾
+
+仓库有 `.gitattributes`（`* text=auto` + 二进制扩展名标记）。
+索引统一 **LF**，Windows 工作区由 `core.autocrlf=true` 在 checkout 时转 **CRLF**。
+
+看到某个文件"整文件改动"时，先跑：
+
+```bash
+git diff --ignore-cr-at-eol -- <file>
+```
+
+还是全删全增 ⇒ 真改了；变成空 ⇒ 只是行尾，让 `.gitattributes` 在下次 `git add` 时自动纠正，不要手改。
