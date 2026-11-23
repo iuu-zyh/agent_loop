@@ -20,18 +20,16 @@ logs/
 
 # 依赖快照（由 scripts/dev/run_tests_for.py --probe 重采；内容与本机文件时间戳相关）
 scripts/dev/.depmap.json
+scripts/dev/.test_durations.json
 .pytest_last_subset_run
 
-# 公开仓库：本地数据与不可分发素材
-config.json
+# 发布产物 / 反编临时输出 / 体检残留（体积大或与本机相关，不入库）
 dist/
-hw1_jupyterhub/
-generated-images/
-.agent_loop_build/
-*.zip
-*.bak_*
-_diag_*
 NUL
-.pytest_last_subset_run
-scripts/dev/.depmap.json
-scripts/dev/.test_durations.json
+_lic_check.txt
+reference/decomp_tool_dump.txt
+
+# 本机真实配置（含 API key）与临时排查产物 —— 绝不入库
+config.json
+debug-portrait-same-unit.md
+_diag_initiative_force.txt.disabled

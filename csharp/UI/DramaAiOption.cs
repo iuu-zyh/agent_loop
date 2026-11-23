@@ -133,14 +133,43 @@ namespace AgentLoopBridge
         /// 本页没填就保持 null/0，`ExtractText` 走空串兜底、`DetectSpeaker` 走立绘兜底
         /// （字段缺失 ≠ 否定），绝不串页。
         /// 不影响邀约路：那条走自己的 `_pageUiText` 消费机制。</summary>
-        private static void Prefix()
+        private static void Prefix(UIDramaBase __instance, int id, DramaData data)
         {
             try { DramaTextCapture.LastUiText = null; } catch { }
             try { DramaTextCapture.LastSpeakerSide = 0; } catch { }
+
+            // 「本页两侧都用运行时单位」的页（配表 npcLeft==0 且 npcRight==0）把立绘位 ID 归零。
+            //
+            // 为什么：`UIDramaDialogue.UpdateUnit`@0x3300D80 在 **id==0** 时会先看
+            // `dramaData.unitLeftID(+0x40)/unitRightID(+0x44)`，非 0 就用它覆盖 id
+            // （左取 +0x40、右取 +0x44，见 0x18301363..0x183013A6）。而这两个字段挂在
+            // **跨页共享**的 `DramaData` 上，`NextDialogue`/`InitData`/`UpdateUI` 全链路都不重置。
+            // 真机 23205/23206（同一段话第一、二句，配表都是 0/0）实测：第二句右位被
+            // `unitRightID=11`（= unitLeft）顶替，名签与立绘都变成左位那个人，
+            // 而 `dramaData.unitLeft/unitRight` 始终是两个不同的人。
+            //
+            // 归零 = 恢复这类页的本义「左取 unitLeft / 右取 unitRight」；对本来正常
+            // （ID 已是 0，或 ID 恰好指对侧）的页是幂等空操作。只碰 0/0 页，
+            // npcLeft/npcRight 有配值的页（190 的 1/11、mod 壳的 11/12）一律不动。
+            try
+            {
+                if (data == null) return;
+                var item = g.conf?.dramaDialogue?.GetItem(id);
+                if (item == null) return;
+                if (item.npcLeft != 0 || item.npcRight != 0) return;
+                int l0 = data.unitLeftID, r0 = data.unitRightID;
+                if (l0 == 0 && r0 == 0) return;
+                data.unitLeftID = 0;
+                data.unitRightID = 0;
+                ModMain.P("[DramaAiOption] 立绘位ID归零 page=" + id + " 原=" + l0 + "/" + r0);
+            }
+            catch { }
         }
 
         private static void Postfix(UIDramaBase __instance, int id, DramaData data)
         {
+            // 结果级立绘纠偏：必须最先跑 —— 它可能在下面各闸之前重刷一次 UI。
+            try { SanitizePortraitSlots(__instance, id, data); } catch { }
             // 剧情文本捕获（邀约第二层地点的 {0} 取值）：必须放在所有 early-return 之前——
             // 邀约第一层 81002 是在 ToolExecutor.Execute 同步期间开的（SuppressAiOption=True 会提前 return）。
             // 内部自带武装闸：只有 yao_yue 挂起期间才工作，平时零开销。
@@ -1821,6 +1850,53 @@ namespace AgentLoopBridge
                 if (r != null) return r;
             }
             return null;
+        }
+
+        /// <summary>结果级立绘纠偏 —— 直接看「右侧名签画的是不是 `unitRight` 那个人」。
+        ///
+        /// 为什么需要它（而不是只靠 Prefix 归零 ID）：
+        ///   `UpdateUnit` 在 id==0 时会被 `dramaData.unitLeftID/unitRightID` 顶替
+        ///   （反编 0x18301363–0x183013A6），而这两个 ID 挂在跨页共享的 `DramaData` 上。
+        ///   玩家实测：**装本 mod 才会出现**，不装 mod 同一段剧情正常 —— 说明是本 mod 在
+        ///   剧情窗上注入的那套 UI（`InitData` Postfix 克隆按钮 / 改父节点 / 重刷）让本页的
+        ///   初始化多走了一次或走了不同分支，把游戏内部这两个 ID 写脏；mod 源码里没有任何
+        ///   一处直接写它们。与其去追具体写入点（在游戏侧、随版本变），不如在**消费侧**
+        ///   校验结果：0/0 页的两侧本来就该是 `unitLeft`/`unitRight` 两个人，画错就重刷。
+        ///
+        /// 判据三连（任一不满足就不动，保证对正常页是零开销空操作）：
+        ///   ① 配表 `npcLeft==0 && npcRight==0`（本页语义 = 用运行时单位）；
+        ///   ② `unitLeft`/`unitRight` 两个 unitID 都取得到且不相等（独白页两侧同一人不碰）；
+        ///   ③ 右侧名签文本 ≠ `unitRight` 的名字（已经画对就不碰）。
+        /// 命中后：ID 归零 → `UpdateUI()` 重刷一次（同帧内，玩家看不到闪动）。</summary>
+        private static void SanitizePortraitSlots(UIDramaBase ui, int id, DramaData data)
+        {
+            if (ui == null || data == null) return;
+            var item = g.conf?.dramaDialogue?.GetItem(id);
+            if (item == null) return;
+            if (item.npcLeft != 0 || item.npcRight != 0) return;
+
+            var lu = data.unitLeft;
+            var ru = data.unitRight;
+            if (lu == null || ru == null) return;
+            string lid = "", rid = "";
+            try { lid = DramaNativeClaim.UidOf(lu) ?? ""; } catch { }
+            try { rid = DramaNativeClaim.UidOf(ru) ?? ""; } catch { }
+            if (string.IsNullOrEmpty(lid) || string.IsNullOrEmpty(rid) || lid == rid) return;
+
+            string want = SafeName(ru);
+            if (string.IsNullOrEmpty(want)) return;
+            var tr = FindDeep(ui.transform, "textRightName");
+            var t = tr != null ? tr.GetComponent<Text>() : null;
+            if (t == null) return;
+            string cur = t.text ?? "";
+            if (cur == want) return;                 // 右侧画的就是 unitRight，正常
+
+            int l0 = data.unitLeftID, r0 = data.unitRightID;
+            data.unitLeftID = 0;
+            data.unitRightID = 0;
+            ui.UpdateUI();
+            ModMain.P("[DramaAiOption] 立绘位纠偏 page=" + id + " 原ID=" + l0 + "/" + r0
+                      + " 右名签=\"" + cur + "\" → \"" + want + "\"");
         }
 
         /// <summary>`actual` 是否就是 `want`（或带前缀的 `G:want`）。</summary>
