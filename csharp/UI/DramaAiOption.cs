@@ -140,17 +140,10 @@ namespace AgentLoopBridge
 
             // 「本页两侧都用运行时单位」的页（配表 npcLeft==0 且 npcRight==0）把立绘位 ID 归零。
             //
-            // 为什么：`UIDramaDialogue.UpdateUnit`@0x3300D80 在 **id==0** 时会先看
-            // `dramaData.unitLeftID(+0x40)/unitRightID(+0x44)`，非 0 就用它覆盖 id
-            // （左取 +0x40、右取 +0x44，见 0x18301363..0x183013A6）。而这两个字段挂在
-            // **跨页共享**的 `DramaData` 上，`NextDialogue`/`InitData`/`UpdateUI` 全链路都不重置。
-            // 真机 23205/23206（同一段话第一、二句，配表都是 0/0）实测：第二句右位被
-            // `unitRightID=11`（= unitLeft）顶替，名签与立绘都变成左位那个人，
-            // 而 `dramaData.unitLeft/unitRight` 始终是两个不同的人。
-            //
-            // 归零 = 恢复这类页的本义「左取 unitLeft / 右取 unitRight」；对本来正常
-            // （ID 已是 0，或 ID 恰好指对侧）的页是幂等空操作。只碰 0/0 页，
-            // npcLeft/npcRight 有配值的页（190 的 1/11、mod 壳的 11/12）一律不动。
+            // ⚠ 这不是修法，只是补救层。真机 23206 证明这两条 ID 在 InitData 之前本来就是 0
+            // （`立绘位ID归零` 从未命中），脏值是 InitData 内部写进去的，所以本层压不住。
+            // 权威修复在 `TeamContainerInject.DramaUpdateUnitSlotPrefix`（立绘位解析点按侧强制 id）。
+            // 这里保留只为「进本页时就已经带着脏 ID」的情形兜一下，不承载判据。
             try
             {
                 if (data == null) return;

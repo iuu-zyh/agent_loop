@@ -46,6 +46,7 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using UnhollowerBaseLib;
+using UnityEngine.UI;
 
 namespace AgentLoopBridge
 {
@@ -506,6 +507,20 @@ namespace AgentLoopBridge
                             BindingFlags.Static | BindingFlags.NonPublic);
                         harm.Patch(updateUnit, prefix: new HarmonyMethod(upre));
                         note.Append("190 立绘左位改写=已挂(Prefix);");
+
+                        // 0/0 页立绘位：**单独一次 Patch**（带了 __9/__4 两个位置参数）。
+                        // 绑定失败只让这一支不挂，190 那条已经挂上了，不受牵连。
+                        try
+                        {
+                            var spre = typeof(TeamContainerInject).GetMethod(nameof(DramaUpdateUnitSlotPrefix),
+                                BindingFlags.Static | BindingFlags.NonPublic);
+                            harm.Patch(updateUnit, prefix: new HarmonyMethod(spre));
+                            note.Append("0/0 立绘位=已挂(Prefix);");
+                        }
+                        catch (Exception se)
+                        {
+                            note.Append("0/0 立绘位=挂载失败(" + se.GetType().Name + ":" + se.Message + ");");
+                        }
                     }
                     else note.Append("190 立绘左位改写=未找到;");
                 }
@@ -796,6 +811,67 @@ namespace AgentLoopBridge
                 //   若"立绘仍是玩家"且**没有**这行 ⇒ ref 回写没生效（Harmony 版本差异），
                 //   改走 Postfix + 直接重设 UI，别再盲猜。
                 ModMain.P(Tag + " 190 立绘：左位 id 1→11（改读 unitLeft）");
+            }
+            catch { }
+        }
+
+        /// <summary>
+        /// 同一个 `UpdateUnit(..., id, isLeft)` 的第二个前缀：**配表让这一侧「运行时取人」(id==0) 时，
+        /// 按侧别取自己的人**。
+        ///
+        /// 真机 23205→23206（同一段话第一、二句）：第一页正常，第二页两侧都画成左位那个人
+        /// （名签也同名），而 `DramaData.unitLeft/unitRight` 全程是两个不同的人。
+        /// 脏值发生在 `id==0` 的解析里 —— 在 InitData 之前把 `unitLeftID/unitRightID` 归零压不住
+        /// （那时它们本来就是 0），所以改在解析点：直接给 11（unitLeft +0x10）/ 12（unitRight +0x18），
+        /// 谁写脏都不影响。（id 语义见 190 段文档与 0x3300D80 反编。）
+        ///
+        /// 判据只看**这次调用拿到的 id**：非 0 说明配表已把这一侧写死（1=玩家、11=unitLeft、
+        /// 12=unitRight…），一律不动；0 才是「运行时取人」，此时才按侧别改写。
+        /// 两侧单位为空或本来是同一个人时也不动（单人页/独白页）。
+        ///
+        /// 侧别优先按「这次真正要刷的名签」判定（`__4` 与 `textLeftName/textRightName` 比指针），
+        /// 游戏传的 `isLeft` 只作兜底 —— 槽位是实参决定的。
+        ///
+        /// 单独一个方法、单独 try/catch 挂载：参数绑定一旦失败只影响本支，190 那条不受牵连。
+        /// </summary>
+        private static void DramaUpdateUnitSlotPrefix(object __instance, ref int __8, bool __9, Text __4)
+        {
+            try
+            {
+                if (__8 != 0) return;                              // 配表写死了这一侧 ⇒ 不动
+                var ui = __instance as UIDramaBase;
+                if (ui == null) return;
+                var it = ui.item;
+                if (it == null) return;
+                var dd = ui.dramaData;
+                if (dd == null) return;
+                var lu = dd.unitLeft;
+                var ru = dd.unitRight;
+                if (lu == null || ru == null) return;              // 单人页/独白页不动
+                string lid = "", rid = "";
+                try { lid = DramaNativeClaim.UidOf(lu) ?? ""; } catch { }
+                try { rid = DramaNativeClaim.UidOf(ru) ?? ""; } catch { }
+                if (string.IsNullOrEmpty(lid) || lid == rid) return;   // 两侧本来就是同一个人
+
+                bool isLeftSlot = __9;
+                string sideVia = "isLeft";
+                try
+                {
+                    var dlg = ui.TryCast<UIDramaDialogueBase>();
+                    if (dlg != null && __4 != null)
+                    {
+                        var tl = dlg.textLeftName;
+                        var tr = dlg.textRightName;
+                        if (tl != null && __4.Pointer == tl.Pointer) { isLeftSlot = true; sideVia = "名签左"; }
+                        else if (tr != null && __4.Pointer == tr.Pointer) { isLeftSlot = false; sideVia = "名签右"; }
+                    }
+                }
+                catch { }
+
+                int want = isLeftSlot ? 11 : 12;
+                __8 = want;
+                ModMain.P("[DramaAiOption] 立绘位强制 page=" + it.id + " " + (isLeftSlot ? "左" : "右")
+                          + " id 0→" + want + "（" + sideVia + "；" + lid + " / " + rid + "）");
             }
             catch { }
         }

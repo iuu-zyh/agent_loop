@@ -9,6 +9,31 @@
 
 ---
 
+## 2026-11-23 · 原生剧情窗第二句两侧立绘/名签变成同一人
+
+**症状**：同一段剧情翻到第二页（23205 → 23206，配表两侧都是「运行时取人」），左右两个立绘位画成同一个人，
+名签也同名。第一页正常。装本模组才出现。
+
+**前两次修复都没压住**（记录在案，别回退成它们）：
+
+- 在 `InitData` 之前把 `DramaData.unitLeftID/unitRightID` 归零 —— 日志证明那时它们本来就是 0，脏值是在
+  `InitData` 内部写进去的（克隆出来的「对话」按钮带着预制件组件被 `SetActive(true)`，是头号嫌疑，未逐一定位）。
+- 结果级纠偏「右名签 ≠ unitRight 名 → 归零 ID + `UpdateUI()`」—— 命中了但画面没有任何变化，说明
+  `UpdateUI` 重走的是同一条被写脏的解析。
+
+**定案与修法**：`UpdateUnit(..., int id, bool isLeft)` 的 `id` 决定画谁（1=玩家、0=运行时按侧取、11=unitLeft、
+12=unitRight，见 `docs/archive/2026-10-19-队友重伤与死亡链路.md` §11）。新增第二个 Harmony Prefix
+`TeamContainerInject.DramaUpdateUnitSlotPrefix`：只在这侧 `id==0` 时按侧别改写成 11/12，两侧单位为空或本来
+是同一人（单人页、独白页、190）不动；侧别用实参名签 `Text` 与 `textLeftName/textRightName` 比指针判定，
+不依赖游戏传的 `isLeft`。与 190 那条前缀**分开挂载**，参数绑定失败不会牵连 190。
+
+**真机验证（14:59）**：启动行出现 `0/0 立绘位=已挂(Prefix)`；23205 与 23206 各出现左 `id 0→11` / 右 `id 0→12`；
+两页的说话人判定都是 `名签 左="濮阳冷亦" 右="计天明"`，旧的 `立绘位纠偏` 不再出现。
+
+详见 [`journal/2026-11-23-剧情立绘位错人/`](journal/2026-11-23-剧情立绘位错人/README.md)。
+
+---
+
 ## 2026-11-23 · 断连判死从未生效 + 压缩冷却单位写错
 
 **断连判死**：`transport/ws_channel.py` 的断连出口把 `self._drop_pending_on_disconnect()`
