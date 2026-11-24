@@ -212,6 +212,7 @@ namespace AgentLoopBridge
                     }
                     _harmony = new HarmonyLib.Harmony("AgentLoopBridge");
                     _harmony.PatchAll(Assembly.GetExecutingAssembly());
+                    P("[TeamBattleSafety] " + TeamBattleSafety.InstallReport());
                     // 选项监听自检（09-23）：PatchAll 对不上方法签名时是**静默**跳过的 —— 启动时必须
                     // 有一行说清"这个补丁到底有没有挂上"，否则"没生效"与"没玩到"在日志里长得一样。
                     try { P("[DramaAiOption] CreateOptions 监听自检：" + DramaOptionTapHook.PatchSelfCheck()); }
@@ -307,6 +308,7 @@ namespace AgentLoopBridge
                 //   只按句柄判活会挂到被 `Dispose()` 掉的旧实例上 ⇒ 主线程调度器静默停摆
                 //   ⇒ Python 的每一次工具调用都超时，而日志显示"一切正常"。
                 FrameTicker.Ensure(FrameTicker.KDispatcher, "disp", _dispatcher.OnUpdate, _dispatcher);
+                TeamBattleSafety.AttachHurtGuards();
 
                 // 1c) 组队探针自检（10-17 加）：只打一行，确认探针有没有进游戏。
                 //     ★ Init 期同步输出，不依赖 g.timer.Frame / 不依赖是否进世界 ★
@@ -1127,7 +1129,9 @@ namespace AgentLoopBridge
                 //   说明那个假设从没验证过。官方模组模板与参考实现都在这里 `g.timer.Stop(cor)`。
                 //   放在最前面：此时本体还没拆，但"这一局结束了"这件事已经成立。
                 //   撤干净之后，"句柄在册 = 确实在跑"这句话才成立，`Init` 里的重挂也才不可能重复。
+                TeamBattleSafety.DetachHurtGuards();
                 try { FrameTicker.StopAll("回主界面 Destroy"); } catch { }
+                TeamBattleSafety.Reset();
                 // 存活监测先停：Destroy 之后帧回调随场景销毁，但显式停掉更清楚，
                 // 也杜绝"生命周期尾巴上还想去拉进程"这种动作。
                 try { BrainLink.Stop(); } catch { }
@@ -1226,6 +1230,7 @@ namespace AgentLoopBridge
         /// <summary>诊断：撤销全部 Harmony 补丁（运行期可行；重新打补丁必须重启游戏）。</summary>
         public static void UnpatchAllPatches()
         {
+            TeamBattleSafety.DetachHurtGuards();
             try
             {
                 if (_harmony != null)

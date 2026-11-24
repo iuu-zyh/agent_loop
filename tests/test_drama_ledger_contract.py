@@ -434,7 +434,7 @@ def test_solo_battle_leaves_no_trace():
     #    10-25 把直塞抽成 `InjectInto()` 之后，代码的**文本顺序**不再等于调用顺序
     #    （`InjectInto` 定义在 `Prefix` 前面）。所以这里按**结构**断言：
     #      · 窗开在 `InjectInto` 尾部（`★直塞完成★` 之后）；
-    #      · `InjectInto` 的入口只有两个 —— 副本走 `Prefix`（先取名单，空名单 `return true` 早退），
+    #      · `InjectInto` 的入口只有两个 —— 副本走 `Prefix`（先取名单，空名单 `return false` 取消本模组选人），
     #        决斗走前面那个分支（只有玩家点"同意"才调）。
     inj = _code(_read(INJECT))
     at_prefix = inj.find("private static bool Prefix(")
@@ -448,7 +448,7 @@ def test_solo_battle_leaves_no_trace():
     prefix = _brace_body(inj, at_prefix)
     at_mates = prefix.find("var mates = TeamTool.Members(")
     assert at_mates >= 0, "直塞入口的队友名单取法变了，需重新核对"
-    at_early = prefix.find("if (mates == null || mates.Count == 0) return true;")
+    at_early = prefix.find("if (mates == null || mates.Count == 0) return false;")
     at_call = prefix.find("return InjectInto(data, mates, dupSlots);")
     assert at_early > at_mates, "开窗之前没有「没有队友就早退」的判据 —— 单人副本也会开窗"
     assert at_call > at_early, "早退必须发生在调 InjectInto 之前（否则单人副本照样开窗）"

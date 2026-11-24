@@ -87,6 +87,7 @@ namespace AgentLoopBridge
         /// 改成每帧建一批、建完自己撤。判据在 `HistoryBuildCore`，
         /// 接线在 `ChatWindow.BuildHistoryBatch`（`ReplaceHistory` 超过门槛时启用）。</summary>
         internal const int KHistoryBuild = 21;
+        internal const int KTeamHurtInstall = 22;
 
         // 判定用的宽限在 `FrameTickerCore.AliveGraceFrames`（判据归核、接线归层，见两者头注释）。
 

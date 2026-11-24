@@ -28,13 +28,8 @@ def _read(rel: str) -> str:
 
 # ---------------------------------------------------------------- ① 拒绝分支
 
-def test_refuse_branch_clears_container_and_skips_original():
-    """决斗 + 未同意：**必须** 清空容器 **并且** 跳过原方法。
-
-    两个动作缺一不可：
-      · 只清空、放行原方法 ⇒ 原方法会把队友再选一遍（条件就是号位气运）；
-      · 只跳过、不清空 ⇒ 容器里若已有内容（剧情的 addBattleNPCData 先跑过）照样留在场上。
-    """
+def test_refuse_branch_preserves_original_container_and_skips_own_selection():
+    """拒绝带队友时跳过本模组选人，保留原版敌人和剧情角色。"""
     src = _read("tools/TeamContainerInject.cs")
     # 决斗分支必须存在，且以 type==40 为判据
     assert "ModIds.DungeonTypeDuel" in src, "决斗分支不见了（type=40 的判据）"
@@ -47,7 +42,7 @@ def test_refuse_branch_clears_container_and_skips_original():
 
     assert "TeamJoinGate.TakeConsent()" in seg, "决斗分支必须取玩家表态"
     assert "dJoinAnswer.Yes" in seg or "JoinAnswer.Yes" in seg, "同意才注入"
-    assert "nu.Clear" in seg or ".Clear()" in seg, "拒绝必须清空 npcUnits 容器"
+    assert ".Clear()" not in seg, "拒绝不能清空原版共享 NPC 容器"
     assert re.search(r"return false", seg), "拒绝必须 return false（跳过原方法）"
 
 
@@ -64,10 +59,10 @@ def test_decided_flag_is_per_battle():
 # ---------------------------------------------------------------- ② 副本路径不变
 
 def test_dungeon_path_still_untouched():
-    """非决斗分支必须仍是"有队就直塞、没队就放行"（用户已在用的功能，不许回归）。"""
+    """普通副本仍注入真实队友，空队必须取消本模组选人，防止克隆原版 NPC。"""
     src = _read("tools/TeamContainerInject.cs")
     tail = src[src.index("// ① 没组队就完全不干预"):]
-    assert "if (mates == null || mates.Count == 0) return true;" in tail, "没队友必须放行原方法"
+    assert "if (mates == null || mates.Count == 0) return false;" in tail, "空队必须取消本模组选人"
     assert "return InjectInto(data, mates, dupSlots);" in tail, "有队友必须走直塞"
 
 
@@ -326,7 +321,7 @@ def test_decided_latch_is_scoped_to_duel_only():
     # 异常不能掉回复本分支（那里 `mates` 非空就会直塞 = 没问过玩家就带人）
     assert "if (isDuel)" in src[src.index("catch (Exception dex)"):][:900]
     assert "决斗分支异常 ⇒ 按未同意处理" in src
-    assert "nu2.Clear()" in src, "fail-closed 必须真的清空容器"
+    assert "nu2.Clear()" not in src, "异常不能清空原版敌人容器"
 
 def test_attacker_comes_from_page_then_attack_chain():
     """「对手是谁」两条判据：先看**页面**，再用**我方攻击链**兜底（仅 `op == attack`）。
