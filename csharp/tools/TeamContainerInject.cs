@@ -21,7 +21,7 @@
 /// 既然**我们已经知道自己要哪几个人**（TeamTool.Members），就不再让引擎算：
 /// 在 `BattleFunction.AddBattleNPCData(string[])` 的**前缀**里，
 /// 把队伍成员按号位直接写进 `g.world.battle.data.npcUnits`，然后**跳过原方法**（返回 false）。
-/// 原方法会做的事（含它抛的雷）一并跳过；`addBattleUnit_3/4/5` 与 `setBattleData` 照常执行。
+/// 原方法会做的事（含它抛的雷）一并跳过；生成命令由 TeamBattleSafety 在执行时重映射到追加位置。
 ///
 /// ## 时序依据
 ///   `OptionsFunction(string)` 把每个 `|` 分隔的 token 包成委托 **Add 进 CallQueue 再统一 Run**
@@ -32,8 +32,8 @@
 ///
 /// ## 失败安全（三层）
 ///   ① `BattleFunction` 类型按名反射找不到 ⇒ 不挂，一切照旧（条件组那条路还在）；
-///   ② 前缀里任何异常 ⇒ 记日志后**放行原方法**（宁可回到「引擎选人」，不挡战斗）；
-///   ③ 队伍为空（没组队）⇒ **不拦截**，原方法照跑 —— 副本自带 NPC 的生成不受影响。
+///   ② 本模组选人失败或空队 ⇒ 取消本次注入，后续带归属标识的生成命令也跳过；
+///   ③ 其他条件组选人不接管，保留原版 NPC 容器和生成命令。
 ///
 /// ## 为什么不用 [HarmonyPatch] 特性
 ///   与 BattleEndHook 同理：目标类在 il2cpp 运行时里，编译期拿不到强类型，
@@ -199,9 +199,9 @@ namespace AgentLoopBridge
                     if (!cand.Name.Contains("AddBattleNPCData")) continue;
                     var ps = cand.GetParameters();
                     allSigs.Add(cand.Name + "(" + string.Join(",", ps.Select(x => x.ParameterType.Name)) + ")");
-                    // 兜底口径：只要名字对、参数个数 ≤1，就挂 —— 不再挑参数类型。
-                    // （参数类型在 Il2Cpp 桥接下不可靠；Prefix 无参，也用不到它。）
-                    if (m == null && ps.Length <= 1) m = cand;
+                    // 必须绑定原生数组签名，才能只拦截本模组选人，避免波及其他条件组。
+                    if (m == null && cand.Name == "AddBattleNPCData" && ps.Length == 1
+                        && ps[0].ParameterType == typeof(UnhollowerBaseLib.Il2CppStringArray)) m = cand;
                 }
                 note.Append("同名方法 " + allSigs.Count + " 个[" + string.Join(" / ", allSigs) + "];");
 
@@ -547,28 +547,19 @@ namespace AgentLoopBridge
         }
 
         /// <summary>
-        /// 前缀：把队伍成员按号位写进 npcUnits，然后跳过原方法。
-        /// 返回 false = 跳过原方法；返回 true = 照跑原方法。
-        /// ★ 任何异常都必须返回 true 放行 —— 炸掉这里等于炸掉引擎的战斗初始化。
-        /// </summary>
-        /// <summary>
-        /// 把队伍成员按号位写进 `battle.data.npcUnits`，供后续 `addBattleUnit_3/4/5` 按位取人。
-        /// 返回 false = 跳过原方法（原方法 = 条件组选人，type=2 气运下会抛）；true = 照跑原方法。
-        ///
-        /// 本方法是 10-25 从 `Prefix` 里原样抽出来的（两处调用：副本 / 决斗+同意）。
-        /// **抽出来时一个字符的业务逻辑都没改** —— 只把 `nu`/`mates`/`dupSlots` 变成参数。
+        /// 仅追加本模组有效队友。共享容器的原版条目必须保留，失败不能回退到原版条件组选人。
         /// </summary>
         private static bool InjectInto(WorldBattleData data, List<WorldUnitBase> mates, int dupSlots)
         {
             try
             {
-                if (data == null) { ModMain.P(Tag + " InjectInto：battle.data 为空，放行原方法"); return true; }
+                if (data == null) { ModMain.P(Tag + " InjectInto：battle.data 为空，取消本模组选人"); return false; }
                 var nu = data.npcUnits;
-                if (nu == null) { ModMain.P(Tag + " InjectInto：npcUnits 容器不可用，放行原方法"); return true; }
-                if (mates == null || mates.Count == 0) { ModMain.P(Tag + " InjectInto：没有队友，放行原方法"); return true; }
+                if (nu == null) { ModMain.P(Tag + " InjectInto：npcUnits 容器不可用，取消本模组选人"); return false; }
+                if (mates == null || mates.Count == 0) { ModMain.P(Tag + " InjectInto：没有队友，取消本模组选人"); return false; }
 
                 // ② 幂等：本 hook 会被 addBattleNPCData_0/_1/_2 三个 token 各触发一次。
-                //    第一次注入后清掉标记气运之外的旧容器内容已在 Members 语义里；
+                //    第一次只追加队友，原版已有条目和索引必须保留；
                 //    这里第二次起直接跳过（容器已有我们的人）。
                 if (InjectCount > 0)
                 {
@@ -576,7 +567,7 @@ namespace AgentLoopBridge
                     return false;   // 继续跳过原方法（它只会重复/抛雷）
                 }
 
-                // ★ 关键诊断：Clear 前容器里原本有什么 ★
+                // ★ 关键诊断：追加前容器里原本有什么 ★
                 //   剧情副本如果先用 addBattleNPCData 放了救助 NPC，这里就能看到；
                 //   看不到则说明剧情 NPC 走的是 updateConfUnits / 其他入口。
                 try
@@ -592,30 +583,27 @@ namespace AgentLoopBridge
                         try { uid = u?.data?.unitData?.unitID ?? ""; } catch { }
                         before.Add(TeamTool.NameOf(u, "?") + "(" + uid + ")");
                     }
-                    ModMain.P(Tag + " Clear 前 npcUnits Count=" + bn
+                    ModMain.P(Tag + " 追加前 npcUnits Count=" + bn
                               + " [" + string.Join("、", before.ToArray()) + "]");
                 }
-                catch (Exception ex) { ModMain.P(Tag + " Clear 前读取异常：" + ex.Message); }
+                catch (Exception ex) { ModMain.P(Tag + " 追加前读取异常：" + ex.Message); }
 
-                // ③ 直塞：先清容器（等价 clearBattleNPCDatas_0 的语义），再按号位压入。
-                //    ★去重三保险★（2026-10-19 答辩补强）：
-                //    a) Members 每槽取第一人 ⇒ 同一人若身上挂了多枚号位气运也只进一次；
-                //    b) 这里再按实例引用判重，同一 WorldUnitBase 绝不 Add 两次；
-                //    c) 容器先 Clear ⇒ 副本自带旧容器内容/上次残留不可能与我方重复。
-                try { nu.Clear(); } catch { }
+                // 共享容器还保存原版敌人和剧情角色，不能清空或重排它们的槽位。
+                int start = nu.Count;
                 int put = 0;
                 var names = new StringBuilder();
                 var seen = new List<object>();   // 实例引用去重（兜底）
                 var seenIds = new List<string>(); // ★ 主判据：unitID 去重 ★
                 foreach (var u in mates)
                 {
-                    if (u == null) continue;
+                    if (u == null || TeamTool.IsPlayer(u) || nu.Count >= 8 || put >= 3) continue;
 
                     string uid = null;
                     try { uid = u.data?.unitData?.unitID; } catch { }
+                    if (string.IsNullOrEmpty(uid)) continue;
                     if (!string.IsNullOrEmpty(uid))
                     {
-                        if (seenIds.Contains(uid))
+                        if (seenIds.Contains(uid) || Enumerable.Range(0, start).Any(i => TeamTool.UnitIdOf(nu[i]) == uid))
                         {
                             ModMain.P(Tag + " 跳过重复 unitID: " + TeamTool.NameOf(u, "?") + "(" + uid + ")");
                             continue;
@@ -629,6 +617,7 @@ namespace AgentLoopBridge
                     try { nu.Add(u); seen.Add(u); put++; names.Append(TeamTool.NameOf(u, "?")).Append(' '); }
                     catch (Exception ex) { ModMain.P(Tag + " Add 失败: " + ex.Message); }
                 }
+                TeamBattleSafety.Register(data, start);
                 InjectCount++;
 
                 try
@@ -644,27 +633,27 @@ namespace AgentLoopBridge
                         try { uid = u?.data?.unitData?.unitID ?? ""; } catch { }
                         after.Add(TeamTool.NameOf(u, "?") + "(" + uid + ")");
                     }
-                    ModMain.P(Tag + " Clear 后 npcUnits Count=" + an
+                    ModMain.P(Tag + " 追加后 npcUnits Count=" + an
                               + " [" + string.Join("、", after.ToArray()) + "]");
                 }
-                catch (Exception ex) { ModMain.P(Tag + " Clear 后读取异常：" + ex.Message); }
+                catch (Exception ex) { ModMain.P(Tag + " 追加后读取异常：" + ex.Message); }
 
                 ModMain.P(Tag + $" ★直塞完成★ 队员 {put} 人（dupSlots={dupSlots}）: {names}"
-                    + $"｜容器 Count={nu.Count}｜后续 addBattleUnit_3/4/5 将按位取人（GetUnitWorld: id3..10 → Index(容器, id-3)）");
+                    + $"｜容器 Count={nu.Count}｜后续仅生成本次追加的真实队友槽位（GetUnitWorld: id3..10 → Index(容器, id-3)）");
                 // ★ 剧情账本：战斗区间起点（10-25）★
                 //   为什么用"直塞完成"而不是 `BattleStart`：
                 //     ① `BattleStart` 真机会**重复触发**（10-24 日志同一毫秒打了 5 次），要自己去重；
                 //        这一行是我们的代码打的，一次就是一次；
                 //     ② 语义正好对上 —— 单人战斗不写履历，而"有人被塞进容器"正是"这场要写履历"的前提。
                 //   起点之后的所有剧情页/选项都会进账本，等 `BattleExit` 插上 end 钉子再一次性取出。
-                try { DramaLedger.BeginWindow(""); }
+                try { if (put > 0) DramaLedger.BeginWindow(""); }
                 catch (Exception ledEx) { ModMain.P(Tag + " 账本战斗起点失败（不影响战斗）: " + ledEx.Message); }
                 return false;   // 跳过原方法（原方法=条件组选人，type=2 气运下会抛）
             }
             catch (Exception e)
             {
-                ModMain.P(Tag + " InjectInto 异常（放行原方法）: " + e.GetType().Name + " " + e.Message);
-                return true;
+                ModMain.P(Tag + " InjectInto 异常（取消本模组选人）: " + e.GetType().Name + " " + e.Message);
+                return false;
             }
         }
 
@@ -773,6 +762,8 @@ namespace AgentLoopBridge
                 //     显式置空 = 让"一个人"这个语义在两条配表下都成立。
                 data.unitLeft = target;
                 data.unitRight = null;
+                data.functionData.unitLeft = target;
+                data.functionData.unitRight = null;
                 // `set_unit` @0x223AB70 会**同时**写 +0x10/+0x18，会把 unitRight 又填上
                 // ⇒ **不能调**。但 `DramaFunctionData` 那边还需要它：
                 //    `addNPCLuck_1` 读 `functionData.unitLeft(+0x18)`，
@@ -896,6 +887,18 @@ namespace AgentLoopBridge
         /// ⇒ 现在只认死亡记录。认不出就返回 null，让上层打⚠日志。
         ///   **宁可不开页，也不要挂着错的判断装成功。**
         /// </summary>
+        internal static bool HasPendingHurtMate()
+        {
+            foreach (var id in DeadTeamIds)
+            {
+                var unit = FindTeamUnit(id);
+                if (unit == null || TeamTool.IsPlayer(unit)) continue;
+                string key = TeamTool.UnitIdOf(unit);
+                if (TeamBattleSafety.CanHurt(key, false, true, _usedAsDramaLead.Contains(key))) return true;
+            }
+            return false;
+        }
+
         private static WorldUnitBase PickHurtMate()
         {
             // ① 死亡钩子记下的，优先「还没当过 190 主角」的
@@ -905,7 +908,7 @@ namespace AgentLoopBridge
                 if (u == null || TeamTool.IsPlayer(u)) continue;
                 string k = TeamTool.UnitIdOf(u);
                 if (string.IsNullOrEmpty(k)) { try { k = u.data?.unitData?.unitID ?? ""; } catch { } }
-                if (k.Length > 0 && _usedAsDramaLead.Contains(k)) continue;   // 已经给他开过页
+                if (!TeamBattleSafety.CanHurt(k, false, true, _usedAsDramaLead.Contains(k))) continue;   // 已经给他开过页
                 if (k.Length > 0) _usedAsDramaLead.Add(k);
                 return u;
             }
@@ -1180,47 +1183,15 @@ namespace AgentLoopBridge
         ///   那个行为 10-21 已删除（让队友能被一击打倒本身就是反玩家行为）。
         ///   现在只剩**登记**这一件事 —— 供 `SweepDeadBattleUnits` 战后直接查 `isDie`。
         /// </summary>
+        internal static void RegisterBattleUnit(UnitCtrlBase unit)
+        {
+            if (unit != null && !_mateBattleUnits.Contains(unit)) _mateBattleUnits.Add(unit);
+        }
+
         private static void AddUnitPostfix(object __0)
         {
-            try
-            {
-                object unit = __0;
-                if (unit == null) return;
-
-                // 只做一件事：登记队友的战场单位对象引用，供 `SweepDeadBattleUnits` 战后查 isDie。
-                //
-                // ⚠ 10-21 真机发现这条**从来没登记成功过**（日志 `[sweep] 本场没有登记到
-                //   队友战场单位`）。原因是 `AddUnit` 发生在战斗初始化早期，
-                //   此时 `worldUnitData` 往往还没挂上 ⇒ `TryResolveMate` 的类型闸
-                //   （要求 `UnitDataHuman`）能过，但 `worldUnitData` 读空 ⇒ 认不出。
-                //
-                // ⇒ 改成**按名字**登记：`UnitDataBase.name` 与队伍成员名直接比，
-                //   不碰 `worldUnitData`。这条在 AddUnit 阶段是可用的。
-                object data = Refl.Get(unit, "data");
-                if (data == null) return;
-                string dn = Refl.Get(data, "name") as string;
-                if (string.IsNullOrEmpty(dn)) return;
-
-                bool hit = false;
-                foreach (var m in TeamTool.Members(out _))
-                {
-                    string mn = null;
-                    try { mn = m?.data?.unitData?.propertyData?.GetName(); } catch { }
-                    if (mn == dn) { hit = true; break; }
-                }
-                if (!hit) return;
-
-                foreach (var x in _mateBattleUnits)
-                    if (ReferenceEquals(x, unit)) return;      // 已登记过
-
-                _mateBattleUnits.Add(unit);
-                ModMain.P(Tag + "[battleunit] 登记 → " + dn
-                          + "，本场累计 " + _mateBattleUnits.Count + " 个");
-            }
-            catch (Exception e)
-            {
-                ModMain.P(Tag + "[battleunit] 登记异常: " + e.GetType().Name + " " + e.Message);
-            }
+            string id;
+            if (TeamBattleSafety.ResolveUnit(__0, out id)) RegisterBattleUnit(__0 as UnitCtrlBase);
         }
 
         /// <summary>
@@ -1311,6 +1282,13 @@ namespace AgentLoopBridge
             mate = null;
             uid = "";
             if (unit == null) return false;
+            string capturedId;
+            if (TeamBattleSafety.ResolveUnit(unit, out capturedId))
+            {
+                mate = FindTeamUnit(capturedId);
+                uid = capturedId;
+                return mate != null && !TeamTool.IsPlayer(mate);
+            }
             try
             {
                 object data = Refl.Get(unit, "data");
@@ -1355,6 +1333,8 @@ namespace AgentLoopBridge
                 object wud = Refl.Get(data, "worldUnitData");
                 object ud = wud == null ? null : Refl.Get(wud, "unitData");
                 uid = (Refl.Get(ud, "unitID") as string) ?? "";
+                // 名字可能重复，原版敌人不能靠同名被登记成受伤队友。
+                if (!TeamBattleSafety.Registered(uid)) return false;
 
                 // ① unitID 精确相等
                 if (!string.IsNullOrEmpty(uid))
@@ -1442,19 +1422,18 @@ namespace AgentLoopBridge
             catch (Exception e) { return "描述异常:" + e.Message; }
         }
 
-        // ★ 无参 Prefix（2026-10-19 18:2x 定案）★
-        //   Harmony 允许 prefix 不带任何参数。我们不需要读 args（不关心是哪个条件组），
-        //   于是**彻底绕开**「string[] vs Il2CppStringArray」的参数类型转换问题 ——
-        //   上一版本就是因为 Prefix(string[] __0) 的参数类型对不上而整条链路失效。
-        private static bool Prefix()
+        // 原生数组保留条件组身份，防止其他 Mod 的选人命令被本模组接管。
+        private static bool Prefix(UnhollowerBaseLib.Il2CppStringArray __0)
         {
+            // 共享入口还服务原版及其他模组，只有本模组的选人命令允许改写容器。
+            if (!TeamBattleSafety.OwnSelection(__0)) return true;
             try
             {
                 // ★ 测试开关：剧情副本对照用，完全不碰 npcUnits ★
                 if (NoInject)
                 {
                     ModMain.P(Tag + " noinject=1，跳过容器直塞（保持原版 npcUnits）");
-                    return true;
+                    return false;
                 }
 
                 // ★ 10-21 删除「救助剧情不注入」分支（用户拍板）★
@@ -1491,7 +1470,7 @@ namespace AgentLoopBridge
                 //  ① 同意才带，**没点也算没同意**（`JoinAnswer.None` 一律按"不带"）；
                 //  ② "不带"**不能靠放行原方法** —— 原方法走 `ConfNpcCondition MID&003`，
                 //     它的条件就是三枚号位气运（`feature_1_MID&51/55/56`），放行 = 把队友
-                //     重新选出来塞进容器 = 变相同意。所以必须**清空容器 + return false**；
+                //     重新选出来塞进容器 = 变相同意。所以必须**保留原版容器 + return false**；
                 //  ③ 本 hook 被 `addBattleNPCData_0/_1/_2` 三个 token 各调一次 ⇒ 必须幂等，
                 //     否则第二次会把刚塞好的容器清掉。
                 //
@@ -1526,10 +1505,8 @@ namespace AgentLoopBridge
                                       + (ddbi != null ? ddbi.id.ToString() : "?") + "）");
                             return InjectInto(dData, dMates, dDup);
                         }
-                        try { if (dNu != null) dNu.Clear(); }
-                        catch (Exception cex) { ModMain.P(Tag + " 决斗：清空容器失败 " + cex.Message); }
                         ModMain.P(Tag + " 决斗：玩家未同意（" + answer + "，队=" + (dMates != null ? dMates.Count : 0)
-                                  + "）⇒ 队友不参战（清空容器并跳过原方法）");
+                                  + "）⇒ 队友不参战（保留原版容器并跳过本模组选人）");
                         return false;
                     }
                 }
@@ -1541,14 +1518,6 @@ namespace AgentLoopBridge
                         // ★ fail-closed（10-26 复核补）★
                         //   异常之后若掉回下面的副本分支，`mates` 非空就会直塞 —— 等于
                         //   "没问过玩家就把队友带进决斗"。宁可不带，也绝不绕过表态。
-                        try
-                        {
-                            var b2 = g.world != null ? g.world.battle : null;
-                            var d2 = b2 != null ? b2.data : null;
-                            var nu2 = d2 != null ? d2.npcUnits : null;
-                            if (nu2 != null) nu2.Clear();
-                        }
-                        catch { }
                         _decided = true;
                         ModMain.P(Tag + " 决斗分支异常 ⇒ 按未同意处理（不带队友，也不放行原方法）");
                         return false;
@@ -1561,21 +1530,22 @@ namespace AgentLoopBridge
                 // 且它自带 try/catch（TeamTool.HasLuck）——炸了按 false 算，不会把异常
                 // 冒到引擎的战斗初始化里。
                 var mates = TeamTool.Members(out int dupSlots);
-                if (mates == null || mates.Count == 0) return true;
+                if (mates == null || mates.Count == 0) return false;
+                if (TeamBattleSafety.Admitted) return false;
 
                 var battle = g.world != null ? g.world.battle : null;
                 var data = battle != null ? battle.data : null;
                 if (data == null)
                 {
-                    ModMain.P(Tag + " battle.data 不可用，放行原方法");
-                    return true;
+                    ModMain.P(Tag + " battle.data 不可用，取消本模组选人");
+                    return false;
                 }
 
                 var nu = data.npcUnits;
                 if (nu == null)
                 {
-                    ModMain.P(Tag + " npcUnits 容器不可用，放行原方法");
-                    return true;
+                    ModMain.P(Tag + " npcUnits 容器不可用，取消本模组选人");
+                    return false;
                 }
 
                 // ② 幂等 + 直塞（抽成方法：决斗分支也要用它）
@@ -1583,8 +1553,8 @@ namespace AgentLoopBridge
             }
             catch (Exception e)
             {
-                ModMain.P(Tag + " 前缀异常（放行原方法）: " + e.GetType().Name + " " + e.Message);
-                return true;
+                ModMain.P(Tag + " 本模组选人失败，取消本次注入: " + e.GetType().Name + " " + e.Message);
+                return false;
             }
         }
 
@@ -1611,6 +1581,10 @@ namespace AgentLoopBridge
         /// </summary>
         internal static void OnBattleStarting()
         {
+            TeamBattleSafety.Reset();
+            DeadTeamIds.Clear();
+            _mateBattleUnits.Clear();
+            _usedAsDramaLead.Clear();
             _decided = false;
             InjectCount = 0;
         }

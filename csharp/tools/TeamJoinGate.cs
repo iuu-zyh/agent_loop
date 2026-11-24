@@ -316,9 +316,15 @@ namespace AgentLoopBridge
 
         // ==================================================================== 给注入层
 
+        // 触发条件检查可重复调用，不能提前消费玩家的决斗表态。
+        internal static JoinAnswer PeekConsent()
+        {
+            try { Ensure(); return _core.Answer; }
+            catch { return JoinAnswer.None; }
+        }
+
         /// <summary>
-        /// 取走玩家表态（一次性）。**只有决斗分支该调** —— 副本分支不消费，
-        /// 否则一场普通副本会把"下一场决斗"的答案吃掉。
+        /// 取走玩家表态（一次性）。只有真正进行决斗注入时消费。
         /// </summary>
         internal static JoinAnswer TakeConsent()
         {

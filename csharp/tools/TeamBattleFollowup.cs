@@ -185,6 +185,7 @@ namespace AgentLoopBridge
 
                     // 判据 = 号位气运。副本自带的 NPC 走这条 continue。
                     if (TeamTool.SlotOf(u) < 0) continue;
+                    if (!TeamBattleSafety.Participated(UnitIdOf(u))) continue;
 
                     string id = null;
                     try { id = u.data?.unitData?.unitID; } catch { }
@@ -214,6 +215,7 @@ namespace AgentLoopBridge
                         //   `npcUnits` 扫进来的人已经进了 seenIds；`Members()` 返回的
                         //   可能是同一个 unitID 的新 IL2CPP 包装对象，ReferenceEquals 不可靠。
                         string mid = UnitIdOf(m);
+                        if (!TeamBattleSafety.Participated(mid)) continue;
                         if (!string.IsNullOrEmpty(mid))
                         {
                             if (seenIds.Contains(mid)) continue;
@@ -335,6 +337,7 @@ namespace AgentLoopBridge
                 _hurtMates.Clear();
                 _hurtIds.Clear();
                 TeamContainerInject.ClearDeadTeamIds();
+                TeamBattleSafety.Reset();
                 // ⚠ 只在这里清 —— 不能放进 ResetForBattle：
                 //   ResetForBattle 在 BattleEndFront **开头**跑，
                 //   而 SweepDeadBattleUnits 在同一次 BattleEndFront 的
