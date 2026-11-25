@@ -107,6 +107,15 @@ namespace AgentLoopBridge
                     "报问题时说一下版本号和卡在哪一步，比只说「用不了」好查得多。",
                 },
             },
+            new NoticeSection
+            {
+                Title = "致谢",
+                Lines = new[]
+                {
+                    "感谢 南枝 修复队友参战与重伤判定，并优化了组队流程。",
+                    "想一起开发或提建议的，可以进上面的交流群。",
+                },
+            },
         };
 
         /// <summary>
@@ -115,6 +124,19 @@ namespace AgentLoopBridge
         /// </summary>
         internal static readonly NoticeRelease[] Releases =
         {
+            new NoticeRelease
+            {
+                Seq = 9,
+                Version = "1.2.4",
+                Date = "11 月 25 日 上午 10:00",
+                Author = "南枝",
+                Items = new[]
+                {
+                    "无队伍的多人战斗不再多出克隆友军，敌人和剧情角色站回原位",
+                    "只有真正上场的队友才算参战，重伤剧情不会认错人",
+                    "决斗没点同意就不带走队友，反复检查也不消耗这次表态",
+                },
+            },
             new NoticeRelease
             {
                 Seq = 8,

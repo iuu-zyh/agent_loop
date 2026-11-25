@@ -18,7 +18,7 @@ internal static class About
     /// <summary>版本号。
     /// ⚠️ 改这里 = 改"须知"面板里那条最新公告的版本（`NoticeContentCore.Releases[0].Version`
     /// 必须与之逐字一致，`tests/test_notice_panel_contract.py` 钉着）。</summary>
-    internal const string Version = "1.2.3";
+    internal const string Version = "1.2.4";
 
     /// <summary>作者署名。⚠️ 发布前必须替换。</summary>
     internal const string Author = "iuu-zyh";
