@@ -432,7 +432,7 @@ grep -rn 'TODO\|FIXME\|临时\|PROBE\|XXX\|调试用' \
 **仓库只有一个**：<https://github.com/iuu-zyh/agent_loop>，默认分支 `full-source`。
 不要另开「干净副本」再推。
 
-**维护者（有写权限）**
+**维护者 / 协作者（有 Write 权限，可直接推 `full-source`）**
 
 ```bash
 git status                                # 必须干净
@@ -444,6 +444,15 @@ git push                                  # master 已跟踪 origin/full-source
 ```
 
 一功能一提交；提交信息写「为什么」，不写「改了哪几行」。
+
+加人：仓库 Settings → Collaborators → Add people → 角色选 **Write**（不要 Maintain，它还能改仓库设置和 Webhook）。
+
+`full-source` 没有分支保护和 CI，分支头等于可发布状态，全靠下面四条自律：
+
+- 推之前先跑 `python3 scripts/dev/run_tests_for.py --changed`，红的不要推
+- **不许 `git push --force`**，不许删 `full-source`
+- **不许 `git add -f`** 绕过 `.gitignore`，尤其是 `config.json`
+- 没验证的部分在提交信息里写明「没验证什么」
 
 **外部贡献者（没有写权限）**
 
