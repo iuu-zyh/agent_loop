@@ -105,11 +105,13 @@ def test_second_save_without_changes_writes_nothing():
 def test_append_is_much_cheaper_than_rewrite():
     """增量必须显著快于全量（这是改动的全部意义）。
 
-    判据用**相对倍数**：1000 轮账本（约 3MB）追加与全量的耗时比。
+    判据用**相对倍数**：8000 轮账本（约 3MB）追加与全量的耗时比。
     追加是 O(新增)、全量是 O(全部)，长账本上差 1~2 个数量级。
+    ⚠ 规模不能调小：0.3MB 时两边的固定开销（文件系统/杀软）会盖过 O(n)，
+      比值退化成 1 倍左右，测的就不再是增量是否生效。
     """
     _fresh()
-    s = _mk("性能", 1000)
+    s = _mk("性能", 8000)
     save_session(s, TMP)                       # 先把全量落一次
 
     s.append("user/message", {"role": "user", "id": "new",

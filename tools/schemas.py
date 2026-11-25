@@ -207,7 +207,7 @@ SOCIAL_RELATION: Dict[str, Any] = {
                     "description": "jie_yuan=结为道侣 marry=结为夫妻（须先有道侣且同处一地） divorce=解除夫妻 bai_shi=你拜对方为师 shou_tu=你收对方为徒 ren_yi_fu_mu=认义父母 jie_yi=结义 jie_chu_jie_yuan/jie_chu_bai_shi/jie_chu_shou_tu/jie_chu_jie_yi/jie_chu_ren_yi_fu_mu=解除对应关系 add_intim/reduce_intim 需 value chuan_hua=捎话（需 message，可远程）",
                 },
                 "value": {"type": "integer", "minimum": 1, "maximum": 120,
-                          "description": "仅 add/reduce_intim。**刻度**（面板同源，负向同理）：0 陌路 / 20 泛泛之交 / 60 亲近 / 120 知己 / 180 生死之交；负向 -20 嫌隙 / -60 结怨 / -120 深仇 / -180 不共戴天。**一次事件给多少**：寒暄 5~10、小忙 15、交心或还人情 30、救命或背叛 60、生死大恩 120。**这是「请求值」不是实得**——游戏按当前好感分档打折（正负同构 0~60 全额 / 60~120 五折 / 以上逐档减半），想推动 30 得填更大；结果回读**真实**好感，以那个为准。"},
+                          "description": "仅 add/reduce_intim。**刻度**（面板同源，负向同理）：0 陌路 / 20 泛泛之交 / 60 亲近 / 120 知己 / 180 生死之交；负向 -20 嫌隙 / -60 结怨 / -120 深仇 / -180 不共戴天。**一次事件给多少**：寒暄 5~10、小忙 15、交心或还人情 30、救命或背叛 60、生死大恩 120。**请求值不是实得**——游戏按好感分档打折（0~60 全额 / 60~120 五折 / 以上减半），想推 30 就得填大些；结果回读**真实**好感为准。"},
                 "message": {"type": "string", "description": "仅 chuan_hua：捎给他的那句话，第一人称古风口吻，原样送到，超 200 字截断"},
                 "ask_text": {"type": "string", "description": "可选。确认窗正文：你的第一人称台词（求婚/结义/拜师/绝交词等），须合人设与语境的古风口吻，过长会截断；不传用默认文案。add/reduce_intim 忽略。"},
             },
