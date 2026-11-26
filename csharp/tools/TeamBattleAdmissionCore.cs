@@ -6,6 +6,7 @@ namespace AgentLoopBridge
     internal sealed class TeamBattleAdmissionCore
     {
         private long _battle;
+        private long _generation;
         private readonly Dictionary<long, string> _units = new Dictionary<long, string>();
         private readonly Dictionary<int, string> _slots = new Dictionary<int, string>();
 
@@ -60,6 +61,17 @@ namespace AgentLoopBridge
             return true;
         }
 
+        internal TeamBattleSpawnScopeCore BeginSpawn(long battle, int slot, long worldData, string id)
+        {
+            return worldData != 0 && CanUseSlot(battle, slot, id)
+                ? new TeamBattleSpawnScopeCore(this, _generation, battle, slot, worldData, id) : null;
+        }
+
+        internal bool IsCurrentSpawn(long generation, long battle, int slot, string id)
+        {
+            return generation == _generation && CanUseSlot(battle, slot, id);
+        }
+
         internal bool ResolveUnit(long battle, long pointer, out string id)
         {
             id = null;
@@ -75,6 +87,7 @@ namespace AgentLoopBridge
 
         internal void Reset()
         {
+            _generation++;
             _battle = 0;
             _slots.Clear();
             _units.Clear();
@@ -94,6 +107,44 @@ namespace AgentLoopBridge
         internal static bool CanStart(bool hasMembers, bool disabled, bool duel, bool consent)
         {
             return hasMembers && !disabled && (!duel || consent);
+        }
+    }
+
+    // 初始化回调只提供候选；整个原生生成命令正常结束才授予参战身份。
+    internal sealed class TeamBattleSpawnScopeCore
+    {
+        private readonly TeamBattleAdmissionCore _owner;
+        private readonly long _generation, _battle, _worldData;
+        private readonly int _slot;
+        private bool _closed;
+        internal readonly string Id;
+        internal long Unit { get; private set; }
+
+        internal TeamBattleSpawnScopeCore(TeamBattleAdmissionCore owner, long generation,
+            long battle, int slot, long worldData, string id)
+        {
+            _owner = owner; _generation = generation; _battle = battle;
+            _slot = slot; _worldData = worldData; Id = id;
+        }
+
+        internal bool IsCurrent(long battle)
+        {
+            return !_closed && battle == _battle && _owner.IsCurrentSpawn(_generation, battle, _slot, Id);
+        }
+
+        internal bool Observe(long battle, long worldData, string id, long unit)
+        {
+            if (!IsCurrent(battle) || worldData != _worldData || id != Id || unit == 0
+                || (Unit != 0 && Unit != unit)) return false;
+            Unit = unit;
+            return true;
+        }
+
+        internal bool Complete(long battle, bool success)
+        {
+            bool valid = IsCurrent(battle);
+            _closed = true;
+            return success && valid && Unit != 0 && _owner.CaptureUnit(battle, Unit, Id);
         }
     }
 }

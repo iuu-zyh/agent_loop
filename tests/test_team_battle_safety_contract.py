@@ -24,7 +24,8 @@ def test_owned_commands_keep_the_native_queue_and_context():
     spawn = body(s, "class TeamBattleSpawnCallSafety")
     assert "TeamBattleCommandCore.IsMarked" in spawn and "TryMemberSlot(args[1], false" in spawn
     assert "new Il2CppStringArray(TeamBattleCommandCore.Remap(args, slot))" in spawn
-    assert "TeamBattleSafety.SpawningId = __state;" in body(spawn, "Exception Finalizer")
+    assert "TeamBattleSafety.SuspendSpawn()" in spawn
+    assert "TeamBattleSafety.EndSpawn(__state, __exception == null);" in body(spawn, "Exception Finalizer")
 
 def test_injection_keeps_original_npcs_and_never_runs_native_selection_on_failure():
     s = source("tools/TeamContainerInject.cs")
@@ -47,12 +48,16 @@ def test_hurt_page_guard_precedes_ui_and_fortune_side_effects():
     assert "TeamBattleSafety.CanHurt" in body(inject,"WorldUnitBase PickHurtMate")
     assert "data.functionData.unitLeft = target;" in body(inject,"void DramaInitDataPrefix")
 
-def test_exact_generated_controller_is_bound_before_death_fallback():
+def test_spawn_identity_avoids_native_bool_bridge_and_commits_after_success():
     s = source("tools/TeamBattleSafety.cs")
     b = body(s,"class TeamBattleSpawnIdentity")
-    assert "method.IsStatic" in b and "typeof(WorldUnitBase)" in b
-    assert "TeamBattleSafety.Capture(__0, __result);" in b
-    assert "id != _spawningId" in body(s, "void Capture")
+    assert "TargetMethods" not in b
+    assert "[HarmonyPatch(typeof(UnitCtrlHumanNPC), nameof(UnitCtrlHumanNPC.InitData), new[] { typeof(WorldUnitData), typeof(UnitType) })]" in s
+    assert "TeamBattleSafety.ObserveSpawn(__0, __instance);" in b
+    assert "world.Pointer.ToInt64(), TeamTool.UnitIdOf(world.unit), unit.Pointer.ToInt64()" in body(s, "void ObserveSpawn")
+    finish = body(s, "void EndSpawn")
+    assert finish.index("current.Scope.Complete(BattleKey, success)") < finish.index("RegisterBattleUnit(current.Unit)")
+    assert "finally" in finish and "previous.Scope.IsCurrent(BattleKey)" in finish
     inject = source("tools/TeamContainerInject.cs")
     resolve = body(inject,"bool TryResolveMate")
     assert resolve.index("TeamBattleSafety.ResolveUnit") < resolve.index('Refl.Get(unit, "data")')

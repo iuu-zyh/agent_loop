@@ -89,6 +89,24 @@ class Program
         Check(retry.Installed && retry.Stopped && !retry.TryBegin(true,10),"成功后不再挂载");
         retry.Reset();retry.TryBegin(true,0);retry.Fail(true);
         Check(retry.Fatal && retry.Stopped && !retry.TryBegin(true,1),"类型初始化失败不无效重试");
+        c.Register(20,new[]{"mate1","mate2"},5);
+        Check(c.BeginSpawn(20,3,101,"mate1")==null && c.BeginSpawn(20,5,0,"mate1")==null,"无效槽或空世界数据不建生成范围");
+        var spawnScope=c.BeginSpawn(20,5,101,"mate1");
+        Check(!spawnScope.Observe(21,101,"mate1",501),"跨战斗初始化拒绝");
+        Check(!spawnScope.Observe(20,102,"mate1",501),"同ID但不同世界数据拒绝");
+        Check(!spawnScope.Observe(20,101,"enemy",501),"同世界数据但角色ID不符拒绝");
+        Check(!spawnScope.Observe(20,101,"mate1",0),"空控制器拒绝");
+        Check(spawnScope.Observe(20,101,"mate1",501) && !c.HasSpawned(20),"初始化只记候选不提前授予参战");
+        Check(spawnScope.Observe(20,101,"mate1",501) && !spawnScope.Observe(20,101,"mate1",502),"同候选幂等但不被第二控制器替换");
+        Check(spawnScope.Complete(20,true) && c.ResolveUnit(20,501,out id) && id=="mate1","命令成功结束才绑定真实队友");
+        Check(!spawnScope.Complete(20,true) && !spawnScope.Observe(20,101,"mate1",501),"已结束范围不可复用");
+        var failed=c.BeginSpawn(20,6,102,"mate2"); failed.Observe(20,102,"mate2",502);
+        Check(!failed.Complete(20,false) && !c.Participated("mate2"),"初始化后命令异常不授予参战");
+        var empty=c.BeginSpawn(20,6,102,"mate2");
+        Check(!empty.Complete(20,true),"没有初始化候选的空返回不能登记");
+        var stale=c.BeginSpawn(20,6,102,"mate2"); stale.Observe(20,102,"mate2",502);
+        c.Reset(); c.Register(20,new[]{"mate1","mate2"},5);
+        Check(!stale.IsCurrent(20) && !stale.Complete(20,true) && !c.HasSpawned(20),"重读即使复用指针也不恢复旧范围");
         Console.WriteLine(count+" 项队友战斗身份与结算检查通过");
     }
 }

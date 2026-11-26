@@ -10,7 +10,12 @@ namespace AgentLoopBridge
         private static readonly TeamBattleAdmissionCore Core = new TeamBattleAdmissionCore();
         private static readonly HashSet<string> Notes = new HashSet<string>();
         private static readonly TeamHurtInstallCore HurtInstall = new TeamHurtInstallCore();
-        private static string _spawningId;
+        internal sealed class SpawnContext
+        {
+            internal TeamBattleSpawnScopeCore Scope;
+            internal UnitCtrlHumanNPC Unit;
+        }
+        private static SpawnContext _spawn;
         internal const int SelectionCondition = ModIds.Mod + 3;
         internal const int HurtEffect = ModIds.Mod + 1;
 
@@ -54,7 +59,7 @@ namespace AgentLoopBridge
         internal static void Reset()
         {
             Core.Reset();
-            _spawningId = null;
+            _spawn = null;
             Notes.Clear();
         }
 
@@ -177,15 +182,48 @@ namespace AgentLoopBridge
             return ctrl != null && Core.ResolveUnit(BattleKey, ctrl.Pointer.ToInt64(), out id);
         }
 
-        internal static void Capture(WorldUnitBase world, UnitCtrlHumanNPC unit)
+        internal static void ObserveSpawn(WorldUnitData world, UnitCtrlHumanNPC unit)
         {
-            string id = TeamTool.UnitIdOf(world);
-            if (unit == null || id != _spawningId || !Core.CaptureUnit(BattleKey, unit.Pointer.ToInt64(), id)) return;
-            TeamContainerInject.RegisterBattleUnit(unit);
-            ModMain.P("[TeamBattleSafety] 已绑定实际战斗队友 " + id);
+            if (_spawn == null || world == null || unit == null) return;
+            if (_spawn.Scope.Observe(BattleKey, world.Pointer.ToInt64(), TeamTool.UnitIdOf(world.unit), unit.Pointer.ToInt64()))
+                _spawn.Unit = unit;
         }
 
-        internal static string SpawningId { get { return _spawningId; } set { _spawningId = value; } }
+        internal static SpawnContext SuspendSpawn()
+        {
+            var previous = _spawn;
+            // 嵌套的非本模组命令也必须隔离，不能借用外层队友的登记范围。
+            _spawn = null;
+            return previous;
+        }
+
+        internal static bool BeginSpawn(int slot, string id)
+        {
+            var world = g.world.battle.data.npcUnits[slot - 3];
+            var scope = Core.BeginSpawn(BattleKey, slot, world?.data?.Pointer.ToInt64() ?? 0, id);
+            if (scope == null) return Reject("队友世界数据无效，取消该生成命令");
+            _spawn = new SpawnContext { Scope = scope };
+            return true;
+        }
+
+        internal static void EndSpawn(SpawnContext previous, bool success)
+        {
+            try
+            {
+                var current = _spawn;
+                if (current != null && current.Scope.Complete(BattleKey, success))
+                {
+                    TeamContainerInject.RegisterBattleUnit(current.Unit);
+                    ModMain.P("[TeamBattleSafety] 已绑定实际战斗队友 " + current.Scope.Id);
+                }
+            }
+            finally
+            {
+                _spawn = previous != null && previous.Scope.IsCurrent(BattleKey) ? previous : null;
+            }
+        }
+
+        internal static bool HasSpawnScope { get { return _spawn != null; } }
 
         internal static bool TryMemberSlot(string value, bool requireSpawned, out int slot, out string id)
         {
@@ -220,9 +258,9 @@ namespace AgentLoopBridge
     [HarmonyPatch(typeof(BattleFunction), nameof(BattleFunction.AddBattleUnit), new[] { typeof(Il2CppStringArray) })]
     internal static class TeamBattleSpawnCallSafety
     {
-        private static bool Prefix(ref Il2CppStringArray __0, out string __state)
+        private static bool Prefix(ref Il2CppStringArray __0, out TeamBattleSafety.SpawnContext __state)
         {
-            __state = TeamBattleSafety.SpawningId;
+            __state = TeamBattleSafety.SuspendSpawn();
             var args = TeamBattleSafety.Read(__0);
             if (!TeamBattleCommandCore.IsMarked(args, TeamBattleSafety.SelectionCondition.ToString(), 8)) return true;
             int slot;
@@ -230,30 +268,24 @@ namespace AgentLoopBridge
             if (!TeamBattleSafety.TryMemberSlot(args[1], false, out slot, out id))
                 return TeamBattleSafety.Reject("本场没有对应的待生成队友，取消该生成命令");
             __0 = new Il2CppStringArray(TeamBattleCommandCore.Remap(args, slot));
-            TeamBattleSafety.SpawningId = id;
-            return true;
+            return TeamBattleSafety.BeginSpawn(slot, id);
         }
 
-        private static Exception Finalizer(Exception __exception, string __state)
+        private static Exception Finalizer(Exception __exception, TeamBattleSafety.SpawnContext __state)
         {
-            TeamBattleSafety.SpawningId = __state;
+            TeamBattleSafety.EndSpawn(__state, __exception == null);
             return __exception;
         }
     }
 
-    [HarmonyPatch]
+    // 此入口只有对象与枚举参数。不能挂带 bool 的静态 AddBattleUnit：本机 Mono
+    // 反向桥接会把原生单字节 bool 连同栈填充按四字节读取，影响所有入场调用。
+    [HarmonyPatch(typeof(UnitCtrlHumanNPC), nameof(UnitCtrlHumanNPC.InitData), new[] { typeof(WorldUnitData), typeof(UnitType) })]
     internal static class TeamBattleSpawnIdentity
     {
-        private static System.Collections.Generic.IEnumerable<System.Reflection.MethodBase> TargetMethods()
+        private static void Postfix(UnitCtrlHumanNPC __instance, WorldUnitData __0)
         {
-            foreach (var method in typeof(BattleFunction).GetMethods())
-                if (method.Name == "AddBattleUnit" && method.IsStatic && method.ReturnType == typeof(UnitCtrlHumanNPC)
-                    && method.GetParameters().Length > 0 && method.GetParameters()[0].ParameterType == typeof(WorldUnitBase))
-                    yield return method;
-        }
-        private static void Postfix(WorldUnitBase __0, UnitCtrlHumanNPC __result)
-        {
-            TeamBattleSafety.Capture(__0, __result);
+            TeamBattleSafety.ObserveSpawn(__0, __instance);
         }
     }
 

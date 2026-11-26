@@ -126,6 +126,17 @@ namespace AgentLoopBridge
         {
             new NoticeRelease
             {
+                Seq = 10,
+                Version = "1.2.5",
+                Date = "11 月 27 日 上午 2:00",
+                Author = "南枝",
+                Items = new[]
+                {
+                    "修复进入部分战斗会异常导致战斗冻结",
+                },
+            },
+            new NoticeRelease
+            {
                 Seq = 9,
                 Version = "1.2.4",
                 Date = "11 月 25 日 上午 10:00",

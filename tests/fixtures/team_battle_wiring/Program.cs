@@ -18,10 +18,25 @@ namespace UnhollowerBaseLib
         public string this[int i] { get { return _values[i]; } }
     }
 }
-public class WorldUnitBase { public string Id; public bool Player; public UnitData data = new UnitData(); }
-public class UnitData { public object unitData = new object(); }
+public class WorldUnitBase
+{
+    public string Id; public bool Player; public WorldUnitData data;
+    public WorldUnitBase() { data = new WorldUnitData { unit = this }; }
+}
+public class WorldUnitData
+{
+    private static int next = 10000;
+    public IntPtr Pointer = new IntPtr(++next);
+    public WorldUnitBase unit;
+    public object unitData = new object();
+}
+public enum UnitType { NPC }
 public class UnitCtrlBase { public IntPtr Pointer; }
-public class UnitCtrlHumanNPC : UnitCtrlBase { }
+public class UnitCtrlHumanNPC : UnitCtrlBase
+{
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void InitData(WorldUnitData data, UnitType type) { }
+}
 public class WorldBattleData
 {
     public IntPtr Pointer = new IntPtr(100);
@@ -56,6 +71,9 @@ public class BattleFunction
     public bool Flag, Deferred;
     public HashSet<string> ReturnNull = new HashSet<string>();
     public bool ThrowOnSpawn;
+    public bool ThrowAfterInit;
+    public Action DuringSpawn;
+    public UnitCtrlHumanNPC LastCreated;
     private List<Action> _pending;
     private static int _pointer = 1000;
 
@@ -92,13 +110,20 @@ public class BattleFunction
         int slot = int.Parse(args[1]);
         var mate = g.world.battle.data.npcUnits[slot - 3];
         Trace.Add("spawn:" + slot);
+        var nested = DuringSpawn; DuringSpawn = null;
+        if (nested != null) nested();
         var result = AddBattleUnit(mate, !ReturnNull.Contains(mate.Id));
+        LastCreated = result;
+        if (ThrowAfterInit) throw new InvalidOperationException("failure after initialization");
         if (result != null) Generated.Add(slot);
     }
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static UnitCtrlHumanNPC AddBattleUnit(WorldUnitBase unit, bool success)
     {
-        return success ? new UnitCtrlHumanNPC { Pointer = new IntPtr(++_pointer) } : null;
+        if (!success) return null;
+        var result = new UnitCtrlHumanNPC { Pointer = new IntPtr(++_pointer) };
+        result.InitData(unit.data, UnitType.NPC);
+        return result;
     }
     [MethodImpl(MethodImplOptions.NoInlining)]
     public void SetBattleData(Il2CppStringArray args)
@@ -128,7 +153,8 @@ namespace AgentLoopBridge
     internal static class TeamContainerInject
     {
         internal static bool NoInject = false, HurtPending;
-        internal static void RegisterBattleUnit(UnitCtrlBase unit) { }
+        internal static List<UnitCtrlBase> Registered = new List<UnitCtrlBase>();
+        internal static void RegisterBattleUnit(UnitCtrlBase unit) { Registered.Add(unit); }
         internal static void SweepDeadBattleUnits() { }
         internal static bool HasPendingHurtMate() { return HurtPending; }
     }
@@ -159,6 +185,7 @@ internal static class Program
         g.world.battle.data.npcUnits.Add(new WorldUnitBase { Id = "enemy2" });
         TeamTool.Mates = Enumerable.Range(1, mates).Select(i => new WorldUnitBase { Id = "mate" + i }).ToList();
         TeamContainerInject.HurtPending = false;
+        TeamContainerInject.Registered.Clear();
         return new BattleFunction();
     }
     static void Execute(BattleFunction f, string text) { f.OptionsFunction(text, new BattleFunction.BattleFunctionData { Tag = "context" }); }
@@ -178,13 +205,18 @@ internal static class Program
     {
         var harmony = new Harmony("TeamBattleWiringTests");
         harmony.PatchAll(Assembly.GetExecutingAssembly());
+        var nativeGenerator = AccessTools.Method(typeof(BattleFunction), "AddBattleUnit", new[] { typeof(WorldUnitBase), typeof(bool) });
+        Check(Harmony.GetPatchInfo(nativeGenerator) == null, "native bool generator must have no identity hook");
+        var initializer = AccessTools.Method(typeof(UnitCtrlHumanNPC), "InitData", new[] { typeof(WorldUnitData), typeof(UnitType) });
+        Check(Harmony.GetPatchInfo(initializer).Postfixes.Any(p => p.PatchMethod.DeclaringType == typeof(TeamBattleSpawnIdentity)), "identity observes exact no-bool initializer");
         var f = Start(0); Execute(f, Generation);
         Check(f.Generated.Count == 0 && !f.Flag, "empty party must not clone enemies or set flag");
         Check(g.world.battle.data.npcUnits.Count == 2, "original NPC list remains intact");
         f = Start(2); Execute(f, "before|" + Generation + "|after");
         Check(f.Generated.SequenceEqual(new[] { 5, 6 }) && f.Flag, "actual appended positions generate and allow flag");
         Check(f.Trace.First() == "before:context" && f.Trace.Last() == "after:context", "extra commands and caller context remain in order");
-        Check(TeamBattleSafety.SpawningId == null, "spawn scope cleaned on success");
+        Check(!TeamBattleSafety.HasSpawnScope, "spawn scope cleaned on success");
+        Check(TeamContainerInject.Registered.Count == 2, "successful teammates reach death and followup registry");
         Execute(f, Injury);
         Check(f.Injured.SequenceEqual(new[] { 5, 6 }), "injury effects target actual participants");
         Execute(f, Generation);
@@ -196,7 +228,36 @@ internal static class Program
         Check(f.Generated.SequenceEqual(new[] { 6 }) && f.Flag && f.Injured.SequenceEqual(new[] { 6 }), "partial generation settles successful participant only");
         f = Start(1); f.ThrowOnSpawn = true;
         try { Execute(f, Generation); } catch (InvalidOperationException) { }
-        Check(TeamBattleSafety.SpawningId == null && !f.Flag, "native exception cleans scope and cannot set flag");
+        Check(!TeamBattleSafety.HasSpawnScope && !f.Flag, "native exception cleans scope and cannot set flag");
+        f = Start(1); f.ThrowAfterInit = true;
+        try { Execute(f, Generation); } catch (InvalidOperationException) { }
+        Check(!TeamBattleSafety.HasSpawnScope && !TeamBattleSafety.Spawned && TeamContainerInject.Registered.Count == 0,
+            "initialized candidate cannot register after failed native command");
+        f = Start(1);
+        f.DuringSpawn = () => BattleFunction.AddBattleUnit(new WorldUnitBase { Id = "mate1" }, true);
+        Execute(f, Generation);
+        Check(f.Flag && TeamContainerInject.Registered.Count == 1 && TeamContainerInject.Registered[0].Pointer == f.LastCreated.Pointer,
+            "same ID with foreign world data cannot steal registration");
+        f = Start(1);
+        f.DuringSpawn = () => f.AddBattleUnit(new Il2CppStringArray("addBattleUnit_5_-1_10_2_1_2_0".Split('_')));
+        Execute(f, Generation);
+        Check(f.Flag && !TeamBattleSafety.HasSpawnScope && TeamContainerInject.Registered.Count == 1,
+            "nested foreign command is isolated and outer owned scope restored");
+        f = Start(2);
+        f.DuringSpawn = () => f.AddBattleUnit(new Il2CppStringArray(("addBattleUnit_4_-1_10_2_1_2_0_@Team:" + TeamBattleSafety.SelectionCondition).Split('_')));
+        Execute(f, Generation);
+        Check(f.Flag && !TeamBattleSafety.HasSpawnScope && TeamContainerInject.Registered.Count == 2
+            && TeamBattleSafety.Participated("mate1") && TeamBattleSafety.Participated("mate2"),
+            "nested owned commands retain distinct successful teammate registries");
+        f = Start(1);
+        f.DuringSpawn = () => {
+            try { f.ThrowOnSpawn = true; f.AddBattleUnit(new Il2CppStringArray("addBattleUnit_5_-1_10_2_1_2_0".Split('_'))); }
+            catch (InvalidOperationException) { }
+            finally { f.ThrowOnSpawn = false; }
+        };
+        Execute(f, Generation);
+        Check(f.Flag && !TeamBattleSafety.HasSpawnScope && TeamContainerInject.Registered.Count == 1,
+            "caught nested failure restores outer scope without granting inner permission");
         f = Start(1); f.Deferred = true; Execute(f, Generation);
         Check(!TeamBattleSafety.Admitted && !f.Flag, "deferred queue has no premature injection");
         f.RunPending(); Check(f.Generated.SequenceEqual(new[] { 5 }) && f.Flag, "markers survive queue execution after interpreter returns");

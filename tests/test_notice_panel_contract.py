@@ -146,7 +146,7 @@ def test_release_seq_strictly_increasing_and_unique():
     assert len(set(seqs)) == len(seqs), f"公告序号重复：{seqs}"
     assert seqs[0] == max(seqs), f"最新一条必须排在最前且序号最大，实际：{seqs}"
     # `Releases` 数组里的顺序必须是"序号从大到小"（面板直接按数组顺序画）
-    assert src.index("Seq = %d" % seqs[0]) < src.index("Seq = %d" % seqs[-1]), \
+    assert seqs == sorted(seqs, reverse=True), \
         "Releases 必须最新在最前（面板按数组顺序画，不倒序）"
 
 

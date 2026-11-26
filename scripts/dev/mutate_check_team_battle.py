@@ -17,9 +17,12 @@ MUTATIONS = [
     ("foreign-spawn-taken", "csharp/tools/TeamBattleCommandCore.cs", "bool spawn = selection &&", "bool spawn = true &&", "core"),
     ("unbounded-retry", "csharp/tools/TeamHurtInstallCore.cs", "Installed || Fatal || Attempts >= MaxAttempts", "Installed || Fatal", "core"),
     ("retry-every-frame", "csharp/tools/TeamHurtInstallCore.cs", "!ready || Stopped || now < _nextAttempt", "!ready || Stopped", "core"),
-    ("unrelated-unit-grants-permission", "csharp/tools/TeamBattleSafety.cs", "unit == null || id != _spawningId ||", "unit == null ||", "wiring"),
+    ("foreign-world-data-grants-permission", "csharp/tools/TeamBattleAdmissionCore.cs", "worldData != _worldData ||", "", "core"),
+    ("foreign-id-grants-permission", "csharp/tools/TeamBattleAdmissionCore.cs", "id != Id ||", "", "core"),
+    ("failed-command-grants-permission", "csharp/tools/TeamBattleSafety.cs", "current.Scope.Complete(BattleKey, success)", "current.Scope.Complete(BattleKey, true)", "wiring"),
+    ("reload-reuses-old-scope", "csharp/tools/TeamBattleAdmissionCore.cs", "_generation++;", "", "core"),
     ("flag-before-spawn", "csharp/tools/TeamBattleSafety.cs", "return TeamBattleSafety.Spawned ||", "return TeamBattleSafety.Admitted ||", "wiring"),
-    ("scope-leaks-on-exception", "csharp/tools/TeamBattleSafety.cs", "TeamBattleSafety.SpawningId = __state;", "TeamBattleSafety.SpawningId = TeamBattleSafety.SpawningId;", "wiring"),
+    ("scope-leaks-on-exception", "csharp/tools/TeamBattleSafety.cs", "TeamBattleSafety.EndSpawn(__state, __exception == null);", "", "wiring"),
     ("stop-after-first-install-failure", "csharp/tools/TeamBattleSafety.cs", "if (HurtInstall.Stopped) FrameTicker.Stop", "if (true) FrameTicker.Stop", "wiring"),
 ]
 
